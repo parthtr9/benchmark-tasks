@@ -1,0 +1,20 @@
+{
+  "title": "Slide a carriage onto a linear rail until it clicks",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "robot building",
+    "linear guide",
+    "sliding fit",
+    "detent",
+    "assembly"
+  ],
+  "instruction": "Slide the blue carriage onto the open end of the grey rail and push it along the rail until it clicks past the plunger and stops against the orange end stop.",
+  "context": "Linear guides carry the moving axes of robot gantries, linear actuators and 3D printers; fitting a carriage onto its rail is a routine step in building them. The carriage must be lined up with a close-fitting profile, kept square over a 10 cm slide, and pushed through a detent.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Rail: grey PLA, 150 g, 29 cm long, lying on the midline (y 0) from x 14.5 (open end, nearest the arms) to x 43.5. It is a 2 cm wide, 0.8 cm tall bar; over its first 11.5 cm it carries a T-profile (0.8 cm wide, 0.6 cm tall stem under a 1.6 cm wide, 0.4 cm tall head), which ends at an orange end stop (0.5 x 2 x 2.2 cm) at 11.5-12 cm; the remaining 17 cm is a plain handle. An orange spring plunger with a rounded 8 mm nose sits on the left side of the T-profile, 6.9 cm from the open end, just under the head, and sticks out 2 mm sideways (spring 0.3 N per mm, 2.5 mm travel). Carriage: blue PLA block 4 x 3 x 1.7 cm, 40 g, with a T-shaped channel through its length (1 mm side play, 2 mm above and below the head), standing on the table at x 15, y -15, channel along x.",
+  "scoring": "Measured at the end with a ruler. 0 if the rail was at any point moved more than 3 cm or turned more than 15 degrees. Otherwise: 1.0 if the carriage is on the rail (within 2 mm of its centreline and 1.5 mm of its seated height, square to it within 5 degrees) between the plunger and the end stop (its front within 0.5 mm of the stop, its rear past the plunger, which has sprung back out) and still (moving less than 1 mm over 1 s), for 1 s; 0.75 if, on the rail, its centre was pushed at least 6 cm from the rail's open end; 0.5 if it was put on the rail with at least 1 cm of it over the rail; 0.25 if it was lifted 3 cm; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Press the plunger in, slide the carriage back off the open end, and stand it on its mark; lay the rail back on its marks on the midline.",
+  "fidelity": "Rigid bodies built from boxes and cylinders. The plunger is a prismatic joint with a spring drive and no preload; real ball plungers are stiffer and preloaded. Friction is uniform (0.5 rail, 0.3 carriage) and light angular damping is added to the parts. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-4YB5G5"
+}
