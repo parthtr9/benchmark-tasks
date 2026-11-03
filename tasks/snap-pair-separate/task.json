@@ -1,0 +1,20 @@
+{
+  "title": "Pull apart a snap-together case with both hands",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "disassembly",
+    "snap fit",
+    "detent",
+    "repair"
+  ],
+  "instruction": "Hold the grey half and the blue half of the case and pull them straight apart until they come undone, leaving both halves on the table at least 3 cm apart.",
+  "context": "Opening snap-together housings (battery packs, remotes, chargers, tool cases) is the first step of many repairs (O*NET 49-2094.00, 49-2011.00). The halves only come apart when pulled in opposite directions; pulling one drags the other along.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). A two-part PLA case, 30 x 6 x 4 cm overall, lies flat with its length along x and its seam at x 23, y 0. The near half (blue, x 8-23, 60 g) has a 2.5 cm long, 1.4 x 0.9 cm tongue at mid-height that sits in a slot in the far half (grey, x 23-38, 60 g). An orange spring plunger with a rounded 6 mm nose sits in the slot's left wall 1.2 cm from the seam and rests in a 2 mm notch in the tongue's left side (spring 1 N per mm, 2.5 mm travel).",
+  "scoring": "Measured at the end with a ruler. 1.0 if the tongue is out of the slot and both halves lie flat on the table (within 5 mm of it, tilted under 10 degrees) with at least 3 cm between the tongue's tip and the grey half's seam face, still (moving less than 1 mm over 1 s), for 1 s; 0.75 if the halves were pulled apart until the tongue was out of the slot plus 5 mm; 0.5 if they were pulled 6 mm apart (past the plunger); 0.25 if they were pulled 2 mm apart; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Push the halves back together until the plunger clicks into the tongue's notch, and lay the case on its marked outline.",
+  "fidelity": "Rigid bodies built from boxes and cylinders; the plunger is a prismatic joint with a spring drive and no preload, and the halves are held together by contact alone. Friction is uniform and light angular damping is added to the parts. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-HBLVT9"
+}
