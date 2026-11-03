@@ -1,0 +1,21 @@
+{
+  "title": "Snap a module onto a DIN rail",
+  "category": "Impact on jobs",
+  "keywords": [
+    "DIN rail",
+    "control cabinet",
+    "electrical assembly",
+    "snap-fit",
+    "hook and pivot",
+    "spring latch"
+  ],
+  "instruction": "Pick up the blue module, hook the top of its back over the upper edge of the metal rail on the panel, swing its bottom in against the rail and push it until its latch clicks onto the rail.",
+  "context": "Electricians and control-panel builders mount breakers, relays and terminals on DIN rails all day (O*NET 47-2111.00, 51-2022.00), and factories are trying to automate it. Unlike pushing a part straight in, the module must be hooked over the rail's upper lip, swung in about that hook and pushed until its spring latch snaps behind the lower lip.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Rail: a steel TS35 x 7.5 top-hat DIN rail, 22 cm long, running left to right, its centre 6 cm above the table at y -13, the front face of its lips at x 30; it is screwed to a fixed light grey panel (1 cm thick, 28 cm wide from y -27 to y 1, 9.5 cm tall from the table). A dark end clamp (1 cm wide, 5 cm tall, standing 1.2 cm proud of the rail) closes each end of the rail. Module: a blue 22.5 mm DIN-rail housing (PLA, 22.5 x 55 x 90 mm, 80 g) with a fixed hook at the top of its back, whose tooth drops 3.5 mm behind the rail's upper lip, and an orange spring latch at the bottom of its back (0.8 N per mm, 4 mm travel), whose tooth, chamfered at 45 degrees on its upper face toward the rail, reaches 1.5 mm behind the lower lip. It stands upright with its housing centre at x 19, y -21, back toward the panel, turned 25 degrees clockwise seen from above, between two fixed dark blocks (6.5 x 0.8 x 1.2 cm) 1 mm clear of either side of its base.",
+  "scoring": "Measured at the end with a ruler and a photo. 1.0 if the module is mounted: hooked over the rail's upper lip, its back within 1.5 mm of the upper lip and 1 mm of the lower lip, square to the rail within 3 degrees, latch sprung back behind the lower lip, between the end clamps, and still (moving less than 1 mm over 1 s), for 1 s; 0.75 if, after hanging on its hook, its bottom was pushed to within 2 mm of the lower lip; 0.5 if, after being lifted, it hung on the rail by its hook (hook tooth behind the upper lip); 0.25 if it was lifted 3 cm; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Pull the latch down (its tab, with a screwdriver), tip the module's bottom out and lift it off the rail; stand it upright in its holder, back toward the panel at the marked angle.",
+  "fidelity": "Rigid bodies built from boxes; rail, end clamps, panel and holder are fixed. The hook, rail lips and the latch's chamfered tooth are real colliders, so the latch clicks from contact alone; it is a prismatic joint with a spring drive and no preload. The rail's lips are 2 mm thick (1 mm on a real rail). Contact offsets are 0.5 mm, with light angular damping on the module. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-BTH2R5"
+}
