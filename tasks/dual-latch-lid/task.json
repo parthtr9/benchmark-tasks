@@ -1,0 +1,20 @@
+{
+  "title": "Release a two-latch lid and lift it out with both hands",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "coordinated lifting",
+    "latch",
+    "enclosure",
+    "servicing"
+  ],
+  "instruction": "Grip the two orange tabs on the blue lid, slide both toward the middle of the lid at the same time to release the latches, lift the lid out of the grey case, and set it down flat on the table to the right of the case.",
+  "context": "Equipment covers, battery bays and storage cases often use a latch at each end that must be held open at the same time to lift the lid out; one latch alone leaves the lid locked in place (O*NET 49-2094.00, 49-9071.00).",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Case: grey PLA, 1.5 kg, 26 x 8 x 4 cm, open top, lying with its long side along x, centred at x 25, y 8. Inside, a blue PLA lid (25 x 7 x 0.6 cm, 120 g) rests on two ledges with its top 1.3 cm below the rim. A slide latch sits at each end of the lid: an orange tab (3 cm wide, 3 cm tall, 0.4 cm thick) stands on the lid 9.8 cm from its centre, and a 2 x 0.3 cm tongue from it reaches 0.4 cm into a slot in the case's end wall. Sliding a tab 0.6 cm toward the lid's centre against its spring (0.3 N per mm) pulls the tongue out of the wall.",
+  "scoring": "Measured at the end with a ruler and a top photo. 0 if the case was at any point moved more than 3 cm. Otherwise: 1.0 if, after being lifted out, the lid lies flat on the table (underside within 5 mm of it, tilted under 10 degrees) with its centre at least 8 cm to the side of the case's centreline, still (moving less than 1 mm over 1 s), for 1 s; 0.75 if the lid was lifted with its underside 1 cm above the case's rim; 0.5 if both latches were released at once (each tab slid at least 4 mm in); 0.25 if one latch was released; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Put the lid back into the case, tabs up, and let both latches spring out into their slots; set the case on its marked outline.",
+  "fidelity": "Rigid bodies built from boxes; each latch is a prismatic joint with a spring drive and no preload, and its tongue engages the wall slot by contact alone. The case is heavy (1.5 kg) so it stays put. Light angular damping is added to the parts. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-KT9866"
+}
