@@ -1,0 +1,20 @@
+{
+  "title": "Press a bearing onto a robot link's shaft",
+  "category": "Impact on AI timelines",
+  "keywords": [
+    "robot building",
+    "bearing",
+    "shaft",
+    "detent",
+    "assembly"
+  ],
+  "instruction": "Slide the bearing onto the end of the steel shaft that sticks out of the grey robot link and press it along the shaft until it clicks past the ball and sits against the shoulder.",
+  "context": "Fitting bearings onto shafts is a basic step in building robot joints, gearboxes and actuators. The bearing must be lined up with a shaft held out sideways from a light part, pressed along it squarely, and pushed past a retaining detent.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Robot link: grey PLA block 16 x 4 x 3 cm, 60 g, lying flat with its long side along x, centred at x 30, y 6. From its right side (facing -y), 6 cm toward the arms from its centre and 1.5 cm above the table, sticks a steel shaft (8 mm diameter): first a 14 mm diameter standoff collar 2 cm long, whose end is the shoulder, then 2.5 cm of plain shaft. An orange spring ball with a rounded 4 mm nose sits on the shaft's side facing the arms, 1 cm beyond the shoulder, standing 1 mm proud (spring 0.3 N per mm, 1.5 mm travel). Bearing: steel, 12 g, a 22 mm square, 7 mm thick, with a 9 mm bore, standing on edge with its bore along y in a fixed blue holder (two 3 x 0.4 x 0.8 cm walls, 9 mm apart) at x 15, y -15.",
+  "scoring": "Measured at the end with a ruler. 0 if the link was at any point moved more than 3 cm or turned more than 15 degrees. Otherwise: 1.0 if the bearing is on the shaft (bore within 1 mm of the shaft's axis, square to it within 10 degrees) with its inner face within 1 mm of the shoulder and the ball sprung back out behind it, and still (moving less than 1 mm over 1 s), for 1 s; 0.75 if, on the shaft, it was pushed past the middle of the shaft; 0.5 if it was put on the shaft with at least 3 mm of shaft in its bore; 0.25 if it was lifted 3 cm; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Press the ball in, slide the bearing off the shaft, and stand it back in its holder; set the link back on its marks.",
+  "fidelity": "Rigid bodies built from boxes and cylinders; the bearing is a solid square block with a square-section bore (no rolling elements), and its 0.5 mm radial play on the shaft is looser than a real slip fit. The ball is a prismatic joint with a spring drive and no preload. Friction is uniform and light angular damping is added to the parts. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-8R4YL5"
+}
