@@ -1,0 +1,21 @@
+{
+  "title": "Close a snap-fit case lid",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "assembly",
+    "snap-fit",
+    "latch",
+    "electronics repair",
+    "bracing"
+  ],
+  "instruction": "Put the blue lid into the pocket of the grey case with its orange tabs over the orange latches, then press the front edge of the lid down until both latches click.",
+  "context": "Closing a snap-fit cover is the last step of countless electronics repairs and assembly jobs (O*NET 49-2094.00, 51-2028.00). The case is light and stands on a narrow foot, so pressing the latches tips it unless the other hand steadies it.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Case base: grey PLA box 12 x 7 x 2.5 cm, 150 g, standing on a fixed grey 4 x 5 x 2 cm block whose centre is at x 21, y -5; both turned 45 degrees clockwise seen from above, so the case's front end points forward and to the right. Its top has a pocket 11.6 x 6.6 cm and 0.75 cm deep (2 mm walls, the middle 6 cm of each long wall open). Two orange PLA latch plates, 1.2 x 1.2 cm, sit in the pocket 4.5 cm in front of the case centre and 2.2 cm either side of its midline, 4 mm above the pocket floor on springs (2.5 N per mm, 4 mm travel). Lid: blue PLA plate 11.4 x 6.4 x 0.75 cm, 40 g, with two orange 1.2 x 1.2 cm tabs on top over the latch positions, lying flat on two fixed grey 1.2 x 5 x 1.5 cm rails 8 cm apart centred at x 11, y 17, turned 30 degrees clockwise.",
+  "scoring": "Measured at the end with a ruler and a top photo. 0 if the case base was at any point moved more than 3 cm or tilted more than 20 degrees. Otherwise: 1.0 if both latches have clicked (lid underside within 0.7 mm of the pocket floor above each latch) and the lid lies in the pocket (centre within 3 mm of the pocket centre, turned less than 5 degrees, tilted less than 10 degrees) and at rest for 1 s; 0.75 if one latch clicked after the lid was placed; 0.5 if, after being lifted, the lid was set down at rest in the pocket; 0.25 if the lid was lifted 3 cm above its start; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Lift the lid out of the case (release the latches), lay it flat on the rails, ends centred on them, tabs up and pointing toward the case, and set the case on its foot in its marked outline.",
+  "fidelity": "Rigid bodies built from boxes; the foot and rails are fixed. The latch plates are spring-loaded sliders, but the snap hook itself is not modelled: a latch clicks when the lid's underside comes within 0.7 mm of the pocket floor above it, and once both have clicked the lid is held seated relative to the case, rewritten every control step. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-D5QFNK"
+}
