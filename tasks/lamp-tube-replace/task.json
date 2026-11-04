@@ -1,0 +1,20 @@
+{
+  "title": "Fit a two-pin lamp tube into its sockets and turn it to lock",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "maintenance",
+    "lamp replacement",
+    "coordinated rotation",
+    "insertion"
+  ],
+  "instruction": "Lift the white lamp tube with both hands, lower it between the two grey sockets so the pins on each end go down the slots, and turn the tube a quarter turn so it locks in.",
+  "context": "Replacing two-pin fluorescent and LED tubes is routine building maintenance (O*NET 49-9071.00, 47-2111.00). Both ends must go into their sockets at once and the whole tube turned together; held near one end it twists in the grip and swings down, and its middle is out of reach.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). An 18-inch lamp tube (2.54 cm diameter, 44.3 cm between its grey end-cap faces, 150 g) lies along y at x 30, its axis 5 cm above the table, in two orange cradles at y 8 and -8. Each end has two 2.5 mm steel pins 12.7 mm apart (one above the other) sticking 7 mm out, and an orange spring plunger (3 mm rounded nose, 2 mm proud, 3 N per mm) 12 mm above the axis. Two fixed light-grey sockets (4 x 2 x 11.3 cm) face each other at x 44, inner faces at y 22.3 and -22.3: a 4 mm slot runs from each socket's top down to a 17 mm square pocket 10 cm above the table, with a 5 mm hole 12 mm either side of the pocket and a ledge under the end cap.",
+  "scoring": "Measured with a ruler and protractor. 1.0 if both ends' pins are in the pockets (each end's axis within 3 mm of its pocket centre, the tube centred within 3 mm), the tube is turned at least 75 degrees from pins-upright, and it has moved less than 1 mm for 1 s; 0.75 if it was turned 45 degrees with both ends in the pockets; 0.5 if both ends' pins were put down into the pockets; 0.25 if the tube was lifted 3 cm; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Turn the tube back until its pins stand upright, lift it out of the sockets and lay it in the two cradles with its pins upright.",
+  "fidelity": "Rigid bodies built from boxes and cylinders. The plungers are prismatic joints with spring drives and no preload; the pins carry no electrical contact and the sockets' rotors are modelled as fixed square pockets the pins turn in. The tube is a light rigid body (no glass breakage). Friction is uniform and light angular damping is added. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-96Y5K5"
+}
