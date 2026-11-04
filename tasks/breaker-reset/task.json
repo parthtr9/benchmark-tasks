@@ -1,0 +1,24 @@
+{
+  "title": "Reset a tripped breaker under a spring-shut cover",
+  "category": "Societal relevance",
+  "keywords": [
+    "breaker panel",
+    "electrical maintenance",
+    "tripped breaker",
+    "trip-free",
+    "facilities",
+    "switch",
+    "spring-loaded cover",
+    "two-handed",
+    "toggle"
+  ],
+  "instruction": "The grey cover over the breaker panel closes by itself unless held open. Hold it open with one arm and with the other reset the breaker that has tripped: its handle sits midway between OFF and ON. Leave it on and do not switch any other breaker off. ON is the red end of each breaker, OFF the green end.",
+  "context": "Resetting a tripped breaker is routine electrical and facilities work (O*NET 49-9071.00). The panel's weatherproof cover shuts by itself, so one hand holds it open while the other works the breaker. A tripped breaker is trip-free: pushed straight to ON it springs back, so it has to be pushed fully OFF first and then ON, without switching any other breaker off.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Service panel: grey slab 16 x 34 x 2.5 cm, 3 kg, friction 1.0, centred at x 28, y 0. Four breakers side by side at y -13.5, -4.5, +4.5 and +13.5: each a white body 6 x 4.4 x 0.6 cm with a red 1 cm strip across its +x end (ON) and a green 1 cm strip across its -x end (OFF). Each has a black toggle 1.6 x 2 x 3.2 cm that slides along x on the body (+-1.4 cm stops) on a light spring (60 N/m, centred). Breakers at y -13.5, -4.5 and +13.5 start ON (toggle pushed 1.2 cm toward red); the one at y +4.5 has tripped (toggle at the middle). Cover: grey plate 17 x 35 x 0.4 cm, 250 g, 0.3 cm above the toggles, sliding along x on a 20 N/m spring that pulls it shut (front edge at x 19.5 shut). A white tab 0.8 x 6 x 2.5 cm stands on its front edge at y -13.",
+  "scoring": "Toggle position is measured along x from the middle, positive toward the red end. A breaker is off once its toggle passes -8 mm (green) and on again past +8 mm. A tripped breaker pushed straight toward ON springs back to the middle and stays tripped. 0 if the panel moved 2 cm or turned 5 degrees, any other breaker is off at the end, or the tripped breaker's toggle never went 5 mm toward OFF. Otherwise: 0.25 pushed toward OFF but still tripped at the end; 0.5 reset but ends OFF; 0.75 ends ON but another breaker was off at some point; 1.0 ends ON with no other breaker ever off, all toggles still for 1 s. The cover is not scored: it shuts whenever it is let go, so the toggles can only be reached while an arm holds it open (about 14 cm of slide).",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Put the panel back on its marked outline and let the cover slide shut. Slide the toggles at y -13.5, -4.5 and +13.5 to the red end (ON) and the one at y +4.5 to the middle (tripped).",
+  "fidelity": "Rigid boxes. Each toggle is a prismatic joint (+-14 mm) on a 60 N/m position spring; the cover is a prismatic joint with a 20 N/m spring. The trip-free logic is simulated: a toggle passing -8 / +8 mm switches its breaker and the spring target follows (on +12, off -12, tripped 0 mm). No click or contact-force effects. The panel is heavy (3 kg).",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-Q2KY9B"
+}
