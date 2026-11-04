@@ -1,0 +1,20 @@
+{
+  "title": "Sweep cubes into a hand-held dustpan with a brush",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "tool use",
+    "sweeping",
+    "dustpan",
+    "household cleaning"
+  ],
+  "instruction": "Hold the blue dustpan still by its handle with one arm, and with the other arm use the hand brush to sweep all five orange cubes into the dustpan. Do not touch the cubes with the grippers.",
+  "context": "Cleaners and workshop staff sweep debris into a dustpan held in the other hand; the pan only stays put if it is held, and the debris is moved with the brush, not picked up (O*NET 37-2011.00, 37-2012.00).",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Dustpan: blue PLA, 80 g, 16 cm wide (x) and 14.3 cm deep, open toward +y; the middle of its front lip is at x 28, y 2. Its 3 mm side walls are 3 cm tall, its back wall (at y -12.3) 4 cm tall, its floor 0.57 cm above the table, and its lip is a 1.5 mm plate 3.2 cm long sloping down at 7 degrees from the floor to the table. A handle (8 x 2 x 1.6 cm, underside 2.4 cm up) sticks out of the back wall toward -y, to y -20.3. Hand brush: 120 g, a black 14 x 3.5 x 2.2 cm bristle block (long side along x) under a 0.8 cm wooden back with a 10 x 2 x 2.2 cm wooden handle bar on top, centred at x 28, y 20. Cubes: five orange wood cubes, 1.5 cm, 5 g each, centred at (x, y) = (24.5, 6), (27, 12.5), (29.5, 8.5), (31.5, 4.5), (33, 11), turned 17, -23, 6, 32 and -11 degrees.",
+  "scoring": "Measured at the end with a ruler, a top photo and the video. 0 if the dustpan's lip was at any point moved more than 3 cm across the table. Otherwise 0.2 per cube that lies on the pan (its centre at least 2 cm past the lip's front edge, between the side walls, on the pan's floor, not on the table) and that no gripper finger touched (finger pad within 22 mm of the cube's centre) during the trial. 1.0 needs all five, the pan resting flat on the table (within 5 mm, tilted under 10 degrees) and everything still (moving less than 1 mm) for 1 s; all five with the pan lifted or tipped scores 0.8.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Put the dustpan on its marked outline, the brush bristles-down on its outline and the five cubes on their marked spots; nothing else on the table. Cubes the brush tips over may land on any face.",
+  "fidelity": "Rigid bodies built from boxes; the brush's bristles are one rigid block, so it pushes like a squeegee instead of flexing. The lip is a 1.5 mm plate sloped at 7 degrees whose front edge is 0.3 mm above the table. Finger contact with a cube is judged by distance from the finger pads (22 mm from its centre), not contact force. Light angular damping on the parts; no contact force cap.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-4F89S5"
+}
