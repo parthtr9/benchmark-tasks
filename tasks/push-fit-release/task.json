@@ -1,0 +1,21 @@
+{
+  "title": "Release a push-fit fitting and pull the pipe out",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "plumbing",
+    "push-fit fitting",
+    "release collet",
+    "hold and pull",
+    "disassembly"
+  ],
+  "instruction": "Press the orange release collet on the brass fitting in and hold it there while you pull the copper pipe out of the fitting, then lay the pipe down flat on the table.",
+  "context": "Plumbers and heating technicians (O*NET 47-2152.00, 49-9021.00) take pipes out of push-fit fittings when re-routing or replacing a section: the fitting's grab ring bites the pipe, so the release collet has to be pressed in and held while the pipe is pulled out. One hand holds the collet, the other pulls.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). A grey base plate (9 x 14.7 x 0.8 cm) lies at x 23.5 to 32.5, y 1.5 to 16.2, held by four dark cleats 2 cm tall screwed to the table; a white wall plate (12 x 1.2 x 11 cm) stands on its far end at y 15 to 16.2. A 15 mm copper stub comes out of the wall along -y into a brass push-fit coupling (3 x 3 x 8 cm, axis 4.5 cm above the table at x 28) on a grey pedestal; the coupling's open mouth faces -y at y 2. The base, wall, stub and coupling weigh 5 kg together. An orange release collet (a square ring 5 cm wide, 3.6 cm tall, 0.5 cm thick, with a 2 cm hole) sits 0.4 cm in front of the mouth; a spring (0.4 N per mm) holds it out and it presses in 3.5 mm. A loose 15 mm copper pipe, 30 cm long, 84 g, lies along y with its end pushed 2.5 cm into the coupling (to y 4.5) and its far end (y -25.5) resting on a wooden block (3 x 2 x 3.7 cm) at y -23.5. A grab tooth inside the coupling holds the pipe in unless the collet is pressed at least 2.5 mm.",
+  "scoring": "Measured with a ruler. 0 if the fitting was at any point moved more than 5 mm. 1.0 if the pipe, after being pulled out, lies flat on the table (axis level within 10 degrees, resting on the table) with every point at least 4 cm from the coupling's mouth, and is still for 1 s; 0.75 if, after the collet was pressed, the pipe's end came at least 5 mm out of the mouth (pulled 3 cm); 0.5 if, after the collet was pressed, the pipe was pulled 5 mm; 0.25 if the collet was pressed 2.5 mm; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Press the collet and push the pipe back into the coupling to its stop (2.5 cm in), let the collet go so the tooth bites, and rest the pipe's far end on the block.",
+  "fidelity": "Rigid bodies built from boxes and cylinders. The grab ring is one tooth on a stiff slider that drops into a 3 mm groove in the pipe (a real ring's teeth bite plain pipe); while the collet, a spring slider, is pressed 2.5 mm, the task lifts the tooth, standing in for the collet's cone. The bore is square with 1.5 mm play and no O-ring. The fitting assembly is held by cleats. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-S6D5AK"
+}
