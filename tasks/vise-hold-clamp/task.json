@@ -1,0 +1,21 @@
+{
+  "title": "Hold a block in a vise while the jaw closes",
+  "category": "Impact on jobs",
+  "keywords": [
+    "machining",
+    "workholding",
+    "vise",
+    "bimanual",
+    "hold and clamp",
+    "coordination"
+  ],
+  "instruction": "Hold the wooden block upright between the vise jaws so its top stands 25 to 45 mm above the tops of the jaws, push the grey sliding jaw shut against it with the other arm, then let go of both.",
+  "context": "Machinists (O*NET 51-4041.00) hold a part at height in the open jaws of a vise with one hand and close the jaw with the other. The gap has no floor at working height, so the part drops to the base if let go early; the task needs one arm to hold steady while the other closes the clamp, then both to release in order.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Vise: grey, 6 kg, 22 x 20 cm base 1.5 cm thick centred at x 30, y -6, turned so its jaws face along x and the 7 cm gap between them opens sideways toward the right arm. Fixed jaw: 10 cm long (along y), 3 cm thick, 11.5 cm tall from the underside of the base, at x 32.5-35.5. Sliding jaw: grey, same size, at x 22.5-25.5 nearest the arms; quick-action: it slides toward the fixed jaw up to 4.5 cm and a ratchet stops it opening again, keeping about 6 N on what it has closed on. A dark push tab (3 wide, 2 thick, 13.6 tall) is fixed on its outer side, 4 cm above the jaw tops. Block: light wood, 150 g, 4 x 5 x 9 cm standing upright, its 5 cm side along x, centred at x 22, y -26.",
+  "scoring": "Measured with a ruler and a photo at the end. 0 if the vise moved 2 cm or turned 5 degrees, or the block is not between the jaws. 0.25 the block is between the jaws but not clamped (for example dropped to the base). 0.5 clamped (jaw gap within 1 mm of the block's 5 cm width, block bottom 0.5 cm or more above the base) but its top is not 2.5 to 4.5 cm above the jaw tops. 0.75 clamped with its top in that band but tilted or turned over 5 degrees. 1.0 clamped, in the band, square, both arms let go, and still for 1 s.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Open the sliding jaw fully, check the base has not shifted from its marked outline, and stand the block upright on its marked spot.",
+  "fidelity": "Rigid bodies built from boxes. The sliding jaw is a prismatic joint with a 3 N/mm spring drive; a ratchet resets its target to its most closed position each control step and adds a 2 mm preload (about 6 N) once it has closed on the block. Clamping force comes from friction only. Vise and block are loose and can be shoved. No contact force cap is enforced.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-YKC6UU"
+}
