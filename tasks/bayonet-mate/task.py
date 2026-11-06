@@ -17,7 +17,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 import numpy as np  # noqa: E402
-from partkit import PartState, Slider, on_reset, part  # noqa: E402
+from partkit import PartState, Slider, finger_points, on_reset, on_step, part  # noqa: E402
 from yam_arena.task_file import TABLE_TOP, Box  # noqa: E402
 
 SCENE = "station"
@@ -86,7 +86,7 @@ _STATE: dict = {}
 @on_reset
 def _reset_state(environment=None) -> None:
     _STATE.update(cap_z0=None, box0=None, yaw0=None, lifted=False, inserted=False, twisted=False, failed=False,
-                  recent=[])
+                  recent=[], released=False, finger_check=None)
 
 
 _reset_state()
@@ -100,6 +100,27 @@ def cap_in_box(box: PartState, cap: PartState):
     angle = (math.degrees(math.atan2(rel[1, 0], rel[0, 0])) + 90) % 180 - 90
     tilt = math.degrees(math.acos(max(-1.0, min(1.0, rel[2, 2]))))
     return c, lateral, angle, tilt
+
+
+RELEASE_GAP = 0.03
+CAP_LO, CAP_HI = np.array([-0.017, -0.017, -0.010]), np.array([0.017, 0.017, 0.030])  # cap's extent, in its frame
+
+
+@on_step
+def _fingers(environment) -> None:
+    """Released: every finger pad of both arms at least 3 cm from the cap (score() cannot see the robot)."""
+    from yam_arena.scene import object_states
+
+    try:
+        cap = object_states(environment, ["cap"])["cap"]
+        gaps = [np.linalg.norm(np.maximum(np.maximum(CAP_LO - c, c - CAP_HI), 0.0))
+                for c in (cap.to_local(p) for p in finger_points(environment))]
+        _STATE["released"] = bool(min(gaps) >= RELEASE_GAP)
+        _STATE["finger_check"] = True
+    except Exception as exc:  # noqa: BLE001 - report once; an unknown grip never counts as released
+        if _STATE["finger_check"] is None:
+            print(f"bayonet-mate: finger check unavailable: {exc!r}", flush=True)
+        _STATE["finger_check"], _STATE["released"] = False, False
 
 
 def _update(objects) -> tuple[float, bool]:
@@ -119,14 +140,16 @@ def _update(objects) -> tuple[float, bool]:
     _STATE["inserted"] |= bool(_STATE["lifted"] and inserted)
     _STATE["twisted"] |= bool(_STATE["inserted"] and centred and c[2] <= SEATED_Z + 0.0015 and abs(angle) > 45)
     locked = _STATE["twisted"] and centred and abs(angle) > 80 and abs(c[2] - SEATED_Z) < 0.0015
-    # Still: over the last second (20 control steps) the cap stayed within 1 mm and 2 degrees. A 30 g part's
-    # instantaneous velocity is too noisy in simulation to judge rest by.
+    # Still and let go: over the last second (20 control steps) the cap stayed within 1 mm and 2 degrees with both
+    # grippers at least 3 cm away. A 30 g part's instantaneous velocity is too noisy in simulation to judge rest by.
     recent = _STATE["recent"]
-    recent.append((c.copy(), abs(angle)))
+    recent.append((c.copy(), abs(angle), _STATE["released"]))
     del recent[:-20]
-    still = len(recent) == 20 and all(np.linalg.norm(p - c) < 0.001 and abs(a - abs(angle)) < 2 for p, a in recent)
-    if locked:
-        return 1.0, bool(still)
+    still = len(recent) == 20 and all(np.linalg.norm(p - c) < 0.001 and abs(a - abs(angle)) < 2 and free
+                                      for p, a, free in recent)
+    # Full score needs the cap locked, let go and still for 1 s; a locked cap still held or moving scores 0.75.
+    if locked and still:
+        return 1.0, True
     if _STATE["twisted"]:
         return 0.75, False
     if _STATE["inserted"]:
@@ -136,11 +159,13 @@ def _update(objects) -> tuple[float, bool]:
 
 def success(objects) -> bool:
     """Locked: lugs turned more than 80 degrees past the slots, cap on the socket axis, lugs against the roof's
-    underside, cap still (within 1 mm and 2 degrees over the last second), box in place; held 1 s."""
+    underside, both grippers at least 3 cm from the cap and the cap still (within 1 mm and 2 degrees) over the last
+    second, box in place; held 1 s."""
     return _update(objects)[1]
 
 
 def score(objects) -> float:
-    """0.25 cap lifted 3 cm; 0.5 lugs pushed below the roof; 0.75 turned past 45 degrees while in; 1.0 locked. 0 if the
-    box ever moved 3 cm, tilted 20 degrees or turned 20 degrees."""
+    """0.25 cap lifted 3 cm; 0.5 lugs pushed below the roof; 0.75 turned past 45 degrees while in; 1.0 locked, let go
+    (both grippers at least 3 cm from the cap) and still (within 1 mm and 2 degrees) over the last second. 0 if the box
+    ever moved 3 cm, tilted 20 degrees or turned 20 degrees."""
     return _update(objects)[0]

@@ -2,10 +2,15 @@
 
     python demo.py task.py demo_out [--max-steps 1200] [--no-record]
 
+The demo uses only what a policy could see: the fixed layout in the first camera frame (the task's constants; the run
+uses object_jitter=0), one look at the box's pose once the brace has settled (a fixed part in plain view of the
+cameras; gripping it nudges it a few mm) and its own arm commands. Everything after that look is open loop; it never
+reads the task's internal state, slider positions or the cap's depth in the socket.
 The right arm grips the cap's square head, lifts it and parks it ahead of the box with its lugs already turned to
-the slots. The left arm grips the box's long sides behind the socket. The right arm lowers the cap into the slots and,
-closed loop on the measured cap pose, pushes it 2 mm past the roof's underside against the spring, turns it 92
-degrees counterclockwise, eases off so the spring seats the lugs under the roof, and lets go.
+the slots. The left arm grips the box's long sides behind the socket. The right arm moves over the socket, takes one
+look at the box, lowers the cap into the slots, pushes it 4 mm past the roof's underside against
+the spring (2 mm more than needed, for slip in the grip), turns it 95 degrees counterclockwise against the stop, eases
+off so the spring seats the lugs under the roof, lets go, and both arms lift clear.
 Writes one MP4 per camera, setup.png (the first top-camera frame) and result.json to the output folder.
 """
 
@@ -89,14 +94,26 @@ def both(*gens):
             yield
 
 
+class Frame:
+    """A fixed object frame from the task's layout constants: what the first camera frame shows."""
+
+    def __init__(self, xy, z, yaw):
+        c, s = math.cos(yaw), math.sin(yaw)
+        self.pos = np.array([xy[0], xy[1], z], float)
+        self.rot = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1.0]])
+
+    def to_world(self, local):
+        return self.pos + self.rot @ np.asarray(local, float)
+
+
 def script(task, ctx):
     """The demo as a generator: one yield per control step."""
     from yam_arena.demo import grip_rotation
 
     L, R = ctx.left, ctx.right
     T = task
-    s0 = ctx.states()
-    cap0, box = s0["cap"], s0["socket_box"]
+    cap0 = Frame(T.CAP_XY, T.CAP.pos[2], T.CAP_YAW)
+    box = Frame(T.BOX_XY, T.BOX.pos[2], T.BOX_YAW)
     box_yaw = T.BOX_YAW
     pinch_local = grip_rotation(0.0).T @ np.array([0.0, 1.0, 0.0])
     grip_z = 0.030  # tool point above the cap origin: the pads close on the square head, clear of the barrel
@@ -119,52 +136,41 @@ def script(task, ctx):
         yield from L.set_grip(0.0, 1.2)
         yield from wait(0.3)
 
-    # 3. Over the socket, then down until the lugs sit in the slots.
+    # 3. Over the socket (from the layout), then one look at the box once the brace has settled: the box is a fixed
+    #    part in plain view of the cameras, and gripping it nudges it a few mm, more than the slots' 1 mm fit. Everything
+    #    after this look is open loop from it. Down until the lugs sit in the slots.
     sock = (T.SOCKET[0], T.SOCKET[1])
     yield from R.move(box.to_world((*sock, 0.07 + grip_z)), grip_rotation(box_yaw), 2.0)
-    yield from R.move(box.to_world((*sock, 0.022 + grip_z)), grip_rotation(box_yaw), 2.0)
+    yield from wait(1.0)
+    seen = ctx.states()["socket_box"]
+    seen_yaw = math.atan2(seen.rotation()[1, 0], seen.rotation()[0, 0])
 
-    # 4. Closed loop on the measured cap: push it 2 mm past the roof's underside, turn it 92 degrees, hold.
-    state = {"xy": np.zeros(2), "z": 0.022, "twist": 0.0}
+    def at(z, twist):
+        return seen.to_world((*sock, z + grip_z)), grip_rotation(seen_yaw + twist)
 
-    def servo(height, twist):
-        st = ctx.states()
-        b, c = st["socket_box"], st["cap"]
-        local, _, angle, _ = T.cap_in_box(b, c)
-        rel = b.rotation().T @ c.rotation()
-        angle = math.atan2(rel[1, 0], rel[0, 0])
-        dt = 1.0 / CONTROL_HZ
-        state["xy"] -= 2.0 * dt * (local[:2] - T.SOCKET)
-        # At most 5 mm/s down: a faster push rams the cap into the spring plate instead of compressing it.
-        state["z"] += float(np.clip(2.0 * dt * (height - local[2]), -0.005 * dt, 0.005 * dt))
-        state["twist"] = float(np.clip(state["twist"] + 2.0 * dt * (twist - angle), twist - 0.45, twist + 0.45))
-        yaw = math.atan2(b.rotation()[1, 0], b.rotation()[0, 0])
-        R.aim(b.to_world((*(T.SOCKET + state["xy"]), state["z"] + grip_z)), grip_rotation(yaw + state["twist"]))
-        return local[2]
+    yield from R.move(*at(0.07, 0.0), 1.0)
+    yield from R.move(*at(0.022, 0.0), 2.0)
 
+    # 4. Push the cap down slowly (5 mm/s: faster rams it into the spring plate), turn it, hold.
     # DEMO_VARIANT=no_push turns the cap without pushing it; DEMO_VARIANT=no_twist pushes and lets go unturned.
     variant = os.environ.get("DEMO_VARIANT", "")
-    pressed = T.SEATED_Z + 0.004 if variant == "no_push" else T.SEATED_Z - 0.002
-    turn = 0.0 if variant == "no_twist" else math.radians(92)
-    for _ in range(int(6.0 * CONTROL_HZ)):
-        if servo(pressed, 0.0) <= pressed + 0.0003:
-            break
-        yield
-    n = int(4.0 * CONTROL_HZ)
-    for i in range(1, n + 1):
-        u = i / n
-        servo(pressed, turn * u * u * (3 - 2 * u))
-        yield
-    for _ in range(int(0.8 * CONTROL_HZ)):
-        servo(pressed, turn)
-        yield
+    pressed = T.SEATED_Z + 0.004 if variant == "no_push" else T.SEATED_Z - 0.004
+    turn = 0.0 if variant == "no_twist" else math.radians(95)
 
-    # 5. Ease off so the spring seats the lugs against the roof, let go, and lift away.
-    for _ in range(int(1.5 * CONTROL_HZ)):
-        servo(max(T.SEATED_Z, pressed), turn)
+    z = 0.022
+    while z > pressed:
+        z = max(pressed, z - 0.005 / CONTROL_HZ)
+        R.aim(*at(z, 0.0))
         yield
+    yield from wait(0.3)
+    yield from R.move(*at(pressed, turn), 4.0)
+    yield from wait(0.8)
+
+    # 5. Ease off so the spring seats the lugs against the roof, let go, and lift both arms well clear (success needs
+    #    every finger 3 cm from the cap for its last second).
+    yield from R.move(*at(max(T.SEATED_Z, pressed), turn), 1.5)
     yield from R.set_grip(1.0, 1.0)
-    yield from R.move(R.pos + [0, 0, 0.07], R.rot, 1.5)
+    yield from R.move(R.pos + [0, 0, 0.08], R.rot, 1.5)
     if not os.environ.get("DEMO_NO_BRACE"):
         yield from L.set_grip(1.0, 0.8)
         yield from L.move(L.pos + [0, 0, 0.08], L.rot, 1.5)

@@ -19,7 +19,7 @@ the box itself.
 |---|---|
 | `task.py` | The yam_arena task file: objects, `success()` and `score()` |
 | `partkit.py` | Rigid parts built from boxes and cylinders, with spring-loaded sliders, for yam_arena task files |
-| `demo.py` | The scripted full-score demo (closed loop on the measured cap pose) |
+| `demo.py` | The scripted full-score demo (open loop from the fixed layout and one look at the box's pose; never task state) |
 
 `partkit.py` hooks `yam_arena.scene` and the embodiment's reset without modifying yam_arena, so the task runs with the
 standard `yam_arena` embodiment and `task_score` scorer.
@@ -49,9 +49,15 @@ DEMO_VARIANT=no_push python demo.py task.py out   # turn without pushing past th
 
 1. The right arm grips the cap's square head, lifts it, and holds it ahead of the box with its lugs turned to the slots.
 2. The left arm grips the box's long sides 3.5 cm behind its centre, its wrist leaning away from the right arm.
-3. The right arm lowers the cap into the slots and, closed loop on the measured cap pose, pushes it 2 mm past the
-   roof's underside (at most 5 mm/s), turns it 92 degrees counterclockwise, eases off so the spring seats the lugs
-   under the roof, and lets go.
+3. The right arm moves over the socket, waits 1 s for the brace to settle, takes one look at the box's pose, and from
+   then on works open loop: it lowers the cap into the slots, pushes it 4 mm past the roof's underside (at most
+   5 mm/s; 2 mm more than needed, for slip in the grip), turns it 95 degrees counterclockwise against the stop, eases
+   off so the spring seats the lugs under the roof, lets go, and both arms lift clear.
+
+The demo uses only what a policy could see: the fixed layout in the first camera frame (the task's constants,
+with `object_jitter=0`), one look at the box's pose once the left arm's grip has settled (the box is a fixed part in
+plain view of the cameras, and gripping it nudges it a few mm) and its own arm commands. Everything after that look is
+open loop; it never reads the task's internal state, slider positions or the cap's depth in the socket.
 
 The demo reaches 1.0 (success) in 636 steps (32 s).
 
@@ -62,7 +68,8 @@ Evaluated every control step; the score at the end of the episode counts (`SCORE
 - 0 if the box was at any point moved more than 3 cm, tilted more than 20 degrees or turned more than 20 degrees.
 - 1.0 (success, which must hold for 1 s): the cap is locked, with its axis within 3 mm of the socket centre, upright
   within 10 degrees, lugs turned more than 80 degrees from the slots and held up against the roof's underside (within
-  1.5 mm of that height), and still (within 1 mm and 2 degrees over the last second).
+  1.5 mm of that height), let go (every finger pad of both arms at least 3 cm from the cap) and still (within 1 mm
+  and 2 degrees), both over the whole last second. A locked cap still held or moving at the end scores 0.75.
 - 0.75: with the lugs pushed below the roof, the cap was turned more than 45 degrees.
 - 0.5: after being lifted, the cap was pushed in with its lugs below the roof's underside.
 - 0.25: the cap was lifted 3 cm.
