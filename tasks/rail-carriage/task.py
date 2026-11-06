@@ -84,7 +84,7 @@ _STATE: dict = {}
 
 @on_reset
 def _reset_state(environment=None) -> None:
-    _STATE.update(z0=None, rail0=None, yaw0=None, lifted=False, engaged=False, halfway=False, failed=False, recent=[])
+    _STATE.update(z0=None, rail0=None, yaw0=None, lifted=False, failed=False, recent=[])
 
 
 _reset_state()
@@ -119,19 +119,21 @@ def _update(objects) -> tuple[float, bool]:
     on = abs(c[1]) < 0.002 and abs(c[2]) < 0.0015 and abs((yaw + 90) % 180 - 90) < 5 and tilt < 5 \
         and c[0] + CARRIAGE_LEN / 2 >= OPEN_END + 0.010
     _STATE["lifted"] |= float(carriage.pos[2]) - _STATE["z0"] > 0.03
-    _STATE["engaged"] |= bool(_STATE["lifted"] and on)
-    _STATE["halfway"] |= bool(_STATE["engaged"] and on and c[0] >= 0.0)
+    # Only the lift is kept once reached; the rail milestones are judged on where the carriage is now, so a carriage
+    # that comes off the rail loses them.
+    engaged = bool(_STATE["lifted"] and on)
+    halfway = engaged and c[0] >= 0.0
     plunger_out = rail.sliders.get("plunger", 0.0) > -0.001
-    locked = _STATE["halfway"] and on and LOCK_X[0] <= c[0] <= LOCK_X[1] and plunger_out
+    locked = halfway and LOCK_X[0] <= c[0] <= LOCK_X[1] and plunger_out
     recent = _STATE["recent"]
     recent.append(c.copy())
     del recent[:-20]
     still = len(recent) == 20 and all(np.linalg.norm(p - c) < 0.001 for p in recent)
-    if locked:
-        return 1.0, bool(still)
-    if _STATE["halfway"]:
+    if locked and still:
+        return 1.0, True
+    if halfway:
         return 0.75, False
-    if _STATE["engaged"]:
+    if engaged:
         return 0.5, False
     return (0.25 if _STATE["lifted"] else 0.0), False
 
@@ -142,6 +144,7 @@ def success(objects) -> bool:
 
 
 def score(objects) -> float:
-    """0.25 carriage lifted 3 cm; 0.5 carriage on the rail; 0.75 past the rail's midpoint; 1.0 clicked past the
-    plunger against the stop. 0 if the rail ever moved 3 cm or turned 15 degrees."""
+    """At the end of the run: 1.0 clicked past the plunger against the stop and still for 1 s; 0.75 on the rail past
+    its midpoint; 0.5 on the rail; 0.25 the carriage was lifted 3 cm at some point. 0 if the rail ever moved 3 cm or
+    turned 15 degrees."""
     return _update(objects)[0]

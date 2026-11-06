@@ -61,13 +61,16 @@ The demo reaches 1.0 (success) in 858 steps (43 s).
 
 Evaluated every control step; the score at the end of the episode counts (`SCORE_OVER = "end"`).
 
+Each score below is judged on where the carriage is at the end; only the lift counts once reached, so a carriage
+that comes off the rail loses the rail credit.
+
 - 0 if the rail was at any point moved more than 3 cm or turned more than 15 degrees.
-- 1.0 (success, which must hold for 1 s): the carriage is on the rail (within 2 mm of its centreline and 1.5 mm of its
-  seated height, square within 5 degrees), between the plunger and the end stop with the plunger sprung back out, and
-  still (moving less than 1 mm over the last second).
-- 0.75: on the rail, its centre was pushed at least 6 cm from the rail's open end.
-- 0.5: it was put on the rail with at least 1 cm of it over the rail.
-- 0.25: it was lifted 3 cm.
+- 1.0 (success): the carriage is on the rail (within 2 mm of its centreline and 1.5 mm of its seated height, square
+  within 5 degrees), between the plunger and the end stop with the plunger sprung back out, and still (moving less
+  than 1 mm over the last second).
+- 0.75: it is on the rail with its centre at least 6 cm from the rail's open end.
+- 0.5: it is on the rail with at least 1 cm of it over the rail.
+- 0.25: it was lifted 3 cm at some point.
 - Otherwise 0.
 
 ## Runtime and seeds
