@@ -2,9 +2,14 @@
 
     python demo.py task.py demo_out [--max-steps 1200] [--no-record]
 
-The right arm picks the lid off its rails, lowers it into the pocket and parks. The left arm grips the base's long
-sides behind the pocket, its wrist leaning away from the right arm. The right arm then presses the middle of the lid's
-front edge, going deeper until both latches have clicked (it reads the task's latch state), and lifts away.
+The demo uses only what a policy could see: the fixed layout in the first camera frame (the task's constants; the run
+uses object_jitter=0), one look at the case's pose once the brace has settled (a fixed part in plain view of the
+cameras; gripping it nudges it) and its own arm commands. Everything after that look is open loop; it never reads the
+latch state or slider positions.
+The right arm picks the lid off its rails, lowers it into the pocket, lets go and parks. The left arm grips the base's
+long sides behind the pocket, its wrist leaning away from the right arm. The right arm then presses the middle of the
+lid's front edge slowly down to a fixed depth past where a seated lid is flush with the case rim (the latches click
+on the way), holds, and both arms let go and lift clear.
 Writes one MP4 per camera, setup.png (the first top-camera frame) and result.json to the output folder.
 """
 
@@ -88,14 +93,26 @@ def both(*gens):
             yield
 
 
+class Frame:
+    """A fixed object frame from the task's layout constants: what the first camera frame shows."""
+
+    def __init__(self, xy, z, yaw):
+        c, s = math.cos(yaw), math.sin(yaw)
+        self.pos = np.array([xy[0], xy[1], z], float)
+        self.rot = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1.0]])
+
+    def to_world(self, local):
+        return self.pos + self.rot @ np.asarray(local, float)
+
+
 def script(task, ctx):
     """The demo as a generator: one yield per control step."""
     from yam_arena.demo import grip_rotation
 
     L, R = ctx.left, ctx.right
     T = task
-    s0 = ctx.states()
-    lid0, base = s0["lid"], s0["case_base"]
+    lid0 = Frame(T.RAILS_XY, T.LID.pos[2], T.RAILS_YAW)
+    base = Frame(T.BASE_XY, T.BASE.pos[2], T.BASE_YAW)
     pinch_local = grip_rotation(0.0).T @ np.array([0.0, 1.0, 0.0])
 
     def down(yaw):
@@ -132,19 +149,32 @@ def script(task, ctx):
         yield from L.set_grip(0.0, 1.2)
         yield from wait(0.3)
 
-    # 4. Right arm presses the middle of the lid's front edge until both latches click.
+    # 4. One look at the case once the brace has settled (gripping it nudges it): the case is a fixed part in plain
+    #    view of the cameras. Everything after this is open loop from that pose. The right arm presses the middle of
+    #    the lid's front edge.
     from yam_arena.constants import PAD_TIP_PAST_TCP
+
+    yield from wait(0.5)
+    base = ctx.states()["case_base"]
+    if os.environ.get("DEMO_VARIANT") == "no_press":   # negative variant: lid placed, never pressed
+        yield from L.set_grip(1.0, 0.8)
+        yield from L.move(L.pos + [0, 0, 0.08], L.rot, 1.5)
+        return
+    base_yaw = math.atan2(base.rotation()[1, 0], base.rotation()[0, 0])
 
     lid_top = T.FLOOR_Z + T.LATCH_TRAVEL + 2 * T.LID_HALF
     over = base.to_world((0.045, 0.0, 0.06))
     yield from R.move(over, down(base_yaw), 2.0, grip=0.0)
     top = lid_top + PAD_TIP_PAST_TCP + 0.003
     yield from R.move(base.to_world((0.045, 0.0, top)), down(base_yaw), 1.2)
+    # A seated lid's top is flush with the rim, LATCH_TRAVEL below where it rests on the raised latches. Command the pad
+    # 20 mm past flush at 6 mm/s, without reading whether the latches clicked: the arm's position control gives under
+    # the latch springs' load, so the pad itself ends up only about 1 mm below flush (12 mm past leaves the lid short).
+    final = 0.003 + T.LATCH_TRAVEL + 0.020
     depth = 0.0
-    while not all(T._STATE["latched"]) and depth < 0.04:
-        depth += 0.006 / CONTROL_HZ
-        b = ctx.states()["case_base"]
-        R.aim(b.to_world((0.045, 0.0, top - depth)), grip_rotation(math.atan2(b.rotation()[1, 0], b.rotation()[0, 0])))
+    while depth < final:
+        depth = min(final, depth + 0.006 / CONTROL_HZ)
+        R.aim(base.to_world((0.045, 0.0, top - depth)), down(base_yaw))
         yield
     yield from wait(0.5)
     yield from R.move(over, R.rot, 1.0)
@@ -202,6 +232,7 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
                 frames.setdefault(cam, []).append(np.asarray(img))
 
     snap(obs)
+    base0 = ctx.states()["case_base"].pos.copy()
     steps, ended, success, info = 0, None, False, {}
     while steps < max_steps:
         try:
@@ -212,8 +243,15 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
         steps += 1
         info = res.info
         snap(res.observation)
-        if steps % 100 == 0:
-            print(f"step {steps} score {info.get('score')} latched {task._STATE['latched']}", flush=True)
+        if steps % 100 == 0 or (os.environ.get("DEMO_DEBUG") and steps % 20 == 0 and steps > 400):
+            msg = f"step {steps} score {info.get('score')} latched {task._STATE['latched']}"
+            if os.environ.get("DEMO_DEBUG"):
+                st = ctx.states()
+                b, lid = st["case_base"], st["lid"]
+                corners = [1000 * (c[2] - task.FLOOR_Z) for c in task._corner_heights(b, lid)]
+                msg += (f" base_moved_mm {1000 * np.linalg.norm(b.pos - base0):.1f} corner_gap_mm {np.round(corners, 2)}"
+                        f" lid_rel_mm {np.round(1000 * b.to_local(lid.pos), 1)} R_cmd_z_mm {1000 * ctx.right.pos[2]:.1f}")
+            print(msg, flush=True)
         if res.terminated:
             success = res.termination_reason == "success"
             break

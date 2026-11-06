@@ -16,7 +16,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 import numpy as np  # noqa: E402
-from partkit import PartState, Slider, on_reset, on_step, part, write_pose  # noqa: E402
+from partkit import PartState, Slider, finger_points, on_reset, on_step, part, write_pose  # noqa: E402
 from yam_arena.task_file import TABLE_TOP, Box  # noqa: E402
 
 SCENE = "station"
@@ -88,7 +88,8 @@ _STATE: dict = {}
 
 
 def _reset_state(environment=None) -> None:
-    _STATE.update(latched=[False, False], hold=None, lid_z0=None, lifted=False, placed=False, base0=None, failed=False)
+    _STATE.update(latched=[False, False], hold=None, lid_z0=None, lifted=False, placed=False, base0=None, failed=False,
+                  recent=[], released=False, finger_check=None)
 
 
 _reset_state()
@@ -144,6 +145,27 @@ def _on_step(environment) -> None:
                    lin_vel=base.lin_vel, ang_vel=base.ang_vel)
 
 
+RELEASE_GAP = 0.03
+LID_LO, LID_HI = np.array([-0.057, -0.032, -LID_HALF]), np.array([0.057, 0.032, LID_HALF + 0.0005])  # in its frame
+
+
+@on_step
+def _fingers(environment) -> None:
+    """Released: every finger pad of both arms at least 3 cm from the lid (score() cannot see the robot)."""
+    from yam_arena.scene import object_states
+
+    try:
+        lid = object_states(environment, ["lid"])["lid"]
+        gaps = [np.linalg.norm(np.maximum(np.maximum(LID_LO - c, c - LID_HI), 0.0))
+                for c in (lid.to_local(p) for p in finger_points(environment))]
+        _STATE["released"] = bool(min(gaps) >= RELEASE_GAP)
+        _STATE["finger_check"] = True
+    except Exception as exc:  # noqa: BLE001 - report once; an unknown grip never counts as released
+        if _STATE["finger_check"] is None:
+            print(f"snapfit-close: finger check unavailable: {exc!r}", flush=True)
+        _STATE["finger_check"], _STATE["released"] = False, False
+
+
 # -- scoring -----------------------------------------------------------------------------------------------------------
 BASE_MOVE_LIMIT = 0.03
 BASE_TILT_LIMIT = math.radians(20)
@@ -174,10 +196,17 @@ def _update(objects) -> tuple[float, bool]:
     inside = _in_pocket(base, lid)
     _STATE["placed"] |= bool(_STATE["lifted"] and inside and lid.resting())
     n = sum(_STATE["latched"])
+    # Still and let go: over the last second (20 control steps) the lid stayed within 1 mm with both grippers at least
+    # 3 cm away.
+    recent = _STATE["recent"]
+    recent.append((lid.pos.copy(), _STATE["released"]))
+    del recent[:-20]
+    still = len(recent) == 20 and all(np.linalg.norm(p - lid.pos) < 0.001 and free for p, free in recent)
     if not ok:
         return 0.0, False
-    if n == 2 and inside and _STATE["placed"]:
-        return 1.0, bool(lid.resting())
+    # Full score needs the lid latched, let go and still for 1 s; a latched lid still pressed or moving scores 0.75.
+    if n == 2 and inside and _STATE["placed"] and still:
+        return 1.0, True
     if n >= 1 and _STATE["placed"]:
         return 0.75, False
     if _STATE["placed"]:
@@ -186,11 +215,13 @@ def _update(objects) -> tuple[float, bool]:
 
 
 def success(objects) -> bool:
-    """Both latches clicked with the lid seated in the pocket, at rest, and the base still in place; held 1 s."""
+    """Both latches clicked with the lid seated in the pocket, both grippers at least 3 cm from the lid and the lid still
+    (within 1 mm) over the last second, and the base still in place; held 1 s."""
     return _update(objects)[1]
 
 
 def score(objects) -> float:
-    """0.25 lid lifted 3 cm; 0.5 lid resting in the pocket; 0.75 one latch; 1.0 both. 0 if the base ever moved 3 cm or
-    tipped 20 degrees."""
+    """0.25 lid lifted 3 cm; 0.5 lid resting in the pocket; 0.75 one latch, or both while still pressed or moving; 1.0
+    both, lid seated, let go (both grippers at least 3 cm from it) and still (within 1 mm) over the last second. 0 if
+    the base ever moved 3 cm or tipped 20 degrees."""
     return _update(objects)[0]

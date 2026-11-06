@@ -263,6 +263,27 @@ def write_pose(environment, name: str, pos, quat_xyzw, lin_vel=(0, 0, 0), ang_ve
     asset.write_root_velocity_to_sim_index(root_velocity=v)
 
 
+def finger_points(environment) -> list:
+    """Points on both arms' finger pads (world, relative to the env origin): at the TCP and at the pad tips, 6 mm
+    outside each pad face. For "released" checks in an ``on_step`` hook; score() does not see the robot."""
+    from yam_arena.constants import PAD_TIP_PAST_TCP, TCP_OFFSET
+
+    base = environment.unwrapped
+    origin = _np(base.scene.env_origins[0])
+    pts = []
+    for arm in ("left_robot", "right_robot"):
+        robot = base.scene[arm]
+        pose = _np(robot.data.body_link_pose_w)[0][list(robot.body_names).index("gripper")]
+        jp, jn = _np(robot.data.joint_pos)[0], list(robot.joint_names)
+        half_gap = max(abs(jp[jn.index(j)]) for j in ("joint7", "joint8") if j in jn)
+        r = PartState(pos=pose[:3], quat_xyzw=pose[3:7], lin_vel=np.zeros(3), ang_vel=np.zeros(3), low=np.zeros(3),
+                      high=np.zeros(3)).rotation()
+        for along in (0.0, PAD_TIP_PAST_TCP):
+            centre = pose[:3] + r @ (np.array(TCP_OFFSET) + [0.0, 0.0, along]) - origin
+            pts += [centre + r[:, 0] * side * (half_gap + 0.006) for side in (1.0, -1.0)]
+    return pts
+
+
 # -- hooking yam_arena -------------------------------------------------------------------------------------------
 
 _STEP: list = []

@@ -15,7 +15,7 @@ edge tips an unsteadied case: one arm must hold the case while the other presses
 |---|---|
 | `task.py` | The yam_arena task file: objects, latch logic, `success()` and `score()` |
 | `partkit.py` | Rigid parts built from several boxes, with spring-loaded sliders, for yam_arena task files |
-| `demo.py` | The scripted full-score demo (closed loop: it presses until the latches report a click) |
+| `demo.py` | The scripted full-score demo (open loop from the fixed layout and one look at the case's pose; never the latch state) |
 
 `partkit.py` hooks `yam_arena.scene` and the embodiment's step and reset without modifying yam_arena, so the task runs
 with the standard `yam_arena` embodiment and `task_score` scorer.
@@ -39,13 +39,20 @@ inspect-robots run --embodiment yam_arena --policy dream \
 ```bash
 python demo.py task.py demo_out                  # full score: writes demo_*_cam.mp4, setup.png, result.json
 DEMO_NO_BRACE=1 python demo.py task.py nobrace    # the same press with the left arm idle: the case tips, score 0
+DEMO_VARIANT=no_press python demo.py task.py out  # lid placed, never pressed: score 0.5
 ```
 
 1. The right arm grips the lid across its width, lifts it, turns it to the case and lowers it onto the raised latch
    plates, then lets go and parks.
 2. The left arm grips the case's long sides 3.5 cm behind its centre, its wrist leaning away from the right arm.
-3. The right arm, fingers closed, presses the middle of the lid's front edge, going deeper until both latches have
-   clicked, then lifts away and the left arm lets go.
+3. The right arm, fingers closed, presses the middle of the lid's front edge slowly (6 mm/s), commanded 20 mm past
+   where a seated lid is flush with the case rim (the arm's position control gives under the latch springs, so the
+   pad ends about 1 mm below flush), holds, then both arms let go and lift clear.
+
+The demo uses only what a policy could see: the fixed layout in the first camera frame (the task's constants,
+with `object_jitter=0`), one look at the case's pose once the left arm's grip has settled (the case is a fixed part in
+plain view of the cameras, and gripping it nudges it slightly) and its own arm commands. Everything after that look is
+open loop; it never reads the task's internal state, slider positions or the latch state.
 
 The demo reaches 1.0 in about 670 steps (34 s).
 
@@ -55,7 +62,9 @@ Evaluated every control step; the score at the end of the episode counts (`SCORE
 
 - 0 if the case base was at any point moved more than 3 cm from its start or tilted more than 20 degrees.
 - 1.0 (success, which must hold for 1 s): both latches clicked, the lid lies in the pocket (centre within 3 mm of the
-  pocket centre, turned less than 5 degrees, tilted less than 10 degrees) and is at rest.
+  pocket centre, turned less than 5 degrees, tilted less than 10 degrees), let go (every finger pad of both arms at
+  least 3 cm from the lid) and still (within 1 mm), both over the whole last second. With both latches clicked but the
+  lid still pressed or moving at the end, 0.75.
 - 0.75: one latch clicked after the lid was placed.
 - 0.5: after being lifted, the lid was set down at rest in the pocket.
 - 0.25: the lid was lifted 3 cm above its start.
