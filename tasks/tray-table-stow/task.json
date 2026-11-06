@@ -1,0 +1,22 @@
+{
+  "title": "Stow and latch a seatback tray table",
+  "category": "Safety and alignment",
+  "keywords": [
+    "aviation",
+    "cabin safety",
+    "hinged panel",
+    "latch",
+    "bimanual",
+    "hold and latch",
+    "coordination"
+  ],
+  "instruction": "Fold the tray table up against the seat back and hold it there while you flip the latch tab down over its top edge, then let go.",
+  "context": "Flight attendants (O*NET 53-2031.00) check that every tray table is stowed and latched before takeoff and landing. On a reclined seat an unlatched tray falls open, so one hand must hold it folded while the other flips the latch over its edge; a latch flipped first blocks the tray from folding.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Seatback: grey, 6 kg, 3 cm thick, 30 cm wide, its foot at x 28, leaning 10 degrees with its top toward the arms; it is 20 cm tall at the left (y 2.5 to 15, where the latch tab sits) and cut down to 14 cm at the right. Tray table: light wood, 200 g, 11 x 24 x 1.2 cm, hinged along y 5 cm up the seatback's foot, resting flat toward the arms with a 4.2 x 3 cm grip tongue at its free edge centred at y -8. It folds up to 80 degrees and leans on the seatback. Latch tab: orange, 30 g, 1.8 cm wide x 5 cm long, on a boss 18 cm up the seatback, resting flat pointing left; past 45 degrees down it snaps the rest of the way and hangs in front of the tray's top edge.",
+  "scoring": "Measured with a protractor on side and front photos. 0 if the seatback moved 3 cm or turned 10 degrees. Otherwise: 1.0 if at the end the tray is folded to 75 degrees or more, the latch tab is down 70 degrees or more, no gripper is within 3 cm of the tray, and both have been still for 1 s; 0.75 if the same but a gripper is still within 3 cm of the tray; 0.5 if the tray is at 75 degrees or more but the tab is not down (the arm is still holding it); 0.25 if the tray reached 75 degrees at some point but ends lower; 0 if it never reached 75 degrees (this includes flipping the tab first).",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Lay the tray flat toward the arms and flip the latch tab back up to horizontal pointing left. Put the seatback back on its marked outline.",
+  "fidelity": "Rigid bodies built from boxes. The tray is a revolute joint with a weak opening spring and gravity, stopping at 81.5 degrees. The tab is a revolute joint with a snap-over detent at 45 degrees (spring target switch). Once tray >= 75 and tab >= 70 degrees the latch holds: the tray's hinge drive is stiffened to 1 N m/rad aimed at 80 degrees. No contact force cap.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-984KRU"
+}
