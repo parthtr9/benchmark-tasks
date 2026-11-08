@@ -1,0 +1,21 @@
+{
+  "title": "Snap a chalk line between two pencil ticks",
+  "category": "Impact on jobs",
+  "keywords": [
+    "carpentry",
+    "layout",
+    "chalk line",
+    "bimanual",
+    "tension and pluck",
+    "coordination"
+  ],
+  "instruction": "The chalk line's hook is caught on the left edge of the plywood at the pencil tick. Snap a straight chalk line from that tick to the pencil tick on the right edge, then put the reel back on its pad and let go.",
+  "context": "Carpenters (O*NET 47-2031.00) snap a chalk line to mark a long straight cut: one hand pins the reel's nozzle on the far mark so the line is taut, the other plucks it. Plucked slack, the line leaves only a smear; pinned off the mark, it leaves a wrong line that cannot be erased.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Plywood: light wood, fixed, 20 x 44 x 1.2 cm, centred at x 30, y 0, with pencil ticks at x 30, y 20 and y -20. Hook: dark, fixed, 1.5 cm cube caught on the left edge at x 30, y 21.3, where the line starts. Reel: blue case 7 x 3.5 x 6 cm, 200 g, with a 3.5 cm nozzle sticking out of its left end at the underside, standing on a grey pad (12 x 11 x 0.4 cm, fixed) centred at x 15, y -11.5, the reel's middle at x 15, y -12. The line is a 2 mm string from the hook to the nozzle (a visual marker, no collision).",
+  "scoring": "Measured with a ruler. A snap is a gripper closing on the line within 1 cm of it and at least 6 cm from both ends, lifting it 1.5 cm or more, then opening. It is taut if a gripper was closed on the reel with the nozzle tip within 3 mm of the plywood top, otherwise it leaves a smear. A taut snap draws a chalk mark from the hook to where the nozzle was; marks were never erased. 0 if no taut snap was made, or any taut snap ended more than 15 mm from the right tick. 0.25 if a taut snap ended 3 to 15 mm from the tick (even if a good one was also made). 0.5 if a taut snap ended within 3 mm of the tick but the reel is not on its pad (middle within 2 cm) or a gripper is within 3 cm of it at the end. 1.0 if so, with the reel on its pad, let go, and still for 1 s.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Stand the reel on its pad with the nozzle toward the plywood, hook the line on the left edge at the tick, and wipe off any chalk marks.",
+  "fidelity": "Rigid boxes. The line and chalk marks are non-colliding markers; taut/pluck logic reads the reel pose and the grippers' pad positions each step. The line is taut only while a gripper holds the reel with its nozzle within 3 mm of the plywood top. No contact force cap.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-ZQ9ES3"
+}
