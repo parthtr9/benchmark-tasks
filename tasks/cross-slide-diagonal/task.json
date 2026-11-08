@@ -1,0 +1,22 @@
+{
+  "title": "Feed a cross-slide table along a 45-degree line",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "machining",
+    "manual mill",
+    "cross slide",
+    "coordinated motion",
+    "feed handles",
+    "tool use"
+  ],
+  "instruction": "Move the pointer along the scribed 45-degree line from the start dot to the end dot by working both feed handles at once, in one steady pass, then let go.",
+  "context": "Machinists and tool makers (O*NET 51-4041.00) cut a chamfer or angled slot on a manual mill by turning the saddle and cross-slide handles together, one in each hand. One axis then the other cuts a step; a stop burns the work. Unlike pressing two buttons at once, the hands share a path through time. One arm cannot reach both handles.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Mill table: dark grey base 20 x 24 x 4 cm, 15 kg, centred at x 28, y 0, with a scribed 45-degree line on its top from a green start dot (x 25, y -4) to a red end dot (x 32, y 3). Saddle bar (blue, 25 x 1.4 x 1 cm, along y) slides in x, travel 7 cm, with a 3 x 3 x 5 cm black feed handle at its left end (start x 25, y 15, top 10.4 cm above the table). Cross-slide bar (orange, 14 x 1.4 x 1 cm, along x) slides in y, travel 7 cm, with a 3 x 3 x 5 cm black handle on a rib at its right end (start x 22, y -15.5). The pointer is the crosshair where the two bars cross. Each slide is a lead screw: it holds its place under 1 N at the handle and, above that, moves against damping (about 4 N at 3 cm/s).",
+  "scoring": "Measured with a ruler and a timer. dx and dy are how far the saddle bar and the cross-slide bar have moved from the start (0 to 70 mm); e = |dx - dy| is the pointer's distance off the diagonal along an axis. 1.0: both at 68 mm or more at the end (pointer on the end dot), peak e of 8 mm or less during the pass, no stop of 2 s or longer once motion starts, the pass done within 15 s of the first 2 mm of motion, both grippers at least 3 cm from both handles, and the slides steady to 1 mm for 1 s. 0.5: on the end dot with peak e of 15 mm or less but a stop of 2 s or longer, a pass over 15 s, peak e over 8 mm, or a gripper within 3 cm of a handle. 0.25: both slides reached 35 mm with e never over 8 mm, but the pass failed after that. Otherwise 0, and 0 if the mill moved 1 cm. A violation stays: a stop, or a wide excursion, is not erased by catching up.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Wind both slides back to the start (the pointer on the green dot) and put the mill back on its marked outline.",
+  "fidelity": "Rigid bodies built from boxes. The two bars are prismatic joints on the base. The lead screws are modelled with the joints' position drives: a 1,000 N/m spring holds each slide, and its target follows the slide only when the slide is pushed more than 1 mm away (1 N breakaway), with 100 N s/m damping while it moves. The handles are push posts; turning a crank is not modelled. The bars do not carry each other, so the crosshair stands for the pointer. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-4L4KK8"
+}
