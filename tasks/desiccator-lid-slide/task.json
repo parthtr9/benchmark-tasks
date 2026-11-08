@@ -1,0 +1,21 @@
+{
+  "title": "Open a sealed desiccator and take out the sample",
+  "category": "Impact on jobs",
+  "keywords": [
+    "laboratory",
+    "desiccator",
+    "sliding seal",
+    "friction",
+    "bimanual",
+    "coordination"
+  ],
+  "instruction": "Take the sample vial out of the desiccator and stand it on the white tray. Put the desiccator's lid on the grey pad, and do not move the desiccator itself.",
+  "context": "Chemical technicians (O*NET 19-4031.00) open a desiccator by holding its base and sliding the greased ground-glass lid sideways: the seal and slight vacuum stop the lid lifting straight off, and a lid pushed alone drags the whole desiccator along the bench. One arm must hold the base while the other slides the lid.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Desiccator base: pale blue glass, 0.6 kg, 15 cm round flange with top 8 cm high, 14 cm body, two 3 cm square carrying lugs at y +-8.75 to 11.5 (3.5 cm tall), porcelain plate 1.5 cm high inside, centred x 29, y 0. Lid: glass, 0.4 kg, 15 cm flange 0.8 cm thick, 5.5 cm radius dome to 3.5 cm, dark 3.5 cm knob 3 cm tall (top 14.5 cm high). Vial: amber glass, 2.8 cm x 6 cm, 30 g, standing on the plate at x 29, y 0. Grey pad 17 x 17 cm at x 25, y -21; white tray 8 x 8 cm at x 23, y 17.",
+  "scoring": "Measured with a ruler and protractor. 0 at any time if the desiccator slid more than 15 mm, rose more than 8 mm or turned 10 degrees, the vial tipped over 30 degrees, or the lid dropped (about 2.5 cm or more) or tilted over 45 degrees; never undone. Otherwise at the end: 1.0 the vial stands upright (within 10 degrees) on the tray and the lid rests flat on the pad, both grippers open and 3 cm or more from the vial, lid and desiccator, and all three still within 1 mm for 1 s; 0.75 the same but a gripper is near or open too little or something moves; 0.5 vial on the tray and let go, lid not on the pad; 0.25 lid off the desiccator (6 cm sideways or 1 cm up) but vial not on the tray.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Put the vial on the plate, the lid on the base with its flange seated, and the desiccator on its marked outline; the pad and tray stay put.",
+  "fidelity": "Rigid boxes and cylinders. A script models the seal: while the lid is within 4.5 cm of the base axis and seated it adds 40 N down on the lid and 40 N up on the base (lid slides at about 6.6 N, base at about 2.5 N); no contact force cap is enforced.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-CN7QSX"
+}
