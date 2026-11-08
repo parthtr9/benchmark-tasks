@@ -1,0 +1,21 @@
+{
+  "title": "Wheel a loaded wheelbarrow to a line",
+  "category": "Impact on jobs",
+  "keywords": [
+    "wheelbarrow",
+    "bimanual",
+    "balance",
+    "load handling",
+    "construction",
+    "landscaping"
+  ],
+  "instruction": "Lift the wheelbarrow by both handles, wheel it forward until its wheel is on the orange line, and set it down on its legs without spilling the bricks.",
+  "context": "Construction laborers and landscapers move bricks, soil and concrete in wheelbarrows all day (O*NET 47-2061.00, 37-3011.00). The barrow must be lifted by both handles together so it balances on its single wheel and kept level while it rolls; lifted by one handle, it rolls over sideways and spills.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Wheelbarrow: a green mini wheelbarrow 36 cm long (steel frame and legs, PLA tray, 350 g) standing on its rubber wheel (6 cm across, 1.6 cm wide) and two rear legs, pointing straight ahead with its axle at x 48, y 0; its tray is 14 x 14 cm and 3 cm deep, and its two round black handle grips (2 cm across, 7 cm long) point back at the arms, 28 cm apart, centred 30.5 cm behind the axle (x 17.5, y 14 and y -14), 6 cm above the table. In the tray, four red clay bricks (6 x 3 x 3 cm, 100 g each) lie side by side across it, long side along the barrow. An orange tape line (1.2 cm wide, 20 cm long) crosses the table at x 60, 12 cm ahead of the axle.",
+  "scoring": "Measured with a tape measure, a top photo and the videos. 0 if at any time the barrow tips more than 20 degrees sideways, a brick leaves the tray, a leg slides more than 2 cm along the table, or a gripper touches the barrow anywhere but its two handle grips. Otherwise 1.0 if it ends standing on both legs with its axle within 2 cm of the line (and within 3 cm of the centreline), square within 10 degrees, every brick in the tray, both grippers at least 3 cm from it and the barrow still (moving less than 1 mm over 1 s), for 1 s; 0.75 if it was balanced on its wheel (both legs 1.5 cm up) with its axle within 2 cm of the line; 0.5 if it was wheeled 6 cm forward balanced on its wheel; 0.25 if it was balanced on its wheel; else 0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Set the barrow back on its marks (wheel on the axle mark, legs in their outlines) and lay the four bricks side by side in the tray.",
+  "fidelity": "Rigid bodies built from boxes and cylinders; the line is fixed tape. The wheel spins on a free axle (limited to 6 radians either way, about 18 cm of rolling) and rolls by contact friction; the bricks are loose. The handle grips are round, so a single pinch cannot stop the loaded barrow rolling about its handle. Contact offsets are 0.5 mm, with light angular damping on the barrow. No contact force cap is enforced in simulation.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-CS7RYB"
+}
