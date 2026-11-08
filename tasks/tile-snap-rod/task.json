@@ -1,0 +1,21 @@
+{
+  "title": "Snap a scored wall tile over a rod",
+  "category": "Impact on jobs",
+  "keywords": [
+    "tile setting",
+    "scored tile",
+    "snapping",
+    "bimanual",
+    "bending",
+    "coordination"
+  ],
+  "instruction": "The tile is scored across its middle. Snap it in two along the score over the steel rod, without lifting it off the rod, then let go.",
+  "context": "Tile and stone setters (O*NET 47-2044.00) snap scored wall tiles by laying the score over a nail or rod and pressing both halves down at once. Pressing one side only tips the whole tile on the rod. Unlike other pressing or pulling tasks, here the part is broken by bending: the two hands must hold both ends down while the middle is supported by a line.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Cutting board: plywood, 20 x 32 x 1.2 cm, centred at x 29, y 0. Rod: steel, 8 mm diameter, 14 cm long, along x at y 0 on the board (top 2.0 cm above the table). Tile: glazed ceramic wall tile, 10 x 24 x 0.7 cm, 0.38 kg, scored across its middle (along x); two 0.19 kg halves joined along the score, laid on the rod with the score 1 mm toward +y of the rod's top, so the +y end rests on the board and the -y end is raised about 1.5 cm.",
+  "scoring": "Measured with a ruler and photos. 0 if the tile never snaps, or a piece leaves the board (for good). 0.25 if it snaps with a finger within 6 cm of the score at the moment of the snap, or with the score ever more than 3 mm from the rod's top line before the snap (a ragged edge; kept for good). 0.5 if it snaps cleanly but at the end a gripper is within 3 cm of a piece, a piece is not lying on the board, or the pieces are still moving. 1.0 if it snaps cleanly, both halves lie on the board, both grippers are at least 3 cm from them, and the pieces move less than 1 mm for the last 1 s.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Put the two halves back together on the rod with the score 1 mm toward +y of the rod's top, the +y end on the board; centre the board on its outline.",
+  "fidelity": "Rigid bodies. The tile is two boxes on a hinge along the score: ends-down only, spring 6 N m/rad (about 3 N at 0.10 m from the rod to bend 3 degrees); at 3 degrees a script makes the break permanent and the hinge then swings freely to 15 degrees. The board is a 30 kg rigid body. No contact force cap.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-C9AN25"
+}
