@@ -1,0 +1,22 @@
+{
+  "title": "Strip both plates off a barbell in its rack",
+  "category": "Impact on jobs",
+  "keywords": [
+    "gym",
+    "barbell",
+    "weight plates",
+    "balance",
+    "bimanual",
+    "coordination",
+    "tip hazard"
+  ],
+  "instruction": "Strip the barbell: take both plates off it and stand each one in the plate holder on its own side, leaving the bar resting in the rack's hooks. Then let go of everything.",
+  "context": "Unlike unloading an overhang in the right order (one arm can do that), no order is safe here: a bar in rack hooks balances only while both ends carry the same load, so both plates must come off together. Exercise trainers and gym staff (O*NET 39-9031.00) strip loaded bars this way.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Rack: two fixed dark rubber J-hook posts at x 28, y +7 and -7, each a 2 cm thick open cradle 3 cm between its lips, holding the bar's axis 10 cm above the table. Bar: aluminium, 2.5 cm across, 40 cm long along y, 70 g with its red collars (5.2 cm across, 0.5 cm thick, at 10 to 10.5 cm either side of the middle) and 3 cm sleeves out to its ends; it can slide about 2 cm in the hooks. Plates: two black rubber technique plates, 14 cm across, 2.5 cm thick, 300 g, with a 5 cm bore, hanging on the sleeves against the collars, centres at x 28, y +11.75 and -11.75, 1 cm below the bar's axis (top rim 16 cm up). Plate holders: two fixed rubber blocks at x 28, y +31 and -31, 9 x 7 cm, each with a 3 cm wide slot along x, 2 cm deep, with a flared mouth, in which a plate stands on its rim.",
+  "scoring": "Measured with a ruler and photos. 0 if a bar end ever rose more than 1.5 cm above its seat, the bar ever rose 1.2 cm or moved 1.2 cm forward or back at a hook (out of its cradle), the bar ever slid 3 cm along y, or a plate's lowest point ever fell 3 cm while no gripper held it (these are never undone). Otherwise: 0.25 one plate is off the bar (centre 21.25 cm or more from the bar's middle) and standing in its holder while the other is still on the bar; 0.5 both plates are off the bar and the bar is seated in its hooks (within 1 cm of its start), but a plate is not standing upright (within 12 degrees) on its holder's slot floor; 0.75 both plates stand in their holders and the bar is seated, but a gripper is within 3 cm of a plate or the bar, or things are not still; 1.0 all of that, with grippers 3 cm clear and the bar and plates still within 1 mm for the last 1 s.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Hang a plate on each sleeve against its collar, lay the bar in both cradles, and set the two holders on their marked outlines.",
+  "fidelity": "Rigid bodies (friction 0.5): the plates are rings of boxes around a real bore. The bar is short and light so that one plate a side overbalances it, as two or three heavy plates do on a full-size bar. Plates are 300 g, within the arms' clean payload. No contact force cap is enforced.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-F6D2SN"
+}
