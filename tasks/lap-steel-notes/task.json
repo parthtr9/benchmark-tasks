@@ -1,0 +1,22 @@
+{
+  "title": "Play three notes on a lap steel guitar with the tone bar",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "lap steel guitar",
+    "tone bar",
+    "pluck",
+    "pitch",
+    "musician",
+    "instrument play-test"
+  ],
+  "instruction": "Play the three notes on the tab card, in order, on the lap steel guitar's first string: for each one lay the steel tone bar across the strings over the neck dot of the card's colour and pluck the string, letting the note ring for half a second. Then put the bar back on its rest and take both hands away.",
+  "context": "Steel guitarists (O*NET 27-2042) and instrument techs who play-test a setup (49-9063) use both hands in different roles at once: the left hand moves a steel bar along the strings to set each note's pitch, the right hand plucks. A lap steel has no frets, so neither hand alone can sound a note; the bar must be on the string, over the right spot, at the moment of the pluck, and moved between notes.",
+  "setup": "Positions in cm from the midpoint between the arm bases, on the table (x forward, y left). A lap steel guitar lies flat on a low stand: wooden slab 16 x 62 cm x 5.2 cm tall (x 20-36, y -24 to 38), 6 kg. Six steel string rods 3 mm wide, 8 mm tall (top 6 cm above the table) at x 23, 25, 27, 29, 31, 33 run along y over the neck (y 10 to 36.5); nut at y 36, bridge at y -21 (scale 57 cm); painted strings continue over the body, where the fingers pass over them. Dots on the neck edge (x 35): red at fret 3 (y 26.9), green at fret 5 (y 21.7), blue at fret 7 (y 17.0), white at frets 9 and 12. Steel tone bar: 2.5 cm across, 12 cm long, with a 3 x 3 x 3 cm aluminium handle block on top at its middle, 200 g in all, on a felt two-post rest with side cheeks at x 27.5, y 45 (centre 7.25 cm high). Tab card 8 x 10 cm at x 42-50, y -5 to 5, with red, green and blue dots from the left. String 1 (x 23) is tuned to E4.",
+  "scoring": "Scripted music rules, checked every control step. A pluck is a gripper's pad tip crossing a string's line within y -17 to -11 cm, 5.4 to 6.8 cm above the table, at 3 cm/s or more. Pitch: if the bar's underside is within 4 mm of string 1's top, the bar is across string 1 (axis within 20 degrees of x) and the sounding length is bridge to bar; pitch is E4 times 57 cm over that length, a named note within 40 cents (about 9-11 mm along the neck), otherwise out of tune; no bar on string 1 gives the open E4. A note sounds if the bar stays on the string for 0.5 s after the pluck. Card: G4, A4, B4. 0 at once and for the rest of the trial if any sounded note is not the next one on the card (open E, out of tune, a fourth note, or any other string plucked), the bar falls below 4 cm, a gripper pad tip goes down to the guitar surface, or the guitar moves 1 cm. Otherwise 0.25 after the first note, 0.5 after the second, 0.75 after the third, and 1.0 once the bar also lies on its rest (within 1 cm, 5 mm in height), every gripper point is 3 cm clear of the bar and the strings, and the bar moved under 1 mm for 1 s. 0 if no note sounded.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Lay the bar on its rest, leave the guitar and card where they are.",
+  "fidelity": "Rigid boxes and a cylinder. Strings are physical rods only over the neck where the bar rides; near the bridge they are painted and the grippers pass over them. Pluck, pitch and notes are scripted rules from joint-angle gripper positions and the bar pose; there is no sound, tuner or string dynamics. String spacing is widened to 20 mm.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-UMKMKA"
+}
