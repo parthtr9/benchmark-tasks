@@ -1,0 +1,23 @@
+{
+  "title": "Buck a log with a two-person crosscut saw",
+  "category": "Impact on jobs",
+  "keywords": [
+    "crosscut saw",
+    "bucking",
+    "forestry",
+    "bimanual",
+    "pull stroke",
+    "timber",
+    "coordination",
+    "tool use"
+  ],
+  "instruction": "Saw through the log at the chalk mark with the two-person crosscut saw, one hand on each handle, then let go of the saw. The thin blade can only be pulled: it kinks if either handle pushes it.",
+  "context": "Forest and conservation workers and trail-crew sawyers (O*NET 45-4011.00) buck logs with a two-person crosscut saw. Its thin blade cuts on the pull and buckles if pushed, so the two sawyers pull it in turn from opposite ends while the other lets their end follow; one person cannot return the blade without pushing it.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Sawbuck: dark brown wood base 22 x 20 x 2 cm with two chocks, fixed in place with the log, 20 kg in all, centred at x 30, y 0. Log: pine, 10 cm across and 16 cm long, lying along x at x 22 to 38 on the base (top 12 cm above the table), cut in two halves by an 8 mm starter kerf at x 30 that has two white chalk strips across the log either side of it. Saw: spring-steel blade 50 cm long, 6 cm tall and 1.5 mm thick (400 g), lying along y in the kerf, centred at y 0, 10 to 16 cm above the table. At each end a vertical beech handle (3 cm across, 8 cm tall, 120 g) is joined by a thin link that gives 8 cm of play: the handles are centred at x 30, y 32.5 and y -32.5, 11 to 19 cm above the table. The blade can travel 10 cm either way along y.",
+  "scoring": "Measured with a ruler and the videos. A stroke is the blade travelling 8 cm or more to one side (with a gripper within 3 cm of each handle); strokes alternate sides. 0 if the blade ever kinks (a handle pushing it: the blade moves away from a handle at more than 1 cm/s while that handle's link is within 3 mm of its pushing end), a gripper is ever within 1 cm of the blade, or fewer than 2 strokes are made. Otherwise 0.25 for 2-4 strokes, 0.5 for 5-7 strokes; 8 strokes cut through: 0.75 if a gripper is still within 3 cm of the saw or the saw is not still, and 1.0 if both grippers are at least 3 cm from the saw and the saw (blade and both handles) moves less than 1 mm over 1 s.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Slide the blade back to the middle of the kerf, set both handles at 32.5 cm either side of it, and close the kerf to 8 mm.",
+  "fidelity": "Rigid parts; the saw's rule is scripted: the blade follows a handle pulling at the end of its 8 cm link and is pushed by one at the other end; a push at over 1 cm/s kinks it (permanent). The blade rides on a slide, with no real cutting or drag: depth is counted per stroke (8 cut through) and the kerf widens 1 mm per stroke. No contact force cap is enforced.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-GFF4R6"
+}
