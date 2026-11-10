@@ -1,0 +1,22 @@
+{
+  "title": "Take a manual blood pressure on a training arm",
+  "category": "Impact on jobs",
+  "keywords": [
+    "bimanual",
+    "medical assisting",
+    "blood pressure",
+    "stethoscope",
+    "cuff",
+    "auscultation",
+    "healthcare"
+  ],
+  "instruction": "Take the training arm's blood pressure with the stethoscope and cuff: pump the cuff above 160 mmHg, let it down past 100 mmHg at 2 to 4 mmHg per second while listening over the red mark the whole way, let the cuff empty, then let go of everything.",
+  "context": "Medical assistants and nurses (O*NET 31-9092.00, 29-1141.00) take a manual blood pressure with two hands: one keeps the stethoscope pressed over the brachial artery while the other pumps the bulb and bleeds its valve at 2 to 4 mmHg per second. Lift the chestpiece and the sounds are lost. The robot has to work out that one hand must stay on the chestpiece for the whole fall; it is a single-patient measurement skill, not a CPR or bag task.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). A fixed training arm, a pale skin-coloured bar 9 x 48 x 5 cm (x 33, y -26 to 22), with a red 3 cm mark flush in its top at y 10. A blue cuff 10.6 x 14 x 5.8 cm wrapped on its upper part (y -22 to -8) with a 5.2 cm white dial (2 kg) on it showing the pressure with a needle, a green tick at 100 mmHg and a red tick at 160. A black pump unit (1 kg, base 9 x 16 cm, at x 24, y -20): a 5 cm rubber bulb whose 4.6 cm squeeze plate (top 7.8 cm high, 25 mm travel, 90 N/m) is at y -15.5, and a bleed valve at y -25.5 with an 8.5 x 2.6 x 1.6 cm black T-bar knob, 4.4 cm high, with friction and no return spring (it stays where it is set). A silver stethoscope chestpiece (50 g: 4.4 cm disc, 28 mm stem 5 cm high, spring-loaded diaphragm face, 400 N/m) stands in a grey 8 cm dish at x 22, y 20. Each full squeeze (12 mm or more) adds 42 mmHg; the cuff leaks 0.2 mmHg/s. The knob bleeds 10 mmHg/s per radian of turn (3 mmHg/s is about 17 degrees) and dumps at 40 mmHg/s past 52 degrees.",
+  "scoring": "From the cuff pressure and part poses at 20 Hz. The reading is the fall from 160 to 100 mmHg after the cuff was above 160; the chestpiece listens while its centre is within 15 mm of the red mark and its diaphragm is pressed in 2.5 mm or more (about 1 N; its own weight presses 1.2 mm). 0 for any flag, never above 160, or a fall faster than 6 or slower than 1 mmHg/s; flags are permanent: the cuff above 260 mmHg, the chestpiece not listening for over 1 s of the fall, pumping again during the fall, the chestpiece dropped or tipped, the pump unit moved 3 cm or turned 20 degrees. 0.25 for a listened fall at 1 to 2 or 4 to 6 mmHg/s. 0.5 for a listened fall at 2 to 4 mmHg/s but the cuff above 20 mmHg at the end, a gripper within 3 cm of the chestpiece or pump unit, or the chestpiece not upright on the arm or in the dish. 1.0 for all of that, unchanged for 1 s.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Stand the chestpiece in its dish, turn the knob open until the needle is at zero, then turn it back to closed.",
+  "fidelity": "Rigid parts with spring sliders and hinges. The cuff, its leak and bleed are a number updated at 20 Hz, with the dial needle driven from it; no tubing. Listening is scored from chestpiece placement and diaphragm press, not sound. A real bleed valve is a small thumbscrew; here it is a large friction T-bar that stays where it is set.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-YF3KRK"
+}
