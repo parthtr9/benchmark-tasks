@@ -1,0 +1,22 @@
+{
+  "title": "Light a Bunsen burner from the bench gas tap",
+  "category": "Impact on jobs",
+  "keywords": [
+    "laboratory",
+    "Bunsen burner",
+    "spark striker",
+    "gas tap",
+    "bimanual",
+    "timing",
+    "tool use"
+  ],
+  "instruction": "Light the Bunsen burner with the spark striker, using the gas tap beside it, then put the striker back in its holder and let go.",
+  "context": "Chemical technicians (O*NET 19-4031.00) light burners with a spark striker held at the mouth before the gas comes on; gas left running unlit for more than a second or two builds a cloud that flares when it lights. One hand has to work the tap while the other holds the striker ready at the mouth and sparks it.",
+  "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Burner: weighted steel Bunsen, 1.5 kg, base 9 cm across and 1.5 cm tall, barrel 1.6 cm across, mouth 15 cm above the table, at x 31, y 12. Gas tap: brass bench tap, 3 kg, 6 x 6 cm base plate, at x 25, y -15; its red lever (50 g) turns on a vertical axis 7 cm up and ends in a 2.5 x 2.5 x 3 cm dark grip block 5 cm from the axis; shut, the block is at x 30, y -15; open (a quarter turn counter-clockwise from above) it is at x 25, y -10; detents at both, about 1 N at the block. Striker: steel cup-type flint striker, 30 g, 16 cm long, two spring arms hinged at the rear with a 30 mm grip zone that closes against a 2.2 N spring to 8 mm, a 2 cm flint cup 10 cm ahead of the grip zone; it lies in a slotted dark holder at x 22, y 20 with its grip zone 6 cm up and the cup toward x.",
+  "scoring": "Measured with a ruler and a stopwatch. Gas flow is 0 until the tap lever has turned 15 degrees and rises to full at 90. A squeeze of the striker's grip zone from 22 mm or more down to 10 mm or less makes a spark; it lights the burner if the flint cup is within 2.5 cm of the mouth's centre and the flow is 0.3 or more. The flame burns while the flow is 0.2 or more. Total time with gas flowing and no flame over 1.5 s is a flare. Score 0 if there was ever a flare, the striker was dropped (fell 3 cm in 0.2 s or left the table), a gripper touched the burner's barrel or the other side's part (tap by the left gripper, striker by the right), or the burner was never lit. Otherwise 0.25 if it was lit but the flame is out at the end; 0.5 if it is burning but the striker is not back in its holder (grip zone within 1 cm of its holder position, tilted under 10 degrees) or the tap is open less than 60 degrees; 0.75 if burning with the tap 60 degrees or more open and the striker in its holder, but a gripper is within 3 cm of the striker or the tap's grip block or they have moved; 1.0 if all of that holds and the striker has not moved over 1 mm for 1 s.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Close the tap, put the striker in its holder, wait for the flame to be out and let the burner cool.",
+  "fidelity": "Rigid bodies built from boxes and cylinders. The tap is a revolute joint with a spring detent at each end. The striker's grip zone is two spring-loaded sliding pads. Gas, spark, flame and flare are computed from the lever angle, the pad gap and the cup's distance to the mouth each step; the flame is a visual marker. No contact force cap is enforced.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-63D5PF"
+}
