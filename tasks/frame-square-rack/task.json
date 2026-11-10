@@ -1,0 +1,22 @@
+{
+  "title": "Square up a racked face frame by its diagonal",
+  "category": "Impact on jobs",
+  "keywords": [
+    "cabinetmaking",
+    "face frame",
+    "squaring",
+    "diagonals",
+    "bimanual",
+    "shear",
+    "woodworking"
+  ],
+  "instruction": "The glued-up face frame on the bench is racked out of square. Make it square, so that its two corner-to-corner diagonals are equal, keep it on its outline, then let go of it.",
+  "context": "Cabinetmakers and bench carpenters (O*NET 51-7011.00, 47-2031.00) check a glued-up frame by measuring its two diagonals and squeeze the long one, pushing its two corners toward each other, before the glue sets. It differs from squaring a rigid beam between guide rails or pushing a part in evenly: here the part itself changes shape under two opposed forces on different members, and a single push only slides it.",
+  "setup": "Positions in cm from the midpoint between the arm bases, on the table (x forward, y left). Pine face frame, 0.30 kg, outer 16 deep x 30 wide: two 3 x 3 cm rails 30 cm long running left to right, near rail centred x 20.0 and far rail centred x 33.0, and two 3 cm wide, 1 cm high stiles between them at y +-13.5, with darker 3 cm corner blocks at the four rail ends. Joints are glued and stiff. The far rail starts 8 mm to the left of the near rail (y +0.8), so the diagonal from near-right to far-left is 14 mm longer than the other. Friction on the table 0.3. A yellow tape rectangle (0.4 cm wide) is stuck on the table 2 cm outside the outline of the squared frame, centred x 26.5, y 0.",
+  "scoring": "Measured with a tape and a ruler. diff = difference between the two diagonals (corner block centres) at the end. 0 at once and for good if a corner is ever lifted more than 1 cm, any outer corner leaves the tape rectangle, or the far rail is pushed 15 mm from square (joint broken open). Otherwise 0 if diff is over 8 mm, 0.25 for 5 to 8 mm, 0.5 for 2 to 5 mm, and 0.5 for 2 mm or less until both grippers are at least 3 cm from the frame and it has moved less than 1 mm for 1 s; then 1.0.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Push the far rail back 8 mm to the left of the near rail, set the frame inside the tape rectangle with its rails parallel to the tape.",
+  "fidelity": "The glued frame is a four-bar linkage modelled as one slider: the far rail slides along y on the near rail (15 mm out to the left, 0.5 mm of play past square) with 2 N of Coulomb friction, and the stiles are hinges turned to match. The stiles are 1 cm high so the open fingers clear them. Rigid parts, friction 0.3 on the table.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-JJPFLY"
+}
