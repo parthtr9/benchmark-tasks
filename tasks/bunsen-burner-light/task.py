@@ -221,19 +221,13 @@ def _near(points, dist, a, b=None) -> bool:
 
 
 def _touch(striker: PartState, tap: PartState, points) -> str | None:
-    """Which forbidden thing a gripper is touching: the burner's barrel, or the other side's part (the tap by the
-    left gripper, the striker by the right one)."""
+    """Whether a gripper is touching the burner's barrel (hot in use). Which arm works the tap and which the striker
+    is the robot's choice."""
     for side in ("left", "right"):
         for p in points.get(side, []):
             d = math.hypot(p[0] - BURNER_XY[0], p[1] - BURNER_XY[1])
             if d < BARREL_R + TOUCH / 2 and TOP + 0.015 < p[2] < TOP + MOUTH_Z + 0.02:
                 return "burner barrel"
-    pivot = tap.to_world((0.0, 0.0, TAP_Z))
-    if _near(points.get("left", []), TOUCH, pivot, tap_grip_point(tap)):
-        return "left gripper on the tap"
-    a, b = _striker_segment(striker)
-    if _near(points.get("right", []), TOUCH, a, b):
-        return "right gripper on the striker"
     return None
 
 
@@ -336,8 +330,8 @@ def success(objects) -> bool:
 
 
 def score(objects) -> float:
-    """0 if the gas ever ran more than 1.5 s unlit (flare), the striker was dropped (fell 3 cm within 0.2 s or left the table), a
-    gripper touched the burner's barrel or the other side's part, or the burner was never lit. Otherwise 0.25 the
+    """0 if the gas ever ran more than 1.5 s unlit in total (the trial's unlit-gas safety limit), the striker was dropped (fell 3 cm within 0.2 s or left the table), a
+    gripper touched the burner's barrel, or the burner was never lit. Otherwise 0.25 the
     burner was lit but the flame is out at the end; 0.5 it is burning but the striker is not in its holder or the tap
     is open less than 60 degrees; 0.75 burning, tap open 60 degrees or more and striker in its holder, but a gripper
     is within 3 cm of the striker or the tap's grip block, or they are not still; 1.0 all of that settled."""

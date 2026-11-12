@@ -16,6 +16,7 @@ striker at the mouth at once, so the gas is unlit for too long (flare) or never 
 |---|---|
 | `task.py` | The yam_arena task file: objects, the gas/spark/flame mechanism, `success()`, `score()`, `distance()` |
 | `partkit.py` | Rigid parts built from boxes, with spring-loaded sliders and hinges, for yam_arena task files (plus a visual-only part for the flame) |
+| `clearance.py` | Clearance checks between the arms and the scene, used by `demo.py` |
 | `demo.py` | The scripted full-score demo (open loop on the fixed layout and timing) and its negative variants |
 
 `partkit.py` hooks `yam_arena.scene` and the embodiment's step and reset without modifying yam_arena, so the task
@@ -67,9 +68,11 @@ Evaluated every control step; the score at the end counts (`SCORE_OVER = "end"`)
 - A squeeze of the striker's grip zone from 22 mm or more down to 10 mm or less is a spark. It lights the burner if
   the cup is within 2.5 cm of the mouth's centre and the flow is 0.3 or more. The flame burns while the flow is 0.2 or
   more and goes out below that.
-- Time with gas flowing and no flame adds up; over 1.5 s is a flare (permanent).
-- 0 if there was ever a flare, the striker was dropped (fell 3 cm within 0.2 s, or left the table), a gripper touched the
-  burner's barrel or the other side's part, or the burner was never lit. Otherwise:
+- Time with gas flowing and no flame adds up; over 1.5 s exceeds the trial's unlit-gas safety limit (permanent). It
+  is an operating limit, not a claim that a flare would occur.
+- 0 if the unlit-gas limit was ever exceeded, the striker was dropped (fell 3 cm within 0.2 s, or left the table), a
+  gripper touched the burner's barrel, or the burner was never lit. Either arm may work the tap or the striker.
+  Otherwise:
 - 0.25 the burner was lit but the flame is out at the end.
 - 0.5 burning, but the striker is not back in its holder (grip zone within 1 cm of its holder position, tilted under 10
   degrees) or the tap is open less than 60 degrees.
@@ -91,5 +94,18 @@ force cap is enforced.
 
 ## Real-world build
 
-A Bunsen burner on its base (or a weighted printed copy), a bench gas tap with a lever and a grip block, and a cup-type
-flint spark striker in a slotted holder on the bench.
+- Burner, tap and striker: a Bunsen burner on its weighted base, a brass bench gas tap with a quarter-turn lever and a
+  grip block, bolted to the table, and a cup-type flint spark striker in a slotted holder, at the setup positions.
+- Fuel: a 190 g butane/propane cartridge with a 30 mbar low-pressure regulator, standing outside the arms' reach
+  (x 60, y -40). 8 mm rubber laboratory gas tubing with worm-drive clips: 1 m from the regulator along the table's far
+  edge to the tap's inlet, 50 cm from the tap's outlet to the burner's hose barb. Leak-test every joint with soapy
+  water before the first trial.
+- Safe trial procedure: run only under a fume hood or a local extraction arm, or in a room with open cross-ventilation,
+  on a clear, non-flammable table top with nothing above the burner. A supervisor stands at the cartridge valve
+  throughout and shuts it at once if the gas runs unlit past the 1.5 s limit, if the robot knocks anything, or on any
+  doubt; the robot's emergency stop is within reach. A 60 x 60 cm polycarbonate shield stands between the burner and
+  people; a CO2 extinguisher and a fire blanket are at hand. The grippers' pads are silicone and stay below the
+  barrel's mouth.
+- The 1.5 s unlit-gas limit is the trial's operating safety threshold: at this flow it keeps the released gas far
+  below a flammable cloud. Exceeding it ends the trial with score 0; it does not mean a flare occurred.
+- Reset: close the tap, striker back in its holder, flame out, 2 minutes to cool, clips and cartridge valve checked.
