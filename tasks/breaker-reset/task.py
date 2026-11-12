@@ -35,9 +35,7 @@ SCENE = "station"
 SCORE_OVER = "end"
 TOP = TABLE_TOP[SCENE]
 
-INSTRUCTION = ("The grey cover over the breaker panel closes by itself unless held open. Hold it open with one arm and "
-               "with the other reset the breaker that has tripped: its handle sits midway between OFF and ON. Leave it "
-               "on and do not switch any other breaker off. ON is the red end of each breaker, OFF the green end.")
+INSTRUCTION = "On the de-energised training panel, reset the tripped breaker behind the grey cover and leave every breaker on. ON is the red end of each breaker."
 
 GREY = (0.55, 0.56, 0.58)
 WHITE = (0.93, 0.93, 0.93)

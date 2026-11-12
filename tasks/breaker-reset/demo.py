@@ -5,9 +5,10 @@
 The right arm closes its fingers and pushes the spring-loaded cover's tab back until the breakers are uncovered, then
 keeps its fingers against the tab, holding the cover open. The left arm closes its fingers and pushes the tripped
 breaker's (breaker 3) handle by its upper part, from the +x
-(red) side toward the -x (green) end, tracking the measured toggle position each step until the breaker is off. It backs
-off, lifts over the handle, comes down on the -x side and pushes the handle the other way, through the middle, up to
-the red end: the breaker is on. Then it lifts away and the right arm lets the cover slide shut.
+(red) side to the -x (green) end, a fixed stroke from the task file's layout, so the breaker is off. It backs off, lifts
+over the handle, comes down on the -x side and pushes the handle the other way, through the middle, up to the red end:
+the breaker is on. Then it lifts away and the right arm lets the cover slide shut. Every move is open loop on the fixed
+layout and fixed timings; the demo reads nothing from the simulator except for its debug log.
 
 Negative variants (DEMO_VARIANT=...):
   on_only         push breaker 3 straight toward ON only: the trip-free mechanism springs it back (0)
@@ -116,10 +117,22 @@ def both(*gens):
 FINGER_HALF = 0.002     # half the closed fingertips' extent along x at the pad tip (the pad is wider higher up)
 HANDLE_HALF = 0.008
 PUSH_Z = 0.027          # where on the toggle the pad tips push, above the body top (the palm sits about 4.5 mm under the TCP: keep it clear of the toggle top)
-# Settings tried in turn when a push does not take (pad tip half-width along x, push height above the body top).
-ATTEMPTS = [(0.002, 0.027), (0.004, 0.027), (0.008, 0.026), (0.010, 0.024)]
-RATE, LEAD = 0.08, 0.020  # m/s of the command along x, and how far (m) it may run ahead of the toggle (more lead, more push)
+RATE = 0.08             # m/s of the command along x while pushing a toggle
 TAB_PUSH_Z = 0.014      # where on the cover's tab the fingers push, above the plate's top
+COVER_RATE = 0.10       # m/s of the tab push
+# Toggle positions along x (m) at the start of each push, known from the task: a good breaker starts ON, the tripped one
+# in the middle, and a toggle pushed OFF rests near the OFF stop.
+START_ON, START_MID, START_OFF = 0.012, 0.0, -0.012
+
+
+class Panel:
+    """The panel's fixed placement from task.py (jitter is off): local panel coordinates to world."""
+
+    def __init__(self, task):
+        self.pos = np.array([*task.PANEL_XY, task.TOP], float)
+
+    def to_world(self, local):
+        return self.pos + np.asarray(local, float)
 
 
 def contact(panel, task, k, pos, side, off, z_extra=0.0):
@@ -136,46 +149,42 @@ def tab_point(panel, task, slide, off, z_extra=0.0):
     return np.asarray(panel.to_world(local), float)
 
 
-def open_cover(task, ctx, arm, yaw0):
-    """Generator (right arm): push the cover's tab back to COVER_HOLD, closed loop on the measured slide."""
+def open_cover(task, panel, arm, yaw0):
+    """Generator (right arm): push the cover's tab back to COVER_HOLD at a fixed rate, then dwell."""
     from yam_arena.demo import grip_rotation
 
     rot = grip_rotation(yaw0)
-    panel = ctx.states()["panel"]
     yield from arm.move(tab_point(panel, task, 0.0, 0.02, 0.045), rot, 2.0, grip=0.0)
     yield from arm.move(tab_point(panel, task, 0.0, 0.02), rot, 1.0)
     yield from arm.move(tab_point(panel, task, 0.0, 0.0), rot, 0.8)
-    cmd = 0.0
-    for _ in range(int(8 * CONTROL_HZ)):
-        s = task.cover_open(ctx.states()["panel"])
-        cmd = min(cmd + 0.10 / CONTROL_HZ, task.COVER_HOLD, s + 0.03)
-        arm.aim(tab_point(panel, task, cmd, 0.0), rot)
+    n = int(task.COVER_HOLD / COVER_RATE * CONTROL_HZ)
+    for i in range(1, n + 1):
+        arm.aim(tab_point(panel, task, task.COVER_HOLD * i / n, 0.0), rot)
         yield
-        if cmd >= task.COVER_HOLD - 1e-6 and s > task.COVER_HOLD - 0.015:
-            break
+    for _ in range(int(0.5 * CONTROL_HZ)):
+        yield
 
 
-def hold_cover(task, ctx, arm, yaw0):
+def hold_cover(task, panel, arm, yaw0):
     """One step of holding the cover open (call every step): the fingers stay at the hold position."""
     from yam_arena.demo import grip_rotation
 
-    arm.aim(tab_point(ctx.states()["panel"], task, task.COVER_HOLD + 0.003, 0.0), grip_rotation(yaw0))
+    arm.aim(tab_point(panel, task, task.COVER_HOLD + 0.003, 0.0), grip_rotation(yaw0))
 
 
-def release_cover(task, ctx, arm, yaw0):
+def release_cover(task, panel, arm, yaw0):
     """Back away from the tab and lift: the cover slides shut."""
     from yam_arena.demo import grip_rotation
 
     rot = grip_rotation(yaw0)
-    panel = ctx.states()["panel"]
     yield from arm.move(tab_point(panel, task, task.COVER_HOLD, 0.03), rot, 0.8)
     yield from arm.move(tab_point(panel, task, task.COVER_HOLD, 0.03, 0.06), rot, 0.8)
 
 
-def push(task, ctx, arm, k, side, goal, yaw0, hold=None, skim=0.0):
-    """Generator: approach the handle of breaker ``k`` from ``side``, push it (closed loop) to ``goal`` m, and back
-    away along the same side, ending clear and above. ``hold`` is called every step (the other arm holds the cover);
-    ``skim`` raises the fingers that far over the handle (the cover is shut: they ride over it)."""
+def push(task, panel, arm, k, side, start, goal, yaw0, hold=None, skim=0.0):
+    """Generator: approach the handle of breaker ``k`` (resting at ``start`` m) from ``side``, push it at a fixed rate
+    to ``goal`` m, dwell, and back away along the same side, ending clear and above. ``hold`` is called every step
+    (the other arm holds the cover); ``skim`` raises the fingers that far over the handle (the cover is shut)."""
     from yam_arena.demo import grip_rotation
 
     def step_other():
@@ -190,100 +199,73 @@ def push(task, ctx, arm, k, side, goal, yaw0, hold=None, skim=0.0):
 
     rot = grip_rotation(yaw0)
     first = [True]
-    panel = ctx.states()["panel"]
-    a0 = task.handle_pos(panel, k)
     clear = 0.02
-    yield from go(contact(panel, task, k, a0, side, clear, 0.045 + skim), 1.5)
-    yield from go(contact(panel, task, k, a0, side, clear, skim), 1.0)
-    yield from go(contact(panel, task, k, a0, side, 0.0, skim), 0.8)
-    cmd = a0
-    quiet = 0
-    for _ in range(int(6 * CONTROL_HZ)):
-        panel = ctx.states()["panel"]
-        a = task.handle_pos(panel, k)
-        quiet = quiet + 1 if abs(cmd - a) > 0.018 else 0   # the command is well ahead of a handle that is not moving
-        if quiet > 25:
-            break
-        step = RATE / CONTROL_HZ
-        cmd = min(cmd + step, goal, a + LEAD) if goal > cmd else max(cmd - step, goal, a - LEAD)
-        arm.aim(contact(panel, task, k, cmd, side, 0.0, skim), rot)
+    yield from go(contact(panel, task, k, start, side, clear, 0.045 + skim), 1.5)
+    yield from go(contact(panel, task, k, start, side, clear, skim), 1.0)
+    yield from go(contact(panel, task, k, start, side, 0.0, skim), 0.8)
+    n = max(1, int(abs(goal - start) / RATE * CONTROL_HZ))
+    for i in range(1, n + 1):
+        arm.aim(contact(panel, task, k, start + (goal - start) * i / n, side, 0.0, skim), rot)
         step_other()
         yield
-        if abs(cmd - goal) < 1e-6 and abs(a - goal) < 0.003:
-            break
-    for _ in range(int(0.4 * CONTROL_HZ)):
+    for _ in range(int(0.6 * CONTROL_HZ)):
         step_other()
         yield
-    panel = ctx.states()["panel"]
-    a = task.handle_pos(panel, k)
-    yield from go(contact(panel, task, k, a, side, clear, skim), 0.8)
-    yield from go(contact(panel, task, k, a, side, clear, 0.045 + skim), 0.8)
-
-
-def try_push(task, ctx, arm, k, side, goal, yaw0, want, hold=None, skim=0.0, fixed=None):
-    """Push breaker ``k``'s handle until its state is ``want``; if a push does not take, try the next setting."""
-    global FINGER_HALF, PUSH_Z
-    settings = [fixed] if fixed else ATTEMPTS
-    for fh, z in settings:
-        FINGER_HALF, PUSH_Z = fh, z
-        yield from push(task, ctx, arm, k, side, goal, yaw0, hold, skim)
-        if task._STATE["mode"][k] == want or skim:
-            break
+    yield from go(contact(panel, task, k, goal, side, clear, skim), 0.8)
+    yield from go(contact(panel, task, k, goal, side, clear, 0.045 + skim), 0.8)
 
 
 def script(task, ctx):
-    """The demo as a generator: one yield per control step. The right arm holds the cover open while the left arm
-    works the breakers."""
-    from yam_arena.demo import grip_rotation
-
+    """The demo as a generator: one yield per control step, open loop on the fixed layout and fixed timings. The
+    right arm holds the cover open while the left arm works the breakers."""
     T = task
     variant = os.environ.get("DEMO_VARIANT", "")
-    fixed = None
-    if variant.startswith("probe"):          # probe_<half-width mm>_<height mm>: one fixed setting, no retries
-        os.environ["DEMO_DEBUG"] = "1"
-        fh, z = (int(t.lstrip("fz")) for t in variant.split("_")[1:3])
-        fixed, variant = (fh / 1000, z / 1000), ""
-    elif variant not in ("", "on_only", "off_only", "cycle_neighbour", "wrong_off", "one_arm"):
+    if variant not in ("", "on_only", "off_only", "cycle_neighbour", "wrong_off", "one_arm"):
         raise ValueError(f"unknown DEMO_VARIANT {variant!r}")
-    panel = ctx.states()["panel"]
+    panel = Panel(T)
     L, R = ctx.left, ctx.right
     k3 = T.TRIPPED
+    k4 = 3
     yaw_l = reachable_yaw(L, contact(panel, T, k3, 0.0, 1, 0.0), 0.0)
     yaw_r = reachable_yaw(R, tab_point(panel, T, 0.0, 0.0), 0.0)
 
     # 1. The right arm pushes the cover open.
-    yield from open_cover(T, ctx, R, yaw_r)
-    hold = lambda: hold_cover(T, ctx, R, yaw_r)
+    yield from open_cover(T, panel, R, yaw_r)
+    hold = lambda: hold_cover(T, panel, R, yaw_r)
     if variant == "one_arm":
         # 2. It lets go: the cover slides shut. The left arm then rides over the cover, where the handles were.
-        yield from release_cover(T, ctx, R, yaw_r)
+        yield from release_cover(T, panel, R, yaw_r)
         yield from wait(1.0)
         hold, skim = None, 0.03
     else:
         skim = 0.0
 
-    def cycle(k):
-        yield from try_push(T, ctx, L, k, 1, -0.013, yaw_l, "off", hold, skim, fixed)
-        yield from try_push(T, ctx, L, k, -1, 0.013, yaw_l, "on", hold, skim, fixed)
+    def off(k, start, h=hold):
+        yield from push(T, panel, L, k, 1, start, -0.013, yaw_l, h, skim)
+
+    def on(k, h=hold):
+        yield from push(T, panel, L, k, -1, START_OFF, 0.013, yaw_l, h, skim)
 
     # 2. The left arm works the breakers.
     if variant == "cycle_neighbour":
-        yield from cycle(3)
+        yield from off(k4, START_ON)
+        yield from on(k4)
     if variant == "wrong_off":
-        yield from try_push(T, ctx, L, 3, 1, -0.013, yaw_l, "off", hold)
+        yield from off(k4, START_ON)
     if variant == "on_only":
-        yield from try_push(T, ctx, L, k3, -1, 0.013, yaw_l, "on", hold)
+        yield from push(T, panel, L, k3, -1, START_MID, 0.013, yaw_l, hold, skim)
     elif variant == "off_only":
-        yield from try_push(T, ctx, L, k3, 1, -0.013, yaw_l, "off", hold)
+        yield from off(k3, START_MID)
     else:
-        yield from cycle(k3)
+        yield from off(k3, START_MID)
+        yield from on(k3)
     for _ in wait(0.5):
         if hold:
             hold()
         yield
     # 3. Let go of the cover.
     if hold:
-        yield from release_cover(T, ctx, R, yaw_r)
+        yield from release_cover(T, panel, R, yaw_r)
     yield from wait(2.0)
 
 

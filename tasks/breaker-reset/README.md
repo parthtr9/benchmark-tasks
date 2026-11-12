@@ -17,7 +17,7 @@ pushed straight to ON it springs back to the middle and stays tripped, so the re
 |---|---|
 | `task.py` | The yam_arena task file: panel, toggles, cover, the breaker logic (`on_step`), `success()`, `score()`, `distance()` |
 | `partkit.py` | Rigid parts built from boxes, with spring-loaded sliders, for yam_arena task files |
-| `demo.py` | The scripted full-score demo (closed loop, both arms) and its negative variants |
+| `demo.py` | The scripted full-score demo (open loop on the fixed layout, both arms) and its negative variants |
 
 `partkit.py` hooks `yam_arena.scene` and the embodiment's step and reset without modifying yam_arena, so the task
 runs with the standard `yam_arena` embodiment and `task_score` scorer.
@@ -30,7 +30,7 @@ folder:
 ```bash
 inspect-robots run --embodiment yam_arena --policy dream \
   -E task=task.py -E object_jitter=0 -E control_hz=20 -E cam_width=320 -E cam_height=176 \
-  --instruction "The grey cover over the breaker panel closes by itself unless held open. Hold it open with one arm and with the other reset the breaker that has tripped: its handle sits midway between OFF and ON. Leave it on and do not switch any other breaker off. ON is the red end of each breaker, OFF the green end." \
+  --instruction "On the de-energised training panel, reset the tripped breaker behind the grey cover and leave every breaker on. ON is the red end of each breaker." \
   --scorer task_score --max-steps 1200 --store-frames --log-dir ~/yam-eval/breaker-dream
 ```
 
@@ -50,11 +50,11 @@ DEMO_VARIANT=one_arm python demo.py task.py one --no-record            # open th
 1. The right arm closes its fingers and pushes the cover's tab back until the toggles are uncovered, then keeps its
    fingers against the tab.
 2. The left arm, fingers closed, pushes breaker 3's toggle from its +x face to -13 mm (OFF), backs off, lifts over it,
-   comes down on the -x face and pushes it through the middle to +13 mm (ON), tracking the measured toggle position
-   each step.
+   comes down on the -x face and pushes it through the middle to +13 mm (ON), at a fixed rate with fixed
+   dwell times.
 3. The left arm lifts away and the right arm lets go: the cover slides shut.
 
-In the official simulation stack (Isaac Sim 6.1, yam_arena) the demo reaches 1.0 (success) in 322 steps (16 s). The
+In the official simulation stack (Isaac Sim 6.1, yam_arena) the demo reaches 1.0 (success) in 333 steps (17 s). The
 negative variants score: `on_only` 0.0 (the toggle springs back each time), `off_only` 0.5, `cycle_neighbour` 0.75
 (breaker 4 was off for a while), `wrong_off` 0.0 (breaker 4 left off) and `one_arm` 0.0 (the cover shuts again, and the
 left arm only rides over it).
