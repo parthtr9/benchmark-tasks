@@ -54,6 +54,10 @@ Results: in the official simulation stack (Isaac Sim 6.1, yam_arena) the demo re
 
 Evaluated every control step; the score at the end counts (`SCORE_OVER = "end"`).
 
+A clean snap is exactly two pieces, the fracture within 2 mm of the score line across the whole width, and no chip
+wider than 3 mm. In simulation the halves cannot chip, so its two causes are checked instead: a finger within 6 cm of
+the score at the snap, or the score more than 3 mm off the rod's top line before it.
+
 - 1.0 (success, which must hold for 1 s): the tile snapped (3 degrees of bend), cleanly, both halves lie on the board,
   both grippers are at least 3 cm from them, and the pieces moved less than 1 mm over the last 20 steps.
 - 0.5: clean snap, but a gripper is within 3 cm of a piece, a piece is not on the board, or something still moves.
@@ -67,10 +71,19 @@ About 1 minute per trial plus Isaac Sim start-up. The layout is fixed (`-E objec
 
 ## Fidelity
 
-Rigid bodies. Tile halves on a revolute joint (ends-down only, 6 N m/rad, snap at 3 degrees by script, then free to 15
-degrees). The board (30 kg) is a loose heavy body. No contact-force cap.
+Rigid bodies. The tile is two boxes on a hinge along the score, ends-down only, spring 6 N m/rad (about 3 N at 0.10 m from the rod bends it 3 degrees). At 3 degrees a script makes the break permanent: the halves stay joined by the hinge, whose drive is then driven toward a new target (9.7 degrees, about 1.5 N per half) so they lean down onto the board. Nothing fractures or chips, so a ragged break is judged from its causes. The board is a 30 kg rigid body. No contact force cap.
 
 ## Real-world build
 
-A 3 mm ceramic or resin tile pre-scored with a groove, a 8 mm steel rod taped to a plywood board, or a printed two-part
-tile with a breakaway rib.
+- Tile: one material and size throughout, a glazed ceramic wall tile 100 x 240 x 7 mm (0.38 kg), all tiles from the
+  same box.
+- Score: a straight groove across the middle of the glazed face, cut with a 1 mm diamond wheel on a tile saw with a
+  depth stop, 6.0 mm deep, leaving a 1.0 +- 0.1 mm web (check with a depth gauge at both edges and the middle). A
+  hand-scored 7 mm tile needs far more force than these arms have; the groove depth is what sets the break force.
+- Break-force check: snap three tiles from each prepared batch by hanging weights 10 cm from the rod on both ends;
+  they should break between 2.5 and 3.5 N per end. Adjust the web by 0.1 mm and repeat if not.
+- Rod and board: an 8 mm steel rod, 14 cm long, taped along the middle of a 20 x 32 x 1.2 cm plywood board clamped
+  to the table.
+- Judging a trial: count the pieces (exactly two), lay a ruler along the fracture (within 2 mm of the groove across
+  the whole width) and look for chips (none wider than 3 mm); then the positions as in the scoring.
+- Reset: a fresh tile from the batch for every trial.
