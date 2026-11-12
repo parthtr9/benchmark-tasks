@@ -232,7 +232,9 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
                 st = ctx.states()
                 off, dy, turn = task.tube_fit(st["tube"])
                 msg += (f" tube_mm {np.round(1000 * st['tube'].pos, 1)} off_mm {1000 * off:.1f} dy_mm {1000 * dy:.1f}"
-                        f" turn {turn:.1f} detent_mm {1000 * st['tube'].sliders.get('detent_l', 0):.2f}")
+                        f" turn {turn:.1f} detent_mm {1000 * st['tube'].sliders.get('detent_l', 0):.2f}"
+                        f" detents(miss,depth)_mm {np.round(1000 * np.array(task.detents(st['tube'])), 2).tolist()}"
+                        f" released {task.released(st['tube'])}")
             print(msg, flush=True)
         if res.terminated:
             success = res.termination_reason == "success"

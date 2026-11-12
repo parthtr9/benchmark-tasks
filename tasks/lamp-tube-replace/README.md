@@ -55,22 +55,24 @@ DEMO_ONE_ARM=1 python demo.py task.py onearm       # the right arm alone, grippi
    ends' pins are in the pockets and the end caps rest on the ledges.
 4. Both turn the tube a quarter turn together about its axis, until the plungers click into their holes.
 
-The demo reaches 1.0 (success) in 460 steps (23 s).
+The demo reaches 1.0 (success) in about 580 steps (29 s), one second after both grippers have let go.
 
 ## Scoring
 
 Evaluated every control step; the score at the end of the episode counts (`SCORE_OVER = "end"`).
 
 - 1.0 (success, which must hold for 1 s): both ends' pins are in the pockets (each end's axis within 3 mm of its
-  pocket's centre, the tube centred between the sockets within 3 mm), the tube is turned at least 75 degrees from
-  pins-upright, and it has moved less than 1 mm over the last second.
+  pocket's centre, the tube centred between the sockets within 3 mm), both spring detents have clicked into their
+  holes (each plunger's nose inside its hole, which takes the full quarter turn), both grippers are at least 3 cm from
+  the tube, and it has moved less than 1 mm over the last second. Until all of that holds the score stays at 0.75.
 - 0.75: with both ends in the pockets, it was turned at least 45 degrees.
 - 0.5: both ends' pins were put down into the pockets.
 - 0.25: the tube was lifted 3 cm.
 - Otherwise 0.
 
-The pins can't come back up the slots once the tube is turned more than about 10 degrees. The 75-degree threshold
-stands in for the full quarter turn a real holder needs before its contacts close.
+The pins can't come back up the slots once the tube is turned more than about 10 degrees. Full credit needs the
+detents to have engaged, which is what holds a real tube at its quarter turn with its contacts closed; a tube held
+turned by the grippers, or let go before the detents click, stays at 0.75.
 
 ## Runtime and seeds
 

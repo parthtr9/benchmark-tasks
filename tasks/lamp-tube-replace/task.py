@@ -16,7 +16,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 import numpy as np  # noqa: E402
-from partkit import PartState, Slider, on_reset, part  # noqa: E402
+from partkit import PartState, Slider, _np, on_reset, on_step, part  # noqa: E402
 from yam_arena.task_file import TABLE_TOP, Box  # noqa: E402
 
 SCENE = "station"
@@ -110,7 +110,7 @@ _STATE: dict = {}
 
 @on_reset
 def _reset_state(environment=None) -> None:
-    _STATE.update(z0=None, lifted=False, seated=False, turned=False, recent=[])
+    _STATE.update(z0=None, lifted=False, seated=False, turned=False, recent=[], tcps=None)
 
 
 _reset_state()
@@ -125,6 +125,56 @@ def tube_fit(tube: PartState):
     return off, float(tube.pos[1]), turn
 
 
+@on_step
+def _track_grippers(environment) -> None:
+    """Record both tool points from the arms' joint positions, so scoring can tell whether the tube is still held."""
+    from yam_arena import ik, station
+    from yam_arena.constants import ARM_JOINTS
+
+    base = environment.unwrapped
+    tcps = []
+    for scene_name, arm in (("left_robot", "left"), ("right_robot", "right")):
+        art = base.scene[scene_name]
+        ids = art.find_joints(ARM_JOINTS, preserve_order=True)[0]
+        tcps.append(ik.tcp_pose(_np(art.data.joint_pos)[0][ids], station.BASES[arm])[0])
+    _STATE["tcps"] = tcps
+
+
+RELEASE = 0.030          # both tool points at least 3 cm from the tube's axis: let go
+
+
+def released(tube: PartState) -> bool:
+    """Both tool points at least 3 cm from the tube's axis (unreadable grippers count as still holding it)."""
+    tcps = _STATE.get("tcps")
+    if not tcps:
+        return False
+    a, b = tube.to_world((0.0, -CAP_FACE, 0.0)), tube.to_world((0.0, CAP_FACE, 0.0))
+    seg = b - a
+    for t in tcps:
+        u = float(np.clip(np.dot(t - a, seg) / np.dot(seg, seg), 0.0, 1.0))
+        if float(np.linalg.norm(a + u * seg - t)) < RELEASE:
+            return False
+    return True
+
+
+def detents(tube: PartState) -> list:
+    """For each end: (how far the plunger's centre is from the nearest detent hole's centre, how far its nose reaches
+    past the socket's face into the hole), in metres. A detent is engaged when the nose is inside its hole."""
+    out = []
+    for tag, s in (("l", 1), ("r", -1)):
+        pressed = abs(float(tube.sliders.get(f"detent_{tag}", 0.0)))
+        c = tube.to_world((0.0, s * (CAP_FACE + 0.002 - pressed), DETENT_R))        # the nose's tip
+        miss = min(math.hypot(c[0] - (SOCKET_X + k * DETENT_R), c[2] - AXIS_Z) for k in (-1, 1))
+        out.append((miss, s * float(c[1]) - SOCKET_FACE))
+    return out
+
+
+def detents_engaged(tube: PartState) -> bool:
+    """Both spring plungers' noses (3 mm) have sprung into their 5 mm holes: each reaches at least 0.2 mm past the
+    socket's face (which it can only do inside a hole) with its centre within the hole (2.5 mm of its centre)."""
+    return all(miss <= 0.0025 and depth >= 0.0002 for miss, depth in detents(tube))
+
+
 def _update(objects) -> tuple[float, bool]:
     tube = objects["tube"]
     if _STATE["z0"] is None:
@@ -134,13 +184,13 @@ def _update(objects) -> tuple[float, bool]:
     _STATE["lifted"] |= float(tube.pos[2]) > _STATE["z0"] + 0.03
     _STATE["seated"] |= seated
     _STATE["turned"] |= seated and turn >= 45
-    locked = seated and turn >= 75
+    locked = seated and turn >= 75 and detents_engaged(tube)
     recent = _STATE["recent"]
     recent.append(np.r_[tube.pos, turn / 1000])
     del recent[:-20]
     still = len(recent) == 20 and all(np.abs(p - recent[-1]).max() < 0.001 for p in recent)
-    if locked:
-        return 1.0, bool(still)
+    if locked and still and released(tube):
+        return 1.0, True
     if _STATE["turned"]:
         return 0.75, False
     if _STATE["seated"]:
@@ -149,11 +199,12 @@ def _update(objects) -> tuple[float, bool]:
 
 
 def success(objects) -> bool:
-    """Both ends' pins in the socket pockets, turned at least 75 degrees so they lie across the slots, still for 1 s."""
+    """Both ends' pins in the socket pockets, turned so both spring detents have clicked into their holes, both
+    grippers off the tube, still for 1 s."""
     return _update(objects)[1]
 
 
 def score(objects) -> float:
-    """0.25 tube lifted 3 cm; 0.5 both ends' pins down in the sockets; 0.75 turned 45 degrees there; 1.0 turned 75
-    degrees (locked), still."""
+    """0.25 the tube was lifted 3 cm; 0.5 both ends' pins were put down in the sockets; 0.75 it was turned 45 degrees
+    there; 1.0 both detents engaged (which needs the full quarter turn), both grippers let go, still for 1 s."""
     return _update(objects)[0]
