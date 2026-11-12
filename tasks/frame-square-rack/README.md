@@ -23,6 +23,7 @@ let go. Cabinetmakers and bench carpenters (O*NET 51-7011.00, 47-2031.00) do exa
 | `task.py` | The yam_arena task file: frame, tape, flags, `success()`, `score()`, `distance()` |
 | `partkit.py` | Rigid parts from boxes with sliders and hinges (the far rail slider has Coulomb friction) |
 | `demo.py` | The scripted full-score demo (open loop) and its negative variants |
+| `clearance.py` | Arm-to-arm and arm-to-scene clearance checks used by `demo.py` |
 
 ## Run a trial
 
@@ -60,8 +61,26 @@ diff is the difference between the two diagonals at the end. 0 at once and for g
 for diff over 8 mm, 0.25 for 5 to 8 mm, 0.5 for 2 to 5 mm, and for 2 mm or less 0.5 until both grippers are 3 cm clear and
 the frame has moved less than 1 mm over the last 20 steps (1 s), then 1.0.
 
-## Fidelity and real-world build
+## Fidelity
 
-The glued frame is modelled as one slider: the far rail slides along y on the near rail (15 mm out to the left, 0.5 mm of play past square, where the corner blocks butt) against 2 N of Coulomb
-friction, and the 1 cm high stiles are hinges turned to follow it (low so the open fingers clear them). Friction on the
-table 0.3. In a real trial: a pine frame with wet glue, tape on the bench, a tape measure across the corners.
+The glued frame is modelled as one slider: the far rail slides along y on the near rail (15 mm out to the left, 0.5 mm
+of play past square, where the shoulders close) against 2 N of Coulomb friction, and the 1 cm high stiles are hinges
+turned to follow it (low so the open fingers clear them). Friction on the table 0.3.
+
+## Real-world build
+
+- Parts: two pine rails 30 x 3 x 3 cm and two pine stiles 3 cm wide, 1 cm high, 10 cm between shoulders, with a
+  darker 3 cm block glued on each rail end. Total 0.30 kg.
+- Joints: each stile end has a stub tenon 8 mm thick, 25 mm wide and 12 mm long, cut with square shoulders; each
+  rail has a matching mortise 12.5 mm deep with 0.2 mm clearance on the tenon's two wide faces and 1 mm at its ends,
+  so the joint can turn a few degrees until a shoulder corner bears on the rail.
+- The near-square stop: with the shoulders cut square, both shoulders of every joint sit flat on the rails when the
+  frame is square and the joints close up; the 0.2 mm clearance lets it go about 0.5 mm past square before the
+  shoulders bind. This is the stop the demo pushes against, and it is what a real glue-up has. Racked the other way
+  the joints open; 15 mm is the limit before a tenon starts to leave its mortise (scored as broken open).
+- Glue and shear resistance: a thin film of PVA wood glue on the tenons, used within its 10 minute open time, or the
+  same film of white lithium grease for repeated trials. Check before each trial with a spring scale hooked on the far
+  rail's end while the near rail is held down: the far rail should start to slide at 1.5 to 2.5 N.
+- Bench: a laminate top (friction about 0.3 against planed pine), with the yellow tape rectangle 2 cm outside the
+  squared frame's outline.
+- Reset: as in the task's reset notes; measure both diagonals with a tape measure to judge the trial.
