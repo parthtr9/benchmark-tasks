@@ -1,6 +1,6 @@
 {
   "title": "Seat a hot-swap drive carrier with its cam handle",
-  "category": "Impact on jobs",
+  "category": "Impact on AI timelines",
   "keywords": [
     "data center",
     "server maintenance",
@@ -11,7 +11,7 @@
     "servicing"
   ],
   "instruction": "Slide the blue drive carrier fully into the grey bay with its orange handle open, then swing the handle closed across the carrier's front until it latches, so the drive stays seated.",
-  "context": "Replacing hot-swap drives is routine server work (O*NET 49-2011.00, 15-1231.00): the carrier goes in with its handle open, and closing the handle levers it into the connector and latches it. Unlike board tasks where the robot moves the part directly, here it has to operate a hinged lever on the part, in the right order.",
+  "context": "Swapping failed drives is the most frequent hands-on repair in a data centre, and the storage behind AI training and inference clusters depends on it being done around the clock (O*NET 49-2011.00, 15-1231.00); automating it removes a human bottleneck on scaling compute. The carrier goes in with its handle open, and closing the handle levers it into the connector and latches it, so the robot has to operate a hinged lever on the part, in the right order.",
   "setup": "Positions in cm from the midpoint between the two arm bases, on the table (x forward, y left). Drive bay: grey PLA, 2.5 kg, open top, 14.6 x 8.6 cm footprint, mouth facing the arms at x 30, centred at y -15. It has a 0.4 cm floor, low side walls 2 cm tall with a 7.2 cm wide channel between them, a 0.6 cm back wall at 14 cm from the mouth, and a dark grey catch post (1 x 0.8 x 3.8 cm) at the mouth on the left. Drive carrier: blue PLA, 300 g, 12 x 7 x 2.2 cm, in the channel with its front face 4 cm out of the mouth. A spring plunger (2.4 x 1 cm, 0.8 N per mm, 0.9 cm travel) sticks 1.9 cm out of its rear. Handle: orange PLA bar, 9.1 x 1 x 0.8 cm, 30 g, 1 mm above the carrier's top on a vertical pin 0.6 cm behind its front face and 1 cm in from its left side. The bar reaches 7.5 cm in front of the pin, where a 1.2 x 1.2 x 2.7 cm pull tab stands on it, and 1.6 cm behind the pin (the hook). It starts open, pointing straight at the arms.",
   "scoring": "Measured with a ruler and a protractor on a top photo. f is the carrier's front face, positive inside the bay's mouth. 0 if the bay ever moved 2 cm or turned 10 degrees, or the carrier was lifted 1.2 cm off the bay floor or tilted 15 degrees. Otherwise: 1.0 if at the end the carrier is seated (f at least 0.7 cm) with the handle shut (at least 85 degrees from open), steady to 1 mm for 1 s; 0.75 if the handle reached 45 degrees with f at least -0.8 cm (hook behind the post); 0.5 if f ever reached 0.7 cm; 0.25 if f reached -0.8 cm while the handle was under 30 degrees; else 0.",
   "run_limit": "1,200 steps (1 minute at 20 Hz)",

@@ -5,7 +5,8 @@ pulled 4 cm out. An orange cam handle on a vertical pin at the carrier's front s
 The robot must slide the carrier fully in with the handle open, then swing the handle closed across the carrier's
 front until it latches.
 
-Replacing hot-swap drives is routine server work. The handle is how the drive is seated. Near the end of the
+Replacing hot-swap drives is the most frequent hands-on repair in a data centre, and the storage behind AI
+training and inference clusters depends on it; automating it removes a human bottleneck on scaling compute. The handle is how the drive is seated. Near the end of the
 carrier's travel, the hook on the handle's short end swings behind a catch post at the bay's mouth. Closing the
 handle then levers the carrier the last few millimetres in against the connector's spring and latches it. A carrier
 pushed in and let go springs back out. If the handle is closed before the carrier is in, the hook hits the front of
