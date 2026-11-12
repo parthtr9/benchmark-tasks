@@ -108,16 +108,16 @@ def script(task, ctx):
 
     L, R = ctx.left, ctx.right
     T = task
-    s0 = ctx.states()
-    far, near = s0["far_half"], s0["near_half"]
+    # Start poses come from the task file's fixed layout, not from the simulator.
     yaw = T.CASE_YAW
+    origin = np.array([*T.CASE_XY, T.TOP])
+    along = np.array([math.cos(yaw), math.sin(yaw), 0.0])   # from the near half toward the far half
     grip_z = 0.040 - 0.003   # tool point 3 mm below the top: the pads hold each half's upper sides
-    far_grip = far.to_world((T.GRIP_X, 0.0, grip_z))     # left arm
-    near_grip = near.to_world((-T.GRIP_X, 0.0, grip_z))  # right arm
+    far_grip = origin + T.GRIP_X * along + [0, 0, grip_z]    # left arm
+    near_grip = origin - T.GRIP_X * along + [0, 0, grip_z]   # right arm
     rot_l = grip_rotation(reachable_yaw(L, far_grip, yaw))
     rot_r = grip_rotation(reachable_yaw(R, near_grip, yaw))
     one_arm = bool(os.environ.get("DEMO_ONE_ARM"))  # only the right arm pulls: the other half just slides along
-    along = far.rotation()[:, 0]                    # from the near half toward the far half
     pull = 0.045                                    # each arm pulls 4.5 cm; the tongue is 2.5 cm long
 
     # 1. Both arms above their halves, down, and grip across each half's 60 mm width.

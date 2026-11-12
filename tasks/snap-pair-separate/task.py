@@ -23,8 +23,7 @@ SCENE = "station"
 SCORE_OVER = "end"
 TOP = TABLE_TOP[SCENE]
 
-INSTRUCTION = ("Hold the grey half and the blue half of the case and pull them straight apart until they come undone, "
-               "leaving both halves on the table at least 3 cm apart.")
+INSTRUCTION = "Take the grey and blue halves of the case apart and leave both on the table at least 3 cm apart."
 
 GREY = (0.55, 0.56, 0.58)
 BLUE = (0.10, 0.30, 0.90)
@@ -48,6 +47,20 @@ NEAR_BOXES = [
     _mm(-150, 0, -30, 30, 0, 40, BLUE),
     _mm(0, 9, -7, 7, 15.5, 24.5, BLUE), _mm(9, 15, -7, 5, 15.5, 24.5, BLUE), _mm(15, 25, -7, 7, 15.5, 24.5, BLUE),
 ]
+# What a moulded housing shows of how it opens: a dark parting line across the top at the seam, and on each half a
+# raised white arrow (0.6 mm) pointing away from the seam, the way battery packs and chargers mark "pull to open".
+DARK, WHITE = (0.12, 0.12, 0.13), (0.95, 0.95, 0.93)
+
+
+def _arrow(d: int) -> list:
+    """A raised arrow on the top face from 35 to 70 mm from the seam, pointing away from it (d = +1 far, -1 near):
+    a shaft and a head stepped down from 16 mm to 4 mm wide."""
+    bars = [(35, 58, 2)] + [(58 + 3 * k, 61 + 3 * k, 8 - 2 * k) for k in range(4)]
+    return [_mm(*sorted((d * x0, d * x1)), -w, w, 40, 40.6, WHITE) for x0, x1, w in bars]
+
+
+FAR_BOXES += [_mm(0, 2, -30, 30, 40, 40.4, DARK), *_arrow(1)]
+NEAR_BOXES += [_mm(-2, 0, -30, 30, 40, 40.4, DARK), *_arrow(-1)]
 # The detent: a spring plunger (a rounded 6 mm nose) in the slot's left wall, 2 mm into the slot, resting in the notch.
 # Pulling the tongue out pushes it sideways into the wall (about 3 N); it pushes sideways, along the gripper's pinch
 # axis, so it can't tip a half between the pads.

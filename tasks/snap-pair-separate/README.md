@@ -1,9 +1,10 @@
 # Pull apart a snap-together case with both hands
 
 A 30 cm printed case lies on the table, made of two halves snapped together: a tongue on the near (blue) half sits in
-a slot in the far (grey) half, held there by a spring plunger resting in a notch in the tongue. The robot must hold one
-half in each gripper and pull them straight apart until the tongue comes out, leaving both halves on the table at least
-3 cm apart.
+a slot in the far (grey) half, held there by a spring plunger resting in a notch in the tongue. Its top shows how it opens, as moulded housings
+do: a dark parting line across the seam and a raised arrow on each half pointing away from it. The instruction gives
+only the goal; the robot has to read from the part that the halves pull straight apart, and leave both on the table at
+least 3 cm apart.
 
 Opening snap-together housings (battery packs, remotes, chargers, tool cases) is the first step of many repairs. Two
 arms are needed by construction: the halves are light and loose, and the plunger holds them together far harder than
@@ -30,7 +31,7 @@ folder:
 ```bash
 inspect-robots run --embodiment yam_arena --policy dream \
   -E task=task.py -E object_jitter=0 -E control_hz=20 -E cam_width=320 -E cam_height=176 \
-  --instruction "Hold the grey half and the blue half of the case and pull them straight apart until they come undone, leaving both halves on the table at least 3 cm apart." \
+  --instruction "Take the grey and blue halves of the case apart and leave both on the table at least 3 cm apart." \
   --scorer task_score --max-steps 1200 --store-frames --log-dir ~/yam-eval/case-dream
 ```
 
