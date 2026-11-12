@@ -23,6 +23,7 @@ Demo:    python demo.py task.py demo_out
 from __future__ import annotations
 
 import math
+import os
 import pathlib
 import sys
 
@@ -36,9 +37,10 @@ SCENE = "station"
 SCORE_OVER = "end"
 TOP = TABLE_TOP[SCENE]
 
-INSTRUCTION = ("One core of this cable has failed insulation. Find it with the hand-crank insulation tester and its "
-               "red probe (the tester only reads while its handle is being cranked), push the flag beside that core "
-               "over to red, put the probe back in its holder and let go of everything.")
+INSTRUCTION = ("One core of this cable has failed insulation. Test all three cores with the hand-crank insulation "
+               "tester and its red probe before moving any flag (the tester only reads while its handle is being "
+               "cranked), then push the flag beside the failed core over to red, put the probe back in its holder and "
+               "let go of everything.")
 
 STEEL = (0.45, 0.48, 0.52)
 DARK = (0.16, 0.17, 0.19)
@@ -153,8 +155,13 @@ HOLDER = part("holder", pos=(*PROBE_XY, TOP), mass=1.0, boxes=HOLDER_BOXES, colo
 OBJECTS = [TESTER, BLOCK, PROBE, HOLDER]
 
 # -- the cores -----------------------------------------------------------------------------------------------------------
-FAULTY = 1                  # the middle core (y +0.14) reads 0.5 megohm; the others read infinity
-READING = {0: "inf", 1: "0.5 MOhm", 2: "inf"}
+# The faulty core is hidden and set per trial configuration: MEGGER_FAULTY=0, 1 or 2 (stud at y +0.06, +0.14 or
+# +0.22) in the environment before the run; 1 by default. It reads 0.5 megohm; the other two read infinity. Nothing
+# in the scene shows which one it is: only the needle does, while that core is under test.
+FAULTY = int(os.environ.get("MEGGER_FAULTY", "1"))
+if FAULTY not in (0, 1, 2):
+    raise ValueError(f"MEGGER_FAULTY must be 0, 1 or 2, got {FAULTY}")
+READING = {i: ("0.5 MOhm" if i == FAULTY else "inf") for i in range(3)}
 
 # -- scoring thresholds ----------------------------------------------------------------------------------------------------
 CONTACT_Z = 0.002           # the prod's tip within 2 mm of the stud's top
@@ -354,7 +361,7 @@ def _level(objects) -> tuple[float, bool]:
 
 
 def success(objects) -> bool:
-    """All three cores tested, only the middle flag at red, the prod back in its holder (within 1 cm and 10 degrees),
+    """All three cores tested, only the faulty core's flag at red, the prod back in its holder (within 1 cm and 10 degrees),
     both grippers at least 3 cm from the prod, the knob and the flags, and the prod, flags and crank still (within 1 mm
     / 1 degree) over the last 20 steps (1 s). Any permanent flag is a failure."""
     return _level(objects)[1]

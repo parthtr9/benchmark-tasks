@@ -2,16 +2,17 @@
 
     python demo.py task.py demo_out [--max-steps 1200] [--no-record]
 
-Open loop: the layout of the task file, timing and the arms' own commands only (the faulty core is fixed in the task
-file). The right arm closes on the tester's crank knob and turns the crank 1.5 turns per stud at about 0.6 rev/s. The
+The moves are open loop on the layout of the task file and timing; the one thing the demo reads is the tester's dial,
+from the top camera image the robot receives (red needle pixels at the infinity end of the scale while it cranks), to
+find which core is faulty. It reads no object or joint state from the simulator. The right arm closes on the tester's crank knob and turns the crank 1.5 turns per stud at about 0.6 rev/s. The
 left arm takes the prod from its holder, lowers its tip onto stud 1, 2 and 3 in turn (the crank runs only while the tip
-is down) and puts the prod back; then, fingers closed, it pushes the middle flag over to red.
+is down) and puts the prod back; then, fingers closed, it pushes the flag of the core whose reading was in the red band over to red.
 
 Negative variants (DEMO_VARIANT=...):
   one_arm      the left arm alone: probes the three studs with the crank still, puts the prod back, flags the middle (0)
   crank_only   the right arm cranks 4.5 turns, the prod stays in its holder (0)
   guess        the left arm flags the middle core without testing (0)
-  wrong_flag   everything right, but core 1 is flagged (0)
+  wrong_flag   everything right, but the flag of the next core along is pushed (0)
   no_return    everything right, but the prod is kept in the hand and used to push the middle flag (0.75)
   slow_crank   the crank turns at 0.25 rev/s (nothing is tested) (0)
   hover        the prod's tip stops 8 mm above each stud (nothing is tested) (0)
@@ -133,6 +134,29 @@ def knob_xy(T, theta):
     return np.array([T.TESTER_XY[0] - T.CRANK_R * math.sin(theta), T.TESTER_XY[1] + T.CRANK_R * math.cos(theta)])
 
 
+# The dial as the top camera (320 x 176) sees it: the tester is fixed, so the scale's infinity end is always in this
+# box of pixels (columns, rows). The needle is red; a healthy core swings it there while the crank turns.
+DIAL_INF_BOX = (201, 221, 98, 114)
+
+
+def needle_at_infinity(image) -> bool:
+    """Whether the top camera image shows the red needle at the infinity end of the dial."""
+    if image is None:
+        return False
+    x0, x1, y0, y1 = DIAL_INF_BOX
+    patch = np.asarray(image)[y0:y1, x0:x1, :3].astype(int)
+    red = (patch[..., 0] > 120) & (patch[..., 0] - patch[..., 1] > 60) & (patch[..., 0] - patch[..., 2] > 60)
+    return int(red.sum()) >= 3
+
+
+def faulty_core(healthy):
+    """The one core that did not read infinity: at least two cores read infinity for 10 steps and exactly one did
+    not. None when the camera readings do not single one out."""
+    low = [i for i, n in enumerate(healthy) if n < 5]
+    high = [i for i, n in enumerate(healthy) if n >= 10]
+    return low[0] if len(low) == 1 and len(high) == 2 else None
+
+
 def crank_profile(turns, rate, hz=CONTROL_HZ):
     """Angle offsets (rad, clockwise = negative) for a trapezoid speed profile: ramp up, cruise, ramp down."""
     cruise = max(0.0, turns / rate - RAMP)
@@ -202,7 +226,7 @@ def script(task, ctx):
 
     # -- variants that do not use the prod ------------------------------------------------------------------------
     if variant == "guess":
-        yield from flag_push(T.FAULTY, 0.0)
+        yield from flag_push(1, 0.0)                 # the middle flag, without testing anything
         return
     if variant == "crank_only":
         yield from R.move(knob_tcp + up, rot_r, 3.0, grip=1.0)
@@ -219,6 +243,7 @@ def script(task, ctx):
         return
 
     one_arm = variant == "one_arm"
+    healthy = [0, 0, 0]        # control steps the top camera saw the needle at the infinity end, per core under test
     # 1. Left over the prod, down, close; right over the knob, down, close.
     if one_arm:
         yield from L.move(tcp(probe0) + up, rot_l, 3.0, grip=1.0)
@@ -247,7 +272,11 @@ def script(task, ctx):
         if one_arm:
             yield from wait(TURNS / rate + RAMP)
         else:
-            yield from crank(TURNS)
+            # read the dial while cranking: a needle in the red band (near the 0.5 megohm mark) is the faulty core
+            for _ in crank(TURNS):
+                if needle_at_infinity(ctx.top_image()):
+                    healthy[i] += 1
+                yield
         ctx.mark(f"cranked{i + 1}")
         yield from wait(0.3)
         yield from L.move(tcp(stud_origin(i, 0.02)), rot_l, 0.6)
@@ -262,7 +291,9 @@ def script(task, ctx):
 
     if variant == "no_return":
         # keep the prod in the hand and push the middle flag with its tip
-        y = T.FLAG_XY[T.FAULTY][1]
+        found = faulty_core(healthy)
+        found = 1 if found is None else found
+        y = T.FLAG_XY[found][1]
         zt = top + 0.082                     # tip bottom just inside the tab; the hand stays within reach
         yield from both(L.move(tcp(np.array([0.318, y, transit_z])), rot_l, 2.0), right_away())
         yield from L.move(tcp(np.array([0.318, y, zt])), rot_l, 1.2)
@@ -288,7 +319,11 @@ def script(task, ctx):
     if variant in ("slow_crank", "hover"):
         yield from wait(2.0)
         return
-    yield from flag_push(0 if variant == "wrong_flag" else T.FAULTY, 0.0)
+    found = faulty_core(healthy)                                     # the core whose reading never reached infinity
+    print(f"dial: steps at infinity per core {healthy} -> faulty core {found}", flush=True)
+    if found is None:
+        return                                                         # no reading in the red band: flag nothing
+    yield from flag_push((found + 1) % 3 if variant == "wrong_flag" else found, 0.0)
 
 
 def _measured_tcp(ctx, name):
@@ -361,6 +396,13 @@ class Ctx:
         self.right = Arm("right", station.BASES["right"])
         self.events, self.min_clear, self.max_omega = [], (9.0, (), 0), 0.0
 
+    def top_image(self):
+        """The latest top-camera image the robot received."""
+        obs = getattr(self, "obs", None)
+        if obs is None:
+            return None
+        return next((img for cam, img in obs.images.items() if "top" in cam), None)
+
     def mark(self, event):
         self.events.append(event)
 
@@ -406,6 +448,7 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
                 frames.setdefault(cam, []).append(np.asarray(img))
 
     snap(obs)
+    ctx.obs = obs
     steps, ended, success, info = 0, None, False, {}
     trace, debug = [], bool(os.environ.get("DEMO_DEBUG"))
     while steps < max_steps:
@@ -417,6 +460,7 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
         steps += 1
         info = res.info
         snap(res.observation)
+        ctx.obs = res.observation
         ctx.max_omega = max(ctx.max_omega, task._STATE['omega'])
         event = ctx.events.pop(0) if ctx.events else None
         ctx.events.clear()
