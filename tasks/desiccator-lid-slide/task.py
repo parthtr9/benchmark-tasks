@@ -235,14 +235,14 @@ def _update(objects) -> tuple[float, bool]:
     if _STATE["failed"]:
         return 0.0, False
     released = bool(_STATE["released"])
-    v_ok = vial_on_tray(vial) and released
-    l_ok = lid_on_pad(lid) and released
+    v_placed, l_placed = vial_on_tray(vial), lid_on_pad(lid)
+    v_ok = v_placed and released
     recent = _STATE["recent"]
     recent.append((np.r_[vial.pos, lid.pos, base.pos], released and bool(_STATE["opened"])))
     del recent[:-STILL_CALLS]
     still = (len(recent) == STILL_CALLS and all(f for _, f in recent)
              and float(np.ptp(np.array([p for p, _ in recent]), axis=0).max()) < STILL_MM)
-    if v_ok and l_ok:
+    if v_placed and l_placed:      # both where they belong: full credit once let go and still, 0.75 until then
         return (1.0, True) if still else (0.75, False)
     if v_ok:
         return 0.5, False

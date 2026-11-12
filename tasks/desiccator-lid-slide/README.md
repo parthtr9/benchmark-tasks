@@ -59,7 +59,8 @@ Evaluated every control step; the score at the end counts (`SCORE_OVER = "end"`)
   tipped more than 30 degrees; the lid dropped (fell faster than 0.7 m/s, about 2.5 cm) or tilted over 45 degrees.
 - 1.0 (success, held 1 s): the vial upright (within 10 degrees) on the tray, the lid flat on the pad, both grippers open
   and every finger point 3 cm or more from the vial, lid and desiccator; vial, lid and desiccator within 1 mm over 20 steps.
-- 0.75: the same but a gripper is near or not open, or something moves.
+- 0.75: the vial is on the tray and the lid on the pad, but a gripper is still within 3 cm or not open, or something
+  is still moving.
 - 0.5: the vial is on the tray and let go, but the lid is not on the pad.
 - 0.25: the lid is off the desiccator (6 cm sideways or 1 cm up) but the vial is not on the tray.
 
@@ -74,4 +75,16 @@ lid slides at about 0.15 and the desiccator on the bench at about 0.25. No conta
 
 ## Real-world build
 
-A glass vacuum desiccator with a greased ground-glass flange (about 15 cm), a sample vial, a pad and a tray.
+- A 150 mm glass vacuum desiccator with a ground-glass flange and a stopcock in its lid (lid 0.4 kg, base 0.6 kg with
+  its porcelain plate), a 30 g amber sample vial, a 17 cm grey pad and an 8 cm white tray at the setup positions.
+- Bench surface: smooth laminate or a PTFE sheet under the desiccator, chosen so the sealed desiccator slides at
+  2 to 3 N (friction about 0.25); mark its outline on the surface.
+- Seal: a thin, even film of high-vacuum silicone grease on the flange; seat the lid with a quarter twist.
+- Vacuum: a hand vacuum pump with a gauge on the lid's stopcock. Draw down to 2.6 kPa (20 mmHg) below room pressure
+  and close the stopcock. Over the 14 cm bore this holds the lid down with about 40 N, the force the simulation
+  applies, so the lid cannot be lifted straight off by the arm but slides sideways.
+- Force checks before every trial, with a 10 N spring scale: pull the lid sideways by its knob while holding the
+  base, it should start to slide at 6 to 7 N; push the sealed desiccator along the bench, it should slide at 2 to
+  3 N. Re-grease or re-pump until both are in range. Sliding the lid 4.5 cm off-axis breaks the seal.
+- Reset: vial back on the plate, desiccator on its outline, re-grease if the film is broken, seat the lid, pump down,
+  close the stopcock, repeat the two force checks.
