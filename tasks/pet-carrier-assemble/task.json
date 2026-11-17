@@ -1,0 +1,25 @@
+{
+  "title": "Get a hard pet carrier ready: slide the top to its click, lock both knobs, fit the door and close its four hinges",
+  "category": "Societal relatability",
+  "keywords": [
+    "pet carrier",
+    "cat carrier",
+    "assembly",
+    "two shells",
+    "hooked tabs",
+    "slide to click",
+    "quarter-turn knob",
+    "twist hinge",
+    "door prongs",
+    "bimanual"
+  ],
+  "instruction": "Get the pet carrier ready for use: top locked onto the bottom and the door fitted and shut.",
+  "context": "About two thirds of US households keep a pet, and a hard carrier is what takes a cat or small dog to the vet; it is sold and stored as two nested shells and a loose door, and is taken apart again to be washed. Unlike a folding produce crate whose hinged walls swing up to corner catches, a picture-frame back held flush while its clips are turned, a power strip hung on keyhole studs and slid to lock (#2335), or a rabbit lifted into a carrier (#1596), here two separate shells are joined by a slide onto hooked tabs, locked by knobs that only turn once the slide is complete, and a loose door is captured by its four prongs in four twist hinges.",
+  "setup": "Positions in cm from the midpoint between the two arm bases (x forward, y to the robot's left), heights above the table. Carrier: a MidWest Spree 19 in plastic-door pet carrier, model 1419SPR-PD (published: 48 x 31.5 x 32 cm outside, 45.5 x 29.2 x 30.5 cm inside, doorway 18.2 x 19.4 cm, 0.97 kg), polypropylene, standing on its four feet with its door end toward the robot: front face at x 28, centred on y 0, back at x 76. Bottom shell (grey, 0.42 kg, loose on the table): rim 15.2 cm up with a 1.6 cm flange on each long side; a sill ledge 2.2 cm deep under the doorway with its top 6.7 cm up; a 3.8 cm knob on each front corner (centres at y +-13.5, 14 cm up), both unlocked (grip ridge upright); the two bottom door hinges at y +-8.6, open (levers pointing at the robot, 5 cm up). Top shell (red, 0.38 kg): resting on the bottom's rim at the back position, 1.1 cm behind home, its four hooked tabs standing in the four holes of the bottom's rim; its head ledge over the doorway is 27.3 to 27.7 cm up and carries the two top door hinges at y +-8.6, open (levers pointing at the robot, 28 cm up). Sliding the top forward takes about 3.7 N at the click (a sprung ridge in each side rim); each knob and each hinge turns a quarter turn against about 0.03 N m of friction. Door (light grey moulded grille, 19.4 x 20 x 1 cm, 0.12 kg, a 6 mm prong 2 cm long at each corner, 17.2 cm apart): standing upright, facing the robot, in the slot of a wooden stand (6 x 12 x 10 cm block, slot 1.1 cm wide and 3 cm deep, fixed to the table) centred at x 40, y 31, the door's bottom edge 7 cm up. The strap hooks are left off. Sizes other than the published ones are scaled from the photos in the assembly instructions.",
+  "scoring": "End state, each level including the ones before it, measured with a ruler and a photo. 0.25: the top is home on the bottom (no more than 1 mm behind its forward stop, less than 2.5 mm off to either side, the gap under its rim below 1.5 mm at all four corners, both click ridges back within 0.6 mm of their free height). 0.5: both knobs are locked (turned at least 80 of their 90 degrees, cam bars up behind the top's front wall). 0.75: the door is fitted and shut (each of its four prongs within 4.5 mm of its hinge's axis, the door within 5 mm of its seat on the sill, and all four hinges turned at least 80 of their 90 degrees to closed). 1.0: the same with both grippers at least 3 cm clear of the carrier and the door and nothing moving more than 1 mm for 1 second. 0 for good if at any point the bottom shell was moved more than 2 cm or tipped more than 5 degrees, or the top or the door left the table.",
+  "run_limit": "2,400 steps (2 minutes at 20 Hz)",
+  "reset_notes": "Turn all four door hinges to open (levers pointing out of the front) and take the door out; stand it in the stand's slot, facing the robot, the same way up. Turn both knobs back to unlocked (grip ridge upright). Slide the top back until its tabs stop at the back of their holes (1.1 cm), leaving it resting on the bottom's rim. Put the bottom shell back on its outline on the table.",
+  "fidelity": "Rigid bodies built from boxes at real size: straight 4 mm walls stand in for the tapered, ribbed shells, and each sunburst of the door is 12 bars. The click is a sprung ridge in each side rim (in the real carrier the tabs flex). Knob and hinge detents are plain friction. Only the outside, inside and doorway sizes and the weight are published; the rest is scaled from the photos in the assembly instructions. The strap hooks are left out.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-38J2HG"
+}
