@@ -3,17 +3,21 @@
     python demo.py task.py demo_out [--max-steps 1200] [--no-record]
 
 Open loop on the fixed layout and on timing only (no part pose or joint is read to steer). The left arm grips the
-striker in its holder (the spring arms held 24 mm apart, no spark), lifts it and brings its cup 15 mm above the burner's
-mouth. The right arm then takes the tap's grip block and turns it a quarter turn counter-clockwise over 1 s. From 0.6 s
-into the turn the left hand squeezes the striker (to 8 mm) and lets it go three times, 0.4 s apart: the flow is past 0.3
-by then, so the first squeeze lights the burner. The right arm lets go of the tap (it stays open in its detent) and
-lifts away; the left arm lifts the striker off the mouth, sets it back in its holder, lets go and lifts away.
+striker in its holder (the spring arms held 39 mm apart, no spark), lifts it and brings its hood 15 mm above the
+burner's mouth. The right arm then takes the tap's grip and turns it a quarter turn counter-clockwise over 1 s. From
+0.6 s into the turn the left hand squeezes the striker (to its 29 mm stop) and lets it go three times, 0.4 s apart:
+the flow is past 0.3 by then, so the first squeeze lights the burner. The right arm lets go of the tap (it stays open
+in its detent) and lifts away; the left arm lifts the striker off the mouth, sets it back in its holder, lets go and
+lifts away.
 
 Negative variants (DEMO_VARIANT=...):
   one_arm       the right arm opens the tap and lets go; nothing is brought to the mouth (0: unlit-gas limit exceeded)
   gas_first     the tap is opened first, then the striker is fetched (about 5 s of gas unlit) (0: unlit-gas limit exceeded)
   cold_strike   the striker is squeezed at the mouth with the tap shut (0: never lit)
   no_return     lit and burning, but the striker is parked on the bench instead of its holder (0.5)
+  fast_lower    as no_return, but the striker is lowered 10 cm in 0.4 s in the closed gripper on the way down (0.5:
+                a fast descent while held is not a drop; the score is 0.5 only because the striker is not in its holder)
+  release_fall  lit and burning, then the gripper opens 10 cm above the bench and the striker falls (0: dropped)
 DEMO_DEBUG=1 prints a trace every 10 steps (the minimum arm-to-arm clearance on the URDF collision meshes among them).
 Writes one MP4 per camera, setup.png (the first top-camera frame) and result.json to the output folder.
 """
@@ -112,11 +116,13 @@ def both(*gens):
             yield
 
 
-HOLD_G = 0.256          # finger opening for a 24 mm grip zone (finger travel 2 x 47 mm over g in 0..1)
-SQUEEZE_G = 0.07        # squeezes the zone to its 8 mm stop
-OPEN_G = 0.43           # 40 mm: let go of the striker
+HOLD_G = 0.416          # finger opening for a 39 mm grip zone (finger travel 2 x 47 mm over g in 0..1): no spark
+SQUEEZE_G = 0.293       # 27.5 mm: squeezes the zone onto its 29 mm stop
+OPEN_G = 0.66           # 62 mm: lets go of the striker (51 mm across its arms)
 SWING_S = 1.0           # the tap's quarter turn
-VARIANTS = ("", "one_arm", "gas_first", "cold_strike", "no_return")
+FAST_LOWER = (0.10, 0.4)    # fast_lower: metres and seconds of the held descent (25 cm/s on average)
+FALL_HEIGHT = 0.10      # release_fall: the striker is let go this far above its resting place on the bench
+VARIANTS = ("", "one_arm", "gas_first", "cold_strike", "no_return", "fast_lower", "release_fall")
 
 
 def smooth(x):
@@ -138,7 +144,7 @@ def tap_tcp(T, theta):
 
 
 def swing(T, arm, yaw0):
-    """The right hand carries the grip block round the lever's axis, the fingers turning with it."""
+    """The right hand carries the lever's grip round the lever's axis, the fingers turning with it."""
     from yam_arena.demo import grip_rotation
 
     n = round(SWING_S * CONTROL_HZ)
@@ -212,14 +218,36 @@ def script(task, ctx):
         Hands.left_holds = False
         yield from L.move(L.pos + up(0.08), rot_l, 1.0)
 
+    park = np.array([0.30, 0.26, T.TOP + 0.0105 + 0.008])      # the striker lying on the bench beside its holder
+
     def left_park():
-        park = np.array([0.30, 0.26, T.TOP + 0.0105 + 0.008])
         yield from L.move(L.pos + up(0.04), rot_l, 0.8)
         yield from L.move(park + up(0.03), rot_l, 2.0)
         yield from L.move(park + up(0.0015), rot_l, 1.5)
         yield from L.set_grip(OPEN_G, 0.8)
         Hands.left_holds = False
         yield from L.move(L.pos + up(0.08), rot_l, 1.0)
+
+    def left_fast_park():
+        drop, seconds = FAST_LOWER
+        yield from L.move(L.pos + up(0.04), rot_l, 0.8)
+        yield from L.move(park + up(0.015 + drop), rot_l, 2.0)
+        yield from wait(0.3)
+        yield from L.move(park + up(0.015), rot_l, seconds)         # the held descent: not a drop
+        yield from wait(0.3)
+        yield from L.move(park + up(0.0015), rot_l, 0.8)
+        yield from L.set_grip(OPEN_G, 0.8)
+        Hands.left_holds = False
+        yield from L.move(L.pos + up(0.08), rot_l, 1.0)
+
+    def left_release_fall():
+        yield from L.move(L.pos + up(0.04), rot_l, 0.8)
+        yield from L.move(park + up(FALL_HEIGHT), rot_l, 2.0)
+        yield from wait(0.5)
+        yield from L.set_grip(1.0, 0.3)                             # let go in mid air: the striker falls
+        Hands.left_holds = False
+        yield from wait(1.0)
+        yield from L.move(L.pos + up(0.06), rot_l, 1.0)
 
     if variant == "one_arm":
         yield from right_grab()
@@ -246,7 +274,8 @@ def script(task, ctx):
     else:
         yield from both(swing(T, R, yaw_r), _after(0.6, squeezes(L, rot_l)))
         yield from wait(0.3)
-        yield from both(right_leave(), left_park() if variant == "no_return" else left_return())
+        ending = {"no_return": left_park, "fast_lower": left_fast_park, "release_fall": left_release_fall}
+        yield from both(right_leave(), ending.get(variant, left_return)())
     yield from wait(1.5)
 
 
@@ -279,15 +308,17 @@ def _write_mp4(frames, path: Path) -> None:
 
 def held_points(ctx, task):
     """Point sets of what each hand holds, for the clearance check: the striker (bar, tail and cup, held level at the
-    left tool point) and the tap's lever (bar and grip block at the commanded angle)."""
+    left tool point) and the tap's lever (bar and grip at the commanded angle)."""
     import clearance
 
     T = task
     held_l, held_r = [], []
     if Hands.left_holds:
         c = ctx.left.pos - np.array([0, 0, 0.008])
-        held_l = np.vstack([clearance.box_points(c + [0.0375, 0, 0], (0.19, 0.016, 0.016)),
-                            clearance.box_points(c + [T.CUP_DX, 0, 0], (0.02, 0.02, 0.01))])
+        held_l = np.vstack([clearance.box_points(c + [(T.CUP_DX + T.REAR_DX) / 2, 0, 0],
+                                                 (T.CUP_DX - T.REAR_DX, 0.016, 0.016)),
+                            clearance.box_points(c, (0.03, T.OPEN_GAP, 0.02)),
+                            clearance.box_points(c + [T.CUP_DX, 0, 0], (0.024, 0.024, 0.012))])
     if Hands.right_holds:
         a, r = Hands.theta, T.LEVER_LEN
         centre = np.array([T.TAP_XY[0] + r * math.cos(a), T.TAP_XY[1] + r * math.sin(a), T.TOP + T.TAP_Z])
@@ -363,9 +394,13 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
                 st = states()
                 msg += (f" tap_deg {math.degrees(task.lever_angle(st['tap'])):.1f} gap_mm {1000 * S['gap']:.1f}"
                         f" lit {S['lit']} unlit_s {S['unlit']:.2f} over_limit {S['over_limit']} sparks {S['sparks']}"
-                        f" touched {S['touched']} dropped {S['dropped']}"
+                        f" touched {S['touched']} dropped {S['dropped']} knocked {S['knocked']}"
+                        f" held_descent_mm {1000 * S['held_descent']:.1f}"
                         f" cup_mouth_mm {1000 * float(np.linalg.norm(task.cup_point(st['striker']) - task.MOUTH)):.1f}"
                         f" striker_home {task.at_home(st['striker'])}"
+                        f" striker_mm {np.round(1000 * np.asarray(st['striker'].pos), 1)}"
+                        f" striker_x_axis {np.round(st['striker'].rotation()[:, 0], 3)}"
+                        f" burner_mm {np.round(1000 * np.asarray(st['burner'].pos), 1)}"
                         f" L_mm {np.round(1000 * ctx.left.pos, 1)} R_mm {np.round(1000 * ctx.right.pos, 1)}"
                         f" min_clear_mm {round(1000 * min_clear[0], 1)}")
                 trace.append(msg)
@@ -380,6 +415,11 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
               "worst_ik_mm": {"left": round(ctx.left.worst_mm, 2), "right": round(ctx.right.worst_mm, 2)},
               "min_arm_clearance_mm": round(1000 * min_clear[0], 1), "min_arm_clearance_pair": list(min_clear[1]),
               "min_arm_clearance_step": min_clear[2]}
+    S = task._STATE                    # logging only
+    result["state"] = {"lit": bool(S["lit"]), "lit_ever": bool(S["lit_ever"]), "sparks": int(S["sparks"]),
+                       "unlit_gas_s": round(float(S["unlit"]), 2), "over_limit": bool(S["over_limit"]),
+                       "dropped": bool(S["dropped"]), "knocked": bool(S["knocked"]), "touched": S["touched"],
+                       "fastest_held_descent_mm_in_0p2s": round(1000 * float(S["held_descent"]), 1)}
     if debug:
         result["trace"] = trace
     if record:
