@@ -8,7 +8,8 @@ turns at 0.4 rev/s or more (speed averaged over 0.5 s); its needle rests at "off
 The terminal block (fixed by weight, 3 kg) at x 0.30 carries three brass test studs (25 mm across, tops 6 cm above the
 table) at y +0.06, +0.14 and +0.22, and behind each stud a toggle flag (green upright, red 40 degrees toward the far
 side, 0.04 N m detent) at x 0.35. The red test prod (25 mm grip, 0.06 kg) stands tip-down in a holder cup with a flared
-mouth at (0.24, +0.28). The prod lead is not simulated; the tester's earth lead is already clipped to the cable armour.
+mouth at (0.24, +0.28). The prod lead is not simulated; the cable's braid screen and the tester's earth lead are
+bolted to one earth bar under the block.
 The studs are plain posts: there is nothing on them to clip a lead to.
 
 One of the three cores has failed insulation (it reads 0.5 megohm; the other two read infinity). A core is tested when

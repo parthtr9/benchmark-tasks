@@ -84,16 +84,20 @@ crank still for 1 s (20 steps).
 ## Fidelity and real-world build
 
 The test voltage, the 1 s timer, the needle and the readings are computed in code from the crank speed and the prod's
-position; the prod's lead and the earth lead are not simulated (the earth lead is already clipped to the cable armour).
+position; the screened cable, the prod's lead and the earth lead are not simulated (in a real trial the cable's braid screen and the tester's earth lead are both bolted to the earth bar under the block).
 The studs are plain posts with nothing to clip a lead to, so the prod-and-crank method is the one this block allows. In
 a real trial: a hand-crank megger, a terminal block with three test studs, a toggle flag per core, a wooden holder.
 
 ## Real-world build and trial configurations
 
-- Cable and block: 1 m of three-core 1.5 mm2 PVC flex, isolated from any supply (both ends on the bench), clamped
+- Cable and block: 1 m of three-core 1.5 mm2 braid-screened flex (CY type, tinned-copper braid over the cores),
+  isolated from any supply (both ends on the bench), clamped
   behind the wooden terminal block; each core soldered to the underside of one brass stud, its far end sleeved and
-  left open. A copper earth bar under the block is wired to the tester's earth terminal with the tester's own lead.
-- The fault: a 0.5 megohm, 1 W resistor on spade connectors under the block, from one stud to the earth bar. Healthy
+  left open. The braid screen is gathered into a pigtail at the block end and bolted to a
+  copper earth bar under the block; the tester's earth lead is bolted to the same bar, so every test is from a core to
+  the cable's earthed screen.
+- The fault: a 0.5 megohm, 1 W resistor on spade connectors under the block, from one core's stud to the earth bar, that is, between that core and the
+  screen. Healthy
   cores read over 200 megohm. Any of the three cores can be the faulty one: move the resistor between trials, out of
   the robot's sight. In simulation set `MEGGER_FAULTY=0`, `1` or `2` (default 1) before the run; the scorer checks
   the flag against that core, so the dial has to be read.
@@ -102,3 +106,12 @@ a real trial: a hand-crank megger, a terminal block with three test studs, a tog
   touches the studs while the crank turns; after each trial touch the earth lead to each stud to discharge it. The
   grippers' pads are insulating.
 - Trials: run the three configurations (faulty core 0, 1 and 2) and report the mean.
+
+## Revision notes
+
+- First review asked for: any core as the hidden faulty one, scored against the configured core; the cable, its
+  connections, fault resistance, tester voltage and isolation; the instruction to say all three cores are tested
+  first; `clearance.py`. All done: `MEGGER_FAULTY=0|1|2`, the demo reads the dial from the top camera image.
+- Second review asked for a cable with an earthed screen bonded to the tester's earth bar, with the leakage resistor
+  between a core and that screen, and for setup and README to agree. Done: a braid-screened (CY) flex whose screen and
+  the tester's earth lead are bolted to one earth bar; the resistor joins a core's stud to that bar.
