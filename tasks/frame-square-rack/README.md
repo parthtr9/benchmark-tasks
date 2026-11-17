@@ -63,24 +63,35 @@ the frame has moved less than 1 mm over the last 20 steps (1 s), then 1.0.
 
 ## Fidelity
 
-The glued frame is modelled as one slider: the far rail slides along y on the near rail (15 mm out to the left, 0.5 mm
-of play past square, where the shoulders close) against 2 N of Coulomb friction, and the 1 cm high stiles are hinges
-turned to follow it (low so the open fingers clear them). Friction on the table 0.3.
+The glued frame is a four-bar linkage modelled as one slider: the far rail slides along y on the near rail, from 15 mm left (the joints' turning limit, 6.6 degrees) to 0.5 mm past square (where the tenons meet their mortise cheeks), with 2 N of Coulomb friction; the stiles are hinges turned to match. Tenons and mortises are not drawn. The stiles are 1 cm high so the open fingers clear them. Rigid parts, friction 0.3 on the table.
 
 ## Real-world build
 
 - Parts: two pine rails 30 x 3 x 3 cm and two pine stiles 3 cm wide, 1 cm high, 10 cm between shoulders, with a
   darker 3 cm block glued on each rail end. Total 0.30 kg.
-- Joints: each stile end has a stub tenon 8 mm thick, 25 mm wide and 12 mm long, cut with square shoulders; each
-  rail has a matching mortise 12.5 mm deep with 0.2 mm clearance on the tenon's two wide faces and 1 mm at its ends,
-  so the joint can turn a few degrees until a shoulder corner bears on the rail.
-- The near-square stop: with the shoulders cut square, both shoulders of every joint sit flat on the rails when the
-  frame is square and the joints close up; the 0.2 mm clearance lets it go about 0.5 mm past square before the
-  shoulders bind. This is the stop the demo pushes against, and it is what a real glue-up has. Racked the other way
-  the joints open; 15 mm is the limit before a tenon starts to leave its mortise (scored as broken open).
+- Joints: each stile end has a stub tenon 10 mm wide (along the rail), 6 mm thick and 12 mm long. Each rail has a
+  mortise 11.6 mm wide, 6.4 mm high and 13 mm deep, cut **off-centre**: with the frame square, the tenon lies against
+  one cheek of the mortise (a 0.05 mm sliding fit, set with a feeler gauge) and all 1.6 mm of clearance is on the
+  other side. The cheek side is chosen at each joint so that all four stiles turn the same way.
+- Why these sizes: racking the far rail 8 mm turns each stile asin(8/130) = 3.5 degrees, which moves the tenon's tip
+  12 x sin(3.5) = 0.7 mm sideways; the 15 mm limit is 6.6 degrees and 1.4 mm, inside the 1.6 mm clearance. The stile's
+  shoulders are cut back 2 mm on the opening side (a shoulder corner 15 mm from the tenon's centre moves 1.7 mm toward
+  the rail at 6.6 degrees), so nothing binds between the start and the limit.
+- The near-square stop: turning back, each tenon comes to rest against its mortise cheek when the frame is square;
+  the 0.05 mm fit lets the far rail go about 0.5 mm past square before all four cheeks bear. This is the stop the demo
+  pushes against. Verify it with a ruler: the far rail goes 15 mm to the left and no more than 0.5 mm to the right.
 - Glue and shear resistance: a thin film of PVA wood glue on the tenons, used within its 10 minute open time, or the
   same film of white lithium grease for repeated trials. Check before each trial with a spring scale hooked on the far
   rail's end while the near rail is held down: the far rail should start to slide at 1.5 to 2.5 N.
 - Bench: a laminate top (friction about 0.3 against planed pine), with the yellow tape rectangle 2 cm outside the
   squared frame's outline.
 - Reset: as in the task's reset notes; measure both diagonals with a tape measure to judge the trial.
+
+## Revision notes
+
+- First review asked for the joint construction, glue and fit, how the 2 N shear resistance is obtained, and how the
+  near-square stop is realised. Added.
+- Second review found that a 12 mm tenon with 0.2 mm side clearance cannot turn the 3.5 degrees the 8 mm start needs.
+  The joint is redesigned: a 10 mm tenon in an 11.6 mm off-centre mortise, with the turning range, the start
+  position, the stop near square and the shear check worked out and verifiable as above. Setup, fidelity note and
+  reset notes are updated to match.

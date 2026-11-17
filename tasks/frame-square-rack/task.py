@@ -45,7 +45,7 @@ STILE_Y = 0.135                   # stile centre lines at y = +-STILE_Y
 STILE_W, STILE_H, STILE_L = 0.030, 0.010, 0.098
 S0 = 0.008                        # the far rail starts shifted 8 mm to the left (+y)
 S_STOP = 0.015                    # the far rail can slide out to 15 mm left of square
-PLAY = 0.0005                     # and in to 0.5 mm right of square (the joint's play: the blocks butt there)
+PLAY = 0.0005                     # and in to 0.5 mm right of square (the tenons meet their mortise cheeks there)
 THETA0 = math.asin(S0 / SPAN)     # stile angle at the start
 FRIC = 2.0                        # N: the far rail's static friction on the near rail (glued joints)
 SLIDE_K = 3000.0                  # N/m: stiffness of the drive that holds the far rail at its anchor (stick-slip)
