@@ -10,8 +10,8 @@ by then, so the first squeeze lights the burner. The right arm lets go of the ta
 lifts away; the left arm lifts the striker off the mouth, sets it back in its holder, lets go and lifts away.
 
 Negative variants (DEMO_VARIANT=...):
-  one_arm       the right arm opens the tap and lets go; nothing is brought to the mouth (0: flare)
-  gas_first     the tap is opened first, then the striker is fetched (about 5 s of gas unlit) (0: flare)
+  one_arm       the right arm opens the tap and lets go; nothing is brought to the mouth (0: unlit-gas limit exceeded)
+  gas_first     the tap is opened first, then the striker is fetched (about 5 s of gas unlit) (0: unlit-gas limit exceeded)
   cold_strike   the striker is squeezed at the mouth with the tap shut (0: never lit)
   no_return     lit and burning, but the striker is parked on the bench instead of its holder (0.5)
 DEMO_DEBUG=1 prints a trace every 10 steps (the minimum arm-to-arm clearance on the URDF collision meshes among them).
@@ -362,7 +362,7 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
                 S = task._STATE
                 st = states()
                 msg += (f" tap_deg {math.degrees(task.lever_angle(st['tap'])):.1f} gap_mm {1000 * S['gap']:.1f}"
-                        f" lit {S['lit']} unlit_s {S['unlit']:.2f} flare {S['flare']} sparks {S['sparks']}"
+                        f" lit {S['lit']} unlit_s {S['unlit']:.2f} over_limit {S['over_limit']} sparks {S['sparks']}"
                         f" touched {S['touched']} dropped {S['dropped']}"
                         f" cup_mouth_mm {1000 * float(np.linalg.norm(task.cup_point(st['striker']) - task.MOUTH)):.1f}"
                         f" striker_home {task.at_home(st['striker'])}"

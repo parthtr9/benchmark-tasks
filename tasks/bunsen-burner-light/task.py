@@ -5,7 +5,7 @@ axis and clicks into two detents, shut and a quarter turn open. The striker is t
 squeezing its grip zone from 30 mm to 8 mm drags a flint across the cup, 10 cm ahead of the grip zone, and makes a
 spark. Gas flows once the tap is more than 15 degrees open and is full at 90. A spark lights the burner only if the
 cup is within 2.5 cm of the mouth while the gas flows (flow of 0.3 or more). Gas that has run for more than 1.5 s
-without a flame builds a cloud that flares when it lights: the run is spoilt.
+without a flame exceeds the trial's unlit-gas safety limit: the run is spoilt.
 
 The robot must light the burner with the striker, using the tap beside it, then put the striker back in its holder and
 let go. Opening the gas takes a hand at the tap; the striker has to be at the mouth, ready to strike, before that.
@@ -121,7 +121,7 @@ OBJECTS = [BURNER, TAP, STRIKER, HOLDER, FLAME_PART]
 
 # -- mechanism and scoring thresholds ---------------------------------------------------------------------------------------
 GAS_START, GAS_FULL = math.radians(15), math.radians(90)
-UNLIT_LIMIT_S = 1.5               # gas running unlit for longer than this builds a cloud that flares
+UNLIT_LIMIT_S = 1.5               # the trial's unlit-gas safety limit: gas running unlit for longer than this in total spoils the run
 SPARK_FROM, SPARK_TO = 0.022, 0.010   # grip gap (m): armed once it has been >= 22 mm, a spark when it gets to <= 10 mm
 SPARK_REACH = 0.025               # cup within 2.5 cm of the mouth's centre
 LIGHT_FLOW = 0.3                  # flow needed for a spark to light the burner
@@ -142,7 +142,7 @@ _STATE: dict = {}
 
 @on_reset
 def _reset_state(environment=None) -> None:
-    _STATE.update(unlit=0.0, flare=False, lit=False, lit_ever=False, armed=False, sparks=0, dropped=False,
+    _STATE.update(unlit=0.0, over_limit=False, lit=False, lit_ever=False, armed=False, sparks=0, dropped=False,
                   touched=None, gap=OPEN_GAP, recent=[], zs=[], points={"left": [], "right": []}, target=0.0, flame_on=False)
     if environment is not None:
         _move_flame(environment, False)
@@ -233,7 +233,7 @@ def _touch(striker: PartState, tap: PartState, points) -> str | None:
 
 # -- the mechanism: run once per control step ---------------------------------------------------------------------------------
 def _advance(objects, points=None, dt: float = 1.0 / CONTROL_HZ) -> dict:
-    """Gas, spark, flame, flare and the violation flags, from the parts' poses and the grippers' points."""
+    """Gas, spark, flame, the unlit-gas limit and the violation flags, from the parts' poses and the grippers' points."""
     s = _STATE
     striker, tap = objects["striker"], objects["tap"]
     angle = lever_angle(tap)
@@ -260,7 +260,7 @@ def _advance(objects, points=None, dt: float = 1.0 / CONTROL_HZ) -> dict:
     if f > 0.0 and not s["lit"]:
         s["unlit"] += dt
         if s["unlit"] > UNLIT_LIMIT_S:
-            s["flare"] = True
+            s["over_limit"] = True
     # Violations (permanent).
     zs = s["zs"]
     zs.append(float(striker.pos[2]))
@@ -311,7 +311,7 @@ def _still() -> bool:
 def _grade(objects) -> tuple[float, bool]:
     s = _STATE
     striker, tap = objects["striker"], objects["tap"]
-    if s["flare"] or s["dropped"] or s["touched"] or not s["lit_ever"]:
+    if s["over_limit"] or s["dropped"] or s["touched"] or not s["lit_ever"]:
         return 0.0, False
     if not s["lit"]:
         return 0.25, False
@@ -323,7 +323,7 @@ def _grade(objects) -> tuple[float, bool]:
 
 
 def success(objects) -> bool:
-    """The burner was lit without a flare, is burning, the tap is open 60 degrees or more, the striker is back in its
+    """The burner was lit within the unlit-gas limit, is burning, the tap is open 60 degrees or more, the striker is back in its
     holder (grip zone within 1 cm of the holder pose, upright within 10 degrees), both grippers are 3 cm or more from
     the striker and the tap's grip block, and the striker has not moved more than 1 mm for 20 control steps (1 s)."""
     return _grade(objects)[1]
