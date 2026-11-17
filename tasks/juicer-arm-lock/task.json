@@ -1,0 +1,23 @@
+{
+  "title": "Put a centrifugal juicer together: cover seated over the filter basket, wire safety locking arm closed in its grooves",
+  "category": "Societal relatability",
+  "keywords": [
+    "kitchen appliance",
+    "centrifugal juicer",
+    "assembly after washing",
+    "safety locking arm",
+    "wire bail",
+    "nested parts",
+    "keyed seating",
+    "detent"
+  ],
+  "instruction": "Put the juicer together so that its safety locking arm is closed over the cover.",
+  "context": "Centrifugal juicers are in millions of kitchens and are taken apart for washing after every use, so whoever uses one puts it together again each time; it will not run until its safety locking arm is locked over the cover. Unlike a food processor whose bowl and lid twist to lock (#2021), a mini chopper's pressed-on lid (#1760), a swing-top bottle's over-centre bail, or a lid pressed into two sprung latches, nothing here twists or is pressed shut: one wire arm on the base swings over a stack of nested parts and only reaches its two grooves when the cover under it is fully down on its keyed seat.",
+  "setup": "Positions in cm from the midpoint between the two arm bases (x forward, y to the robot's left), heights above the table. Juicer: a Breville Juice Fountain Compact BJE200XL (published: 23.1 x 24.9 x 39.9 cm overall, 3.8-4.4 kg, 76 mm feed chute), unplugged, centred at x 40, y 0, spout away from the robot. Its white plastic motor base (17 cm across, 16.3 cm tall) carries the clear plastic pulp container (20.6 cm across, wall top at 24.6 cm, a 2 cm wide wing on each side of its rim); base and container together 3.4 kg, standing loose on the table. Safety locking arm: 6 mm stainless steel wire, 0.19 kg, pivoted on both sides of the base 12.5 cm up, legs 15.6 cm long and 22.5 cm apart, its top bent back into a handle 10 cm long; it starts lowered toward the robot, legs 5 degrees above level, the handle's 9 cm straight bar at x 23.6, y 0, 3.9 cm up. Filter basket (stainless steel, rim 14.4 cm across, 0.20 kg): already clicked down on the motor's drive coupling (about 20 N clicks it past four sprung catches), its rim 23.5 cm up. Cover: clear plastic with a stainless feed chute (21.6 cm across, 14 cm tall, chute 8.1 cm outside, 0.25 kg), with a slot each side of its rim for the container's wings and a lug with a groove each side of its shoulder; it stands on its rim, turned as it sits on the juicer, in the middle of a wooden draining board (25 x 25 x 3.5 cm, fixed to the table) centred at x 35, y 23.5. The food pusher and juice jug are set aside, out of the scene. Sizes other than the published ones are scaled from the instruction booklet's drawing.",
+  "scoring": "End state, each level including the ones before it, measured with a ruler and a photo. 0.25: the cover rests on the pulp container with its chute over the basket (its axis within 10 mm of the juicer's, upright within 10 degrees, its rim ledge no more than 12 mm above the container's wall). 0.5: the cover is seated (gap under its rim ledge below 2 mm all round, within 3 mm of centred, the basket no more than 1 mm above its clicked-down position). 0.75: the locking arm's wire lies in both of the cover's grooves (on each side its centre between 4.2 mm behind and 2.5 mm in front of the groove's middle, the ridge behind it sprung back to within 1 mm, the wire less than 3 mm above the groove floor, so the cover cannot lift 3 mm). 1.0: the same with both grippers at least 3 cm clear of the juicer and nothing moving more than 1 mm for 1 second. 0 for good if the base was moved more than 2 cm or tipped more than 5 degrees, if the basket or the cover left the table, or if a gripper reached into the filter basket (any pad point inside its rim and below it), where the cutting disc is.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Pull the locking arm back over the grooves and lower it onto its stop. Lift the cover off and stand it on the mark on the draining board, turned as it sits on the juicer. Check the basket is still clicked down on the drive coupling and the base is on its outline on the table. Keep the juicer unplugged.",
+  "fidelity": "Rigid bodies built from boxes at real size; base, container and coupling are one loose body. The filter basket starts clicked down (four sprung catches hold it). The arm's detent is a sprung ridge behind each groove (in the real juicer the wire and the moulded cover give). The basket's drive lugs are not modelled. Only the overall size and the chute bore are published; the rest is scaled from the booklet's drawing.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-XACUFY"
+}
