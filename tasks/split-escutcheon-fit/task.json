@@ -1,0 +1,23 @@
+{
+  "title": "Fit a split wall plate round a plumbed-in copper stub-out: spread it past the valve, let it spring shut, push it flat",
+  "category": "Impact on jobs",
+  "keywords": [
+    "plumbing trim-out",
+    "escutcheon",
+    "split flange",
+    "stub-out",
+    "angle stop",
+    "bimanual spreading",
+    "spring ring",
+    "slide along a pipe"
+  ],
+  "instruction": "Fit the chrome plate round the copper pipe and push it flat against the wall so it covers the hole.",
+  "context": "Fitting a flange over a stub-out after the stop valve is on is routine trim-out work for plumbers (O*NET 47-2152.00, about 0.51 million US workers) and general maintenance and repair workers (49-9071.00, about 1.5 million): a solid escutcheon cannot pass the valve, so a split one is spread open at its split, passed round the pipe and slid back to the wall. Unlike clamping a tube into a self-closing clip, the plate only opens if both of its halves are held and turned apart.",
+  "setup": "Positions in cm from the midpoint between the two arm bases (x forward, y to the robot's left), heights above the table. Wall: a fixed section of 18 mm plywood, 30 cm wide and 25 cm tall, its front face at x 36 across y 0, with a 30 mm square rough hole whose centre is 12 cm up. Pipe: 5/8 in OD (15.9 mm) copper, 1/2 in nominal, coming straight out of the hole toward the robot, 8.5 cm to the valve. Valve: a chrome quarter-turn angle stop (1/2 in nominal compression inlet, 3/8 in OD outlet pointing up, white oval handle toward the robot), fixed on the pipe's end. Plate: a Sioux Chief 926-2 SnapOne floor and wall plate for 1/2 in CTS, chrome-plated polypropylene, 64.3 mm OD, 15.9 mm bore, 11.4 mm deep, about 10 g, one-piece and split on one side. It stands upright in the 13 mm groove (5 mm deep) across the top of a pine block (a 2x4 offcut on end, 89 x 38 x 113 mm) at x 17, y 0, its face toward the robot and its split down.",
+  "scoring": "End state, each level including the ones before it, checked with a ruler and a photo. 0.25: the plate is round the pipe, between the valve and the wall (its bore's centre within 2 mm of the pipe's axis). 0.5: it is also shut (the split closed to within 1 mm at the bore). 0.75: it is also flat against the wall (the middle of its back edge within 1.5 mm of the wall and the plate square to the pipe within 3 degrees), which covers the hole. 1.0: both grippers are at least 3 cm from the plate and it has stayed still (within 1 mm) for the last second. 0 for the rest of the trial if the plate was ever dropped off the table.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Spread the plate at its split, take it off the pipe and stand it in the block's groove, face toward the robot, split down. The wall, pipe and valve stay as they are.",
+  "fidelity": "Rigid boxes at real size. The ring's flex is a sprung hinge opposite its split (0.2 N m/rad, about 1.6 N at the split for a 30 degree spread: an estimate, measure the bought plate); the bore's grip tabs are left out (0.35 mm play on the pipe). Wall, pipe and valve are fixed. The plate and pipe are 16-sided. Sizes not on the maker's sheet (wall thicknesses, sleeve, mass) are estimates.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-PEDCHZ"
+}
