@@ -1,0 +1,23 @@
+{
+  "title": "Take a passport back out of a ticket window's recessed deal tray: draw it up the dish from under the glass",
+  "category": "Societal relatability",
+  "keywords": [
+    "deal tray",
+    "ticket window",
+    "passport",
+    "non-prehensile",
+    "drag up a ramp",
+    "no grasp where it lies",
+    "one hand",
+    "everyday"
+  ],
+  "instruction": "Take the passport out of the tray under the window and leave it lying on the green mat.",
+  "context": "Anyone who has bought a ticket or shown a passport at a counter window has taken something out of a deal tray: a stainless dish set in the counter under the glass, here Total Security Solutions' Recessed Currency Tray (16 x 10 x 1-1/2 in; data sheet: \"works great for passing paperwork, passports, currency, and credit cards\"). The dish is one arc, so a passport (125 x 88 mm) let go in it rests on the lowest line, half of it behind the glass. It cannot be pinched there: the glass stops a hand coming down 2 cm short, and the booklet's edges lie on the steel. It has to be drawn with fingertips up the curved ramp and over the rim; let go high on the ramp it slides back down and stops low in the dish, behind the rim. Unlike the tablet slid to a desk edge (TK-TUMETS) there is no edge: access is made against gravity, under a fixed screen. Unlike the recessed book tipped out by its head (TK-E6ECW7) or quarters pinched off a table (TK-V9B74M), nothing can be pinched until it is out.",
+  "setup": "Positions in mm from the midpoint between the arm bases (x forward, y left, z up from the table). One fixed layout, as in the screenshot. Worktop: 1-1/2 in (38 mm) grey laminate section, x 100 to 620, y -300 to 300, clamped. Tray: Total Security Solutions Recessed Currency Tray, 16 x 10 x 1-1/2 in, 18 gauge #4 brushed stainless, dropped flush into its 15-1/4 x 9-1/4 in cut-out, centred x 420, y 60, its 16 in side along y; 1/2 in flange; the dish is one arc across x (226 mm chord, 36.8 mm deep, radius 191.9 mm derived from the drawing), rim on the robot's side at x 307. Window: 1/4 in clear tempered glass, 600 wide, the lower 300 of its height, standing across the tray's middle at x 420, bottom edge 2 above the worktop, in 1 in aluminium sill channel at each side of the tray. Passport: 125 x 88 x 4.5 mm booklet, 40 g (thickness and mass estimated), navy cover, loose, lying in the dish on its lowest line under the glass, centred x 420, y 60, its 125 side along y; 41 mm of it shows on the robot's side. Mat: green vinyl, 150 x 200, x 125 to 275, y -40 to 160, flat on the worktop. Both arms start at the ready pose, grippers open.",
+  "scoring": "End of run, from the final photo with a ruler; every level only with both grippers at least 3 cm from the passport. 1.0: it lies flat (within 10 degrees) on the worktop, all of its outline over the green mat, and for 1 s the grippers have stayed 3 cm away and its whole pose has not moved 1 mm. 0.75: the same, not yet for 1 s. 0.5: at rest (released and still for 1 s) lying flat on the robot's side of the worktop with no part of it over the dish, but not wholly over the mat. 0.25: at rest with some of it at least 5 mm past the dish's rim on the robot's side in any other state (part still over the dish, leaning on the rim, overhanging the worktop's front edge). 0: in the dish wherever it rests, behind the glass, or still held. 0 for good: the passport has left the counter (its centre more than 10 mm below the worktop anywhere but in the tray). No penalty for which arm is used, for touching the glass or tray, or for lifting the passport.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Lay the passport in the dish with its long side along the glass and its spine on the clerk's side, centred on the tray, and let it settle on the dish's lowest line under the glass. Wipe the dish and the mat dry. The worktop, tray and glass stay clamped.",
+  "fidelity": "Rigid parts; contact and friction only. Tray: maker's sizes, flange and cut-out; the arc's radius (191.9 mm) is derived from the 9 in body and the height, not printed. The passport is a rigid slab of the ID-3 size; its thickness, mass (4.5 mm, 40 g) and friction (cover on steel 0.275, on laminate 0.3, fingertip on cover 1.0) are estimates, checked in a real trial by weighing the booklet and a tilt test on brushed steel. Worktop and glass are cut-down sections; the mat is drawn only.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-GCZWW5"
+}
