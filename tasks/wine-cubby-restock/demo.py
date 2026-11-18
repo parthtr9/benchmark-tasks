@@ -18,6 +18,8 @@ Negative variants (DEMO_VARIANT=...):
   body_only   the right arm feeds the bottle in 7 cm and lets go: it tips out of the cubby, neck onto the table (0)
   no_push     the left hand lets go after sliding it 20 cm in and nothing pushes it home: 10 cm of neck still out (0.5)
   no_release  as the demo, but the right fingers stay on the cork end (0.75)
+  quick_lower as the demo, but after the lift the right hand raises the bottle 5 cm more and brings it down again within
+              0.2 s, still holding it: a fast controlled lowering is not a drop, so it still scores 1.0
   lift_hold   a payload check, not a negative: lift the bottle 8.5 cm, hold it 3 s, lay it back on the mat (0)
 Writes one MP4 per camera, setup.png and result.json to the output folder; the log carries a trace every 10 steps.
 """
@@ -34,7 +36,8 @@ from pathlib import Path
 import numpy as np
 
 CONTROL_HZ = 20
-VARIANTS = ("", "body_only", "no_push", "no_release", "lift_hold")
+VARIANTS = ("", "body_only", "no_push", "no_release", "quick_lower", "lift_hold")
+QUICK_DZ, QUICK_S = 0.05, 0.2   # quick_lower: raised this much more, then brought back down over this time (s)
 GRIP_BELOW = 0.022        # body grip: the tool point this far below the bottle's axis (the bottle's top 11 mm under the palm)
 NECK_BELOW = 0.008        # neck grip: the tool point this far below the axis
 PUSH_BELOW = 0.030        # closed-finger push: the tool point this far below the axis, so the finger bodies cover the cork end
@@ -244,6 +247,11 @@ def script(task, ctx):
         yield from R.hold(0.6, grip=1.0)
         yield from R.move(R.pos + 0.08 * up, rot_pick, 1.2)
         return
+    if variant == "quick_lower":
+        yield from R.move(P["pick"] + off_pick + (P["carry_dz"] + QUICK_DZ) * up, rot_pick, 1.5, servo=XYZ)
+        yield from R.hold(0.5, servo=XYZ)
+        yield from R.move(P["pick"] + off_pick + P["carry_dz"] * up, rot_pick, QUICK_S)
+        yield from R.hold(1.0, servo=XYZ)
     # 2. Turn it until its base points at the rack, on the way to the cubby's centre line, then down to its height.
     yield from R.move(P["pre"] + off_in + P["carry_dz"] * up, rot_in, 4.0, servo=XYZ)
     yield from R.hold(0.5, servo=XYZ)
@@ -393,7 +401,7 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
                 lag[name] = repr(exc)
         return {"step": steps, "score": info.get("score"), "base_mm": np.round(1000 * (base - [0, 0, task.TOP]), 1).tolist(),
                 "cork_mm": np.round(1000 * (cork - [0, 0, task.TOP]), 1).tolist(), "tilt": round(S["tilt"], 2),
-                "fit": S["fit"], "released": S["released"], "still": S["still"], "why": list(S["why"]),
+                "fit": S["fit"], "released": S["released"], "touched": S["touched"], "still": S["still"], "why": list(S["why"]),
                 "tcp_err_mm": lag, "corr_mm": {"L": np.round(1000 * ctx.left.corr, 1).tolist(),
                                                "R": np.round(1000 * ctx.right.corr, 1).tolist()},
                 "grip": [round(float(ctx.left.grip), 2), round(float(ctx.right.grip), 2)],
@@ -430,8 +438,8 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
     result = {"task_score": score, "success": success, "steps": steps, "variant": os.environ.get("DEMO_VARIANT", ""),
               "worst_ik_mm": {"left": round(ctx.left.worst_mm, 2), "right": round(ctx.right.worst_mm, 2)},
               "max_trim_mm": {"left": round(1000 * ctx.left.max_corr, 1), "right": round(1000 * ctx.right.max_corr, 1)},
-              "state": {k: S[k] for k in ("fit", "tilt", "released", "still", "failed", "dropped", "disturbed", "why",
-                                          "finger_check")}}
+              "state": {k: S[k] for k in ("fit", "tilt", "released", "touched", "still", "failed", "dropped", "disturbed",
+                                          "why", "finger_check", "max_held_descent", "max_free_descent")}}
     if record:
         import imageio
 

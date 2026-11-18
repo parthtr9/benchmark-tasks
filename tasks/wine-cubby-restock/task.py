@@ -141,7 +141,11 @@ REST_MIN = 0.150         # 0.5: at least half its length inside (it rests there 
 PROUD_MAX = 0.045        # fully in: the cork end at most 45 mm out of the rack's front face (40 mm when on the back panel)
 LEVEL = 3.0              # degrees from level
 RELEASE = 0.030          # every part of both hands (fingers and palm) this far from the bottle's surface: let go
-DROP, DROP_STEPS = 0.020, 4      # an end of the bottle coming down more than 2 cm within 0.2 s: dropped or tipped out
+DROP, DROP_STEPS = 0.020, 4      # dropped, slipped or tipped out: an end of the bottle comes down more than 2 cm within
+#                                  0.2 s (4 control steps) and did not move with a gripper that touched it at the start of
+#                                  those 0.2 s (it shifted more than 2 cm against every such gripper). A bottle lowered in
+#                                  a hand, at any speed, moves with that hand and is never a drop.
+TOUCH = 0.005            # a gripper touches the bottle while any point of its fingers or palm is this close to its surface
 MOVED = 0.010            # a stocked bottle shifted more than 1 cm: disturbed
 STILL_CALLS = 20         # 1 s at 20 Hz
 SETTLE_CALLS = 20        # the first 1 s: things settle, nothing is judged
@@ -151,8 +155,9 @@ _STATE: dict = {}
 
 @on_reset
 def _reset_state(environment=None) -> None:
-    _STATE.update(calls=0, stock0=None, ends=[], rec=[], still=False, released=False, finger_check=None,
-                  failed=False, dropped=False, disturbed=False, why=[], fit=None, tilt=0.0)
+    _STATE.update(calls=0, stock0=None, win=[], rec=[], still=False, released=False, touched=True,
+                  finger_check=None, failed=False, dropped=False, disturbed=False, why=[], fit=None, tilt=0.0,
+                  max_held_descent=0.0, max_free_descent=0.0)
 
 
 _reset_state()
@@ -193,6 +198,33 @@ def surface_dist(b: PartState, point) -> float:
     return float(math.hypot(p[0] - x, max(0.0, radial - radius_at(x))))
 
 
+def surface_dists(b: PartState, points) -> np.ndarray:
+    """``surface_dist`` for many world points at once."""
+    p = (np.asarray(points, float).reshape(-1, 3) - np.asarray(b.pos, float)) @ b.rotation()
+    x = np.clip(p[:, 0], -HALF, HALF)
+    r = np.where(x >= SHOULDER_X, BODY_R, np.where(x >= NECK_X, 0.034, FOIL_R))
+    return np.hypot(p[:, 0] - x, np.maximum(0.0, np.hypot(p[:, 1], p[:, 2]) - r))
+
+
+def _drop_check(win) -> tuple[float, bool]:
+    """Over a window of frames ``(ends, hands)`` (``ends``: the two end points; ``hands``: per gripper (pos, rotation,
+    touching)), how far the lower-going end came down, and whether it came down with a gripper: one that touched the
+    bottle in the first frame and against which that end moved at most ``DROP`` (in the gripper's own frame)."""
+    if len(win) < 2:
+        return 0.0, True
+    (e0, h0), (e1, h1) = win[0], win[-1]
+    down = [float(e0[i][2] - e1[i][2]) for i in range(2)]
+    worst = max(down)
+    carried = True
+    for i in range(2):
+        if down[i] <= DROP:
+            continue
+        carried = carried and any(
+            t0 and float(np.linalg.norm(r1.T @ (e1[i] - p1) - r0.T @ (e0[i] - p0))) <= DROP
+            for (p0, r0, t0), (p1, r1, _) in zip(h0, h1))
+    return worst, carried
+
+
 def _flag(name: str, why: str) -> None:
     if not _STATE[name]:
         _STATE[name] = True
@@ -200,24 +232,38 @@ def _flag(name: str, why: str) -> None:
     _STATE["failed"] = True
 
 
-def observe(st, fingers=None) -> None:
-    """One control step. ``st`` maps part names to states; ``fingers`` is the list of points on both grippers' finger
-    and palms, or None when unknown (then the bottle never counts as let go)."""
+def observe(st, fingers=None, hands=None) -> None:
+    """One control step. ``st`` maps part names to states; ``fingers`` is the list of points on both grippers' fingers
+    and palms, or None when unknown (then the bottle never counts as let go, and never as dropped). ``hands`` is, per
+    gripper, ``(position, rotation matrix, dense points over its fingers and palm)``, or a function returning that list;
+    when None, ``fingers`` stands for one gripper that does not move."""
     S = _STATE
     b = st["bottle"]
     S["calls"] += 1
     base, cork = ends(b)
+    if fingers is not None:
+        hs = hands() if callable(hands) else hands
+        if hs is None:
+            hs = [(np.zeros(3), np.eye(3), fingers)]
+        frame_hands = [(np.asarray(p, float), np.asarray(r, float), bool(float(surface_dists(b, pts).min()) < TOUCH))
+                       for p, r, pts in hs]
+        S["touched"] = any(t for _, _, t in frame_hands)
     if S["calls"] > SETTLE_CALLS:
         if S["stock0"] is None:
             S["stock0"] = {n: np.array(st[n].pos, float) for n in STOCK_NAMES}
         for n in STOCK_NAMES:
             if float(np.linalg.norm(np.asarray(st[n].pos, float) - S["stock0"][n])) > MOVED:
                 _flag("disturbed", f"{n} was shifted more than 1 cm")
-        hist = S["ends"]
-        hist.append((float(base[2]), float(cork[2])))
-        del hist[:-(DROP_STEPS + 1)]
-        if max(hist[0][0] - hist[-1][0], hist[0][1] - hist[-1][1]) > DROP:
-            _flag("dropped", "an end of the bottle came down more than 2 cm in 0.2 s")
+        if fingers is not None:
+            win = S["win"]
+            win.append(((np.array(base, float), np.array(cork, float)), frame_hands))
+            del win[:-(DROP_STEPS + 1)]
+            down, carried = _drop_check(win)
+            key = "max_held_descent" if carried else "max_free_descent"
+            S[key] = max(S[key], down)
+            if down > DROP and not carried:
+                _flag("dropped", "an end of the bottle came down more than 2 cm in 0.2 s without moving with a gripper "
+                                 "that touched it")
     S["fit"] = cubby_fit(b)
     S["tilt"] = tilt_deg(b)
     S["released"] = bool(fingers is not None and min(surface_dist(b, f) for f in fingers) >= RELEASE)
@@ -227,10 +273,12 @@ def observe(st, fingers=None) -> None:
     S["still"] = bool(len(rec) == STILL_CALLS and float(np.ptp(np.array(rec), axis=0).max()) < 0.001)
 
 
-def hand_points(environment) -> list:
+def hand_points(environment, dense: bool = False, frames: bool = False) -> list:
     """Points over both grippers (world, relative to the env origin): on each finger's inner and outer face along its
     68 mm width, from 13 mm past the tool point to 81 mm behind it, and across the palm's underside. The sizes are the
-    gripper's collision shapes. A hand counts as away from the bottle only when all of these are."""
+    gripper's collision shapes. A hand counts as away from the bottle only when all of these are. ``dense``: the same
+    faces on a grid of about 5.5 mm (for the touch test), instead of 3 x 4 points per face. ``frames``: instead, one
+    ``(tool point, rotation, points)`` per gripper."""
     from yam_arena.constants import TCP_OFFSET
 
     base = environment.unwrapped
@@ -243,10 +291,13 @@ def hand_points(environment) -> list:
         gap = max(abs(jp[jn.index(j)]) for j in ("joint7", "joint8") if j in jn)
         r = PartState(pos=pose[:3], quat_xyzw=pose[3:7], lin_vel=np.zeros(3), ang_vel=np.zeros(3), low=np.zeros(3),
                       high=np.zeros(3)).rotation()
-        local = [(s * (gap + d), y, z) for s in (1.0, -1.0) for d in (0.0, 0.024) for y in (-0.034, 0.0, 0.034)
-                 for z in (0.0128, -0.021, -0.051, -0.081)]
-        local += [(x, y, -0.0705) for x in (-0.051, 0.0, 0.051) for y in (-0.0325, 0.0, 0.0325)]
-        pts += [pose[:3] + r @ (np.array(TCP_OFFSET) + np.array(q)) - origin for q in local]
+        ys = np.linspace(-0.034, 0.034, 13) if dense else (-0.034, 0.0, 0.034)
+        zs = np.linspace(0.0128, -0.081, 18) if dense else (0.0128, -0.021, -0.051, -0.081)
+        local = [(s * (gap + d), y, z) for s in (1.0, -1.0) for d in (0.0, 0.024) for y in ys for z in zs]
+        xs = np.linspace(-0.051, 0.051, 19) if dense else (-0.051, 0.0, 0.051)
+        local += [(x, y, -0.0705) for x in xs for y in (np.linspace(-0.0325, 0.0325, 13) if dense else (-0.0325, 0.0, 0.0325))]
+        arm_pts = list(pose[:3] - origin + (np.asarray(TCP_OFFSET, float) + np.asarray(local, float)) @ r.T)
+        pts += [(pose[:3] - origin + r @ np.asarray(TCP_OFFSET, float), r, arm_pts)] if frames else arm_pts
     return pts
 
 
@@ -262,7 +313,7 @@ def _watch(environment) -> None:
         if _STATE["finger_check"] is None:
             print(f"wine-cubby-restock: finger check unavailable: {exc!r}", flush=True)
         _STATE["finger_check"], fingers = False, None
-    observe(st, fingers)
+    observe(st, fingers, hands=lambda: hand_points(environment, dense=True, frames=True))
 
 
 def _update() -> tuple[float, bool]:
@@ -283,13 +334,16 @@ def _update() -> tuple[float, bool]:
 def success(objects) -> bool:
     """The bottle lies base first in the empty cubby, level within 3 degrees, its cork end at most 45 mm out of the
     rack's front face, both grippers at least 3 cm from it, nothing moving more than 1 mm for 20 control steps (1 s),
-    and it was never dropped and no stocked bottle was shifted."""
+    and it was never dropped (see ``score``) and no stocked bottle was shifted."""
     return _update()[1]
 
 
 def score(objects) -> float:
-    """0 if ever an end of the bottle came down more than 2 cm within 0.2 s (dropped, or let go while its weight was
-    still outside the cubby so it tipped out) or a stocked bottle was shifted more than 1 cm (never undone); 0 also
+    """0 if ever an end of the bottle came down more than 2 cm within 0.2 s without moving with a gripper that touched
+    it (within 5 mm) at the start of those 0.2 s, i.e. it shifted more than 2 cm against every such gripper (it fell or
+    was dropped, slipped in or out of the grip, or was let go while its weight was still outside the cubby so it tipped
+    out; a bottle lowered in a hand, at any speed, moves with the hand and does not count), or if a stocked bottle was
+    shifted more than 1 cm (never undone); 0 also
     while the bottle's base is not at least 2 cm inside the empty cubby, base first. Otherwise, by where things are:
     0.25 the base is in the empty cubby; 0.5 at least 15 cm of the bottle is inside, it is level within 3 degrees and
     both grippers are 3 cm away; 0.75 it is level and fully in (cork end at most 45 mm out of the front face) but a

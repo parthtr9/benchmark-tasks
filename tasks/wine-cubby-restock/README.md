@@ -5,9 +5,10 @@ The left and right cubbies hold a full bottle each; the middle one is empty. A t
 on a rubber bar mat in front of the rack, at an angle to it. The robot must put it away in the empty cubby, base first
 so the neck faces out, pushed in until its base is on the rack's back panel.
 
-Stocking the bar is a listed duty of bartenders (O*NET 35-3011.00, about 0.7 million US workers) and of waiters and
-waitresses (35-3031.00, 2.2 million); stockers in wine and grocery shops (53-7065.00, 2.8 million) fill the same
-racks. What makes it different from standing a bottle on a shelf:
+Category: Societal relatability. Putting a bottle of wine away in a wine rack at home is a familiar household chore.
+Most wine racks hold bottles lying on their side, and the usual reason given is that the wine then stays against the
+cork, so the cork does not dry out and let air in. Whoever unpacks the shopping or a delivery slides each bottle into a
+free cubby base first, neck out, and pushes it back. What makes it different from standing a bottle on a shelf:
 
 - The bottle goes in lying down, along its own length, into a 10 cm opening with 12.5 mm of play on each side.
 - The hand cannot go in with it. A gripper around the 7.5 cm body is wider than the cubby, so a body grip stops with
@@ -15,6 +16,23 @@ racks. What makes it different from standing a bottle on a shelf:
 - The bottle balances 11 cm from its base. Let go with 7 cm inside, its weight is still outside the cubby and it
   tips out, neck down. Support has to pass to the rack, or to a second grip further out, before the body grip opens.
 - The last part of the way it has to be pushed by its cork end.
+
+## Revision
+
+The review asked: "Please change the domain to societal relatability and explain why this familiar wine-storage
+activity is recognizable. Also revise the drop penalty so that a controlled downward movement of a held bottle is not
+scored as a drop; specify a video-checkable way to identify actual loss of support or an unintended impact."
+
+What changed:
+
+- Category is now Societal relatability; the context describes putting a bottle away in a home wine rack and why
+  bottles are kept lying down, and no longer cites occupations.
+- The drop rule now detects loss of support, not speed. An end coming down more than 2 cm in 0.2 s is a drop only
+  if it did not move with a gripper that touched the bottle (within 5 mm, checked against points spaced about 5.5 mm
+  over each gripper's finger faces and palm) at the start of those 0.2 s: measured in that gripper's own frame, the
+  end shifted more than 2 cm. A held bottle can be lowered or tilted at any speed. A bottle let go with its weight
+  outside the cubby tips out while the opening hand stays where it is, so it still scores 0. New demo variant `quick_lower` brings the held bottle down 5 cm in 0.2 s and still scores 1.0. Nothing else changed:
+  instruction, setup and the rest of the scoring are as before.
 
 ## Files
 
@@ -48,6 +66,7 @@ python demo.py task.py demo_out --max-steps 1200         # full score: writes de
 DEMO_VARIANT=body_only python demo.py task.py body_only   # feed it in 7 cm with the body grip, let go: it tips out (0)
 DEMO_VARIANT=no_push python demo.py task.py no_push       # slide it 20 cm in by the neck and leave: not pushed home (0.5)
 DEMO_VARIANT=no_release python demo.py task.py no_release # fully in, but the fingers stay on the cork end (0.75)
+DEMO_VARIANT=quick_lower python demo.py task.py quick_lower # as the demo, plus the held bottle brought down 5 cm in 0.2 s (1.0)
 DEMO_VARIANT=lift_hold python demo.py task.py lift_hold   # payload check only: lift, hold 3 s, lay it back (0)
 ```
 
@@ -68,14 +87,20 @@ and the sideways shift of the hand while its fingers close on the bottle tells w
 fingers. The demo reads no object pose (its log does).
 
 In simulation: demo 1.0 (success) in 945 steps (47 s); body_only 0 (the bottle tips out and the drop rule fires),
-no_push 0.5, no_release 0.75.
+no_push 0.5, no_release 0.75, quick_lower 1.0 (success) in 1,009 steps (the held bottle came down 5.1 cm in 0.2 s,
+with the hand: not a drop).
 
 ## Scoring
 
 Evaluated every control step; the score at the end of the episode counts (`SCORE_OVER = "end"`).
 
-- 0 for the whole trial if at any time an end of the bottle came down more than 2 cm within 0.2 s (dropped, or let go
-  with its weight outside the cubby so it tipped out), or a stocked bottle was shifted more than 1 cm.
+- 0 for the whole trial if a stocked bottle was shifted more than 1 cm, or if the bottle lost support: an end of it
+  came down more than 2 cm within 0.2 s without moving with a gripper that was touching it (any part of the gripper
+  within 5 mm of the bottle) at the start of those 0.2 s, that is, it shifted more than 2 cm against every such
+  gripper (it was dropped, slipped in the grip, or was let go with its weight outside the cubby and tipped out). In
+  the 20 fps video: over 4 frames an end of the bottle goes down more than 2 cm and no hand that was on the bottle
+  goes down with it. Lowering or tilting the bottle in a hand, however fast, is never a drop. Neither flag is ever
+  cleared.
 - 1.0 (success, which must hold for 1 s): the bottle lies base first in the empty cubby, level within
   3 degrees, its cork end at most 45 mm out of the rack's front face (40 mm when the base touches the back panel),
   both grippers at least 3 cm from it, and nothing has moved more than 1 mm for 1 s.
@@ -97,7 +122,7 @@ a fresh instance). The layout is fixed (`-E object_jitter=0`); there are no seed
 The bottle, cubby and board sizes are those of a real 750 ml Bordeaux bottle and one row of a pine cubby rack. Each
 bottle is one rigid body of coaxial cylinders (body, label band, three-step shoulder, neck, foil capsule); its 1.2 kg
 is spread evenly over them, which puts the balance point 11 cm from the base, as in a full bottle. The wine does not
-slosh. Glass, pine and rubber share one friction value (0.6). The rack is fixed, as when screwed to a back bar; the
+slosh. Glass, pine and rubber share one friction value (0.6). The rack is fixed, as when screwed to a wall or counter; the
 two stocked bottles are loose. No contact-force cap is enforced in simulation. The bottle is carried by one arm at
 its balance point (about 12 N, no tipping moment in the grip); sliding it along the cubby floor takes about 7 N.
 
@@ -117,5 +142,5 @@ its balance point (about 12 N, no tipping moment in the grip); sliding it along 
 - Safety: full glass bottles; put a rubber sheet on the table in front of the rack and keep people out of reach of
   the arms during a trial. No hazardous materials.
 - Measuring: a ruler across the rack's front face for how far the cork end stands out, a small spirit level or an
-  angle gauge on the bottle, and the 20 fps trial video for the drop rule (an end coming down more than 2 cm within
-  4 frames) and for the stocked bottles (compare first and last frames; a ruler at each cork end confirms 1 cm).
+  angle gauge on the bottle, and the 20 fps trial video for the drop rule (an end coming down more than 2 cm within 4
+  frames while no hand that was on the bottle comes down with it) and for the stocked bottles (compare first and last frames; a ruler at each cork end confirms 1 cm).
