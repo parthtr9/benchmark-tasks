@@ -1,0 +1,22 @@
+{
+  "title": "Invert washed teaspoons handles-up into a clean flatware cylinder held mouth to mouth, without touching them",
+  "category": "Impact on jobs",
+  "keywords": [
+    "dishwashing",
+    "flatware cylinder",
+    "warewashing",
+    "food service",
+    "inverting",
+    "loose contents",
+    "bimanual"
+  ],
+  "instruction": "Leave every spoon handles-up in the clean top cylinder standing on the counter, with the other cylinder set down beside it and no spoon touched or spilled.",
+  "context": "Dishwashers (O*NET 35-9021) and food preparation workers (35-2021), over a million US workers, wash flatware eating-ends up in perforated cylinders, here Vollrath 52642 nylon cylinders (95 mm across, 143 mm high, 112 mm collar) and 14 Winco 0005-01 teaspoons (159 mm), then serve it handles-up without touching the eating ends. A Navy dishwasher manual gives the motion: \"place an empty cylinder over clean, air-dried silverware; invert\"; Vollrath's flatware guide says to sort it handle side up. The easy wrong ways spill: one hand or a loose grip lets the stacked pair part during the turn, and lifting the old cylinder before the pair is set down drops the spoons. Unlike the cake turned out of its pan (TK-NMZA7A), here two loose containers stay together only through the grip on their collars and the loose spoons must neither spill nor be touched. Instruction, end state only: every spoon handles-up in the clean cylinder standing on the counter, the other cylinder set down beside it.",
+  "setup": "Positions in mm from the midpoint between the two arm bases (x forward, y left, z up from the table top). One fixed layout, as in the screenshot. Two Vollrath 52642 perforated nylon flatware cylinders (95 mm across, 143 mm high, 0.154 kg each, as listed; a 112 mm collar at the open mouth, from the listed 4.4 in width; collar 4 mm and wall 2 mm thick, estimates), loose, stacked mouth to mouth on the axis x 350, y 0: the old one upright on the table (bottom at z 0, collar at z 139 to 143), the new one upside down on it (collar at z 143 to 147, its closed bottom at z 286), the two collars touching, no fastening. In the old cylinder, 14 Winco 0005-01 \"Dots\" heavyweight 18/0 stainless teaspoons (listed 6-1/4 in long, 1-5/16 in wide, 0.9 lb a dozen: 159 mm, 33 mm, 34 g) stand handles-down, bowls up, in rows across x 9 mm apart (two side by side in the five middle rows at x 332 to 368, one in each of the rows at x 314, 323, 377 and 386). Both arms start at the ready pose with grippers open.",
+  "scoring": "End state, each level including the ones before it, read from the video and a ruler. 0.25: every spoon inside the new cylinder, that cylinder upright (axis within 18 degrees). 0.5: and every spoon handle up (within 45 degrees). 0.75: and the new cylinder standing on the table, with the other one set down on the table off it (axes more than 122 mm apart). 1.0: and both grippers at least 3 cm from both cylinders, nothing moving more than 1 mm for 1 s. 0.25 and 0.5 count only once no gripper finger is within 3 cm of the new cylinder, 0.75 only once none is within 3 cm of either cylinder, so a cylinder held in place earns nothing. 0 for good if a gripper finger came within 5 mm of a spoon's surface at any time, or a spoon left both cylinders.",
+  "run_limit": "1,800 steps (1.5 minutes at 20 Hz)",
+  "reset_notes": "Stand the 14 teaspoons handles-down, bowls up, in one cylinder in the rows on the outline, set the cylinder upright on its outline, and put the second, empty cylinder upside down on it, collar on collar. Use dry cylinders and spoons.",
+  "fidelity": "Rigid parts. Cylinder diameter, height and mass as listed, its collar from the listed width; collar and wall thickness are estimates from photographs. 16-sided walls with corners on the real radius; drain holes drawn, not modelled. Spoons at the listed length, width and weight; bowl depth and handle section estimated, each a flat handle and a flat bowl, so 14 stand in rows where real bowls nest 15 to 20.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-D3DSCW"
+}
