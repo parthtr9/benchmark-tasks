@@ -1,0 +1,22 @@
+{
+  "title": "Build a mahjong wall: lift a loose row of 17 tiles as one, pressed end to end between both arms, onto the other row",
+  "category": "Societal relatability",
+  "keywords": [
+    "mahjong",
+    "wall building",
+    "tiles",
+    "table game",
+    "loose row",
+    "end-to-end press",
+    "bimanual"
+  ],
+  "instruction": "Finish this section of the mahjong wall: put the near row of tiles on top of the far row in a single lift, leaving a straight wall two tiles high with every tile face down.",
+  "context": "Seventeen loose tiles become a beam only under end-to-end compression: pressed too lightly the row sags apart as it leaves the mat, and if the press tilts the end tiles it breaks. Unlike TK-5B8MZD (one rigid box squeezed, two riding on it) and TK-4E4YZF (one box), nothing squeezed here is rigid; unlike TK-8JSCCC (tiles gripped a few per trip), the whole row goes at once. Where there is no automatic table, every player stacks a wall by hand before each hand: \"Each player then stacks a row of 18 tiles, two tiles high\" (Wikipedia, Mahjong); 17 stacks in Japanese play, 19 in American. Kitaakita City's public guide to hand stacking teaches the lift: \"両手で下山をはさみ前に押し出す。同様に上山を前に押しだし、下山の上にのせる\" (pinch the lower row between both hands and push it forward; push the upper row forward the same way and put it on the lower row). Tiles: Marushin Sangyo hand-play riichi tiles, 26 x 19 x 16 mm, 13.7 g, urea resin; a row is 328 mm long, over three times a gripper's opening.",
+  "setup": "Positions in cm from the midpoint between the two arm bases (x forward, y to the robot's left), heights above the table. One fixed layout, as in the screenshot. A green roll-up mahjong mat (fabric on rubber, 60 x 69 cm, 2 mm thick, about 1 kg) lies flat and fixed on the table, centred at x 36, y 0. On it lie 34 hand-play riichi mahjong tiles (Marushin Sangyo, urea resin, 26 x 19 x 16 mm, 13.7 g each, ivory with yellow backs), all face down with their 26 mm side pointing away from the robot, in two loose straight rows of 17 running left to right, each row 32.8 cm long (0.3 mm between neighbours) and centred on y 0: the near row on the line x 25.0, the far row on the line x 31.0, so 3.4 cm of mat shows between the rows. Each row weighs 0.23 kg. The tiles are loose: nothing joins them to each other or to the mat. Nothing else is on the table.",
+  "scoring": "Read from the video and a ruler. Nothing counts without the one lift: at one moment all 17 tiles of the near row were at least 20 mm above the mat together, still one row (a tile lying on the far row is 16 mm up, so stacking a few at a time never meets it); once made, the lift stays made. With it, the highest level reached, each including the ones before it and counted only while both grippers are at least 3 cm from every tile: 0.25: the lifted row is one row again, lying flat and face down (on the mat or on the far row), every tile within 5 mm of the straight line through its two end tiles and no joint open more than 3 mm. 0.5: and all 17 lie on the far row (underside 16 mm above the mat, within 4 mm). 0.75: and each lies within 5 mm, along and across the row, of the far tile beneath it, every far tile lies within 5 mm of where it started, and all 34 are face down. 1.0: and for one whole second no tile's corner has moved more than 1 mm and both grippers have stayed clear (a wall held still and then let go must stand a full second by itself). 0 for the whole trial if a tile leaves the table. A tile turned over or knocked out of line on the mat is not a fault by itself: only the end state counts.",
+  "run_limit": "1,200 steps (1 minute at 20 Hz)",
+  "reset_notes": "Lay the 34 tiles face down in two rows of 17 against a straightedge on the taped lines (x 25.0 and x 31.0 cm), each row centred on the midline with its tiles just touching, then take the straightedge away. Check that no tile is face up and that the mat lies flat.",
+  "fidelity": "Rigid-body physics; nothing is scripted or attached: the row is held only by contact and friction between tiles and finger pads. Each tile collides as one solid block at real size and mass with square edges; its ivory and yellow layers and the back's rounded top edge (a 1 mm step) are drawn only. Faces are not drawn: all lie face down. Estimates: tile-on-tile friction 0.3, tile-on-mat 0.4. The mat is a rigid 2 mm sheet. Start gaps are a uniform 0.3 mm.",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-GGFV8E"
+}
