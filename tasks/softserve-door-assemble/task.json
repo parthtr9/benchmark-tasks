@@ -1,0 +1,23 @@
+{
+  "title": "Reassemble a soft-serve freezer door: draw valve in its bore, draw handle engaged on its bar and pinned",
+  "category": "Impact on jobs",
+  "keywords": [
+    "food service",
+    "soft-serve freezer",
+    "draw valve",
+    "draw handle",
+    "pivot pin",
+    "linked assembly",
+    "bimanual",
+    "machine reassembly after cleaning"
+  ],
+  "instruction": "Reassemble the freezer door: draw valve in its bore, draw handle engaged on it and pinned, handle left raised.",
+  "context": "Fast food and counter workers (O*NET 35-3023, 3.86 million) list as a core task \"Prepare and serve cold drinks, or frozen milk drinks or desserts, using drink-dispensing, milkshake, or frozen custard machines\"; a soft-serve freezer without heat treatment is taken apart, washed and reassembled every day (state frozen-dessert rules), a heat-treatment one every 14 days (Taylor), and the Taylor C706 manual fits the draw valve, handle and pin at the bench before the door is hung (steps 14-16). The easy wrong ways fail: the handle's fork only straddles the valve's bar with the valve home, its knuckle only lines up with the lugs with the fork on the bar, and the pin only goes through while the handle is held there. Unlike a single pin through a clevis (#994, #2060, #140), the valve, fork and pin constrain each other in sequence.",
+  "setup": "Positions in mm from the midpoint between the two arm bases (x forward, y left, z up from the bench top). One fixed layout, as in the screenshot. A 300 x 560 x 4 mm rubber mat on the bench. Freezer door: a Taylor X87683 single-spout door (stainless, 0.87 kg), cleaned, lying on its back on the mat with its top toward the robot; its draw-valve bore runs along x with its mouth at x 240, y 0, z 54, and its two handle lugs stand above the bore near the top face, their pin axis along y at x 200, z 89. Draw valve: Taylor X56072 (160 mm long, 19 mm body, 0.09 kg) with its three O-rings (014402) on and lubricated, already started in the bore by hand: all three rings in, its head 8 mm short of home (x 232), slot toward the lugs. Draw handle: Taylor X56246 (0.31 kg), lying on the door's front face in its fitted orientation, knuckle and fork past the door's bottom edge (origin at x 396, y 40, z 95). Handle pin: Taylor 055819 (1/4 in stainless, 75 mm with a 25 mm bent end, 0.04 kg), on the mat at x 180, y -200. Both arms start at the ready pose with grippers open.",
+  "scoring": "End state, each level including the ones before it, measured with a rule and the trial video. 0.25: the draw valve bottomed in its bore (within 2 mm of the ledge, axis within 2.5 mm) with its slot within 20 degrees of facing the handle lugs. 0.5: the handle's knuckle between the lugs (within 3 mm of their hole axis) with the valve's bar inside the handle's fork. 0.75: the pin through both lugs and the knuckle (within 1.5 mm of the lug axis). 1.0: all of that with the handle within 12 degrees of raised, both grippers at least 3 cm clear and nothing moving more than 1 mm for 1 second. Each level counts only once no gripper finger is within 3 cm of the parts it credits (the valve for 0.25, and the handle for 0.5, and the pin for 0.75), so a part held in place earns nothing. 0 for good if the door was at any point moved more than 10 mm.",
+  "run_limit": "1,800 steps (1.5 minutes at 20 Hz: three parts fitted one after another, the pin while the handle is held)",
+  "reset_notes": "Pull the pin and lift the handle off; draw the valve back until its head is 8 mm short of home (a mark on the valve 8 mm from the door's top face), slot toward the lugs; lay the handle on the door's front face and the pin on the mat at their outlines. Re-lubricate the O-rings each session and check with a spring scale that the valve slides in at about 12 N.",
+  "fidelity": "Rigid parts at catalogue size. The valve's three lubricated O-rings are rigid 16-sided bands with 1.3-1.5 mm play in the bore plus radial springs of 2 N/mm per ring (their squeeze, estimate) that centre it, and 12 N of Coulomb friction along the bore (static and sliding), the same friction resisting turning (estimate: spring scale). The axis is scored within 2.5 mm for that play. Pin, lugs, slot, bar and fork are scaled from the manual's drawings (estimates).",
+  "scores": "Dream-1 run: 0.0; demo: 1.0",
+  "media": "M-QZHRW5"
+}
