@@ -206,6 +206,12 @@ LEVER_R = 0.028                  # where along a lever the fingertips push
 LEVER_END = math.radians(102.0)   # 12 degrees past the stop: on Isaac a 91 degree sweep left two hinges at 65 and 78 degrees
 LEVER_YAW = {"t": math.radians(35.0), "b": math.radians(15.0)}
 PARK_BACK = 0.075                # how far in front of the carrier a hand parks
+DOOR_TO_LEVER_BACK = 0.05        # after letting go of the door, the left hand backs off this much more, clear of the
+#                                  top's head ledge, then rises straight up to
+DOOR_TO_LEVER_Z = 0.36           # this tool height above the table before it crosses to the top-left lever: the whole hand
+#                                  is then at least 30 mm above the door's top edge (267 mm) and the shell, and it comes
+#                                  down only over the lever (the first revision crossed at about 0.22 m and its wrist and
+#                                  gripper swept low past the carrier's front left corner and the door face)
 
 
 def world(T, x, y, z):
@@ -275,7 +281,10 @@ def script(task, ctx):
             F = best_flip(A, [(p + 0.06 * up, r0)] + [(p, rot_x(a) @ r0) for a in np.linspace(0.0, KNOB_TURN, 4)])
             r0 = r0 @ F
             r1 = rot_x(KNOB_TURN) @ r0
-            return chain(A.move(p + 0.06 * up, r0, 2.5, G_KNOB), A.move(p, r0, 1.2), A.hold(0.5, 0.0),
+            # first to a point 6 cm in front of the knob, so the hand coming from the brace or the ledge stays 6-7 cm
+            # off the carrier's front face (the first revision's straight path passed 8 mm from the bottom shell)
+            return chain(A.move(p - 0.06 * ex + 0.06 * up, r0, 1.5, G_KNOB), A.move(p + 0.06 * up, r0, 1.2),
+                         A.move(p, r0, 1.2), A.hold(0.5, 0.0),
                          A.follow(lambda s: (p, rot_x(s * KNOB_TURN) @ r0), 2.0), A.hold(0.3), A.hold(0.5, G_KNOB),
                          A.move(p - 0.035 * ex, r1, 0.8))
 
@@ -310,16 +319,24 @@ def script(task, ctx):
                          shift(L, -0.03 * ex, 0.8))
 
     # 4. hinge levers pushed round by closed fingertips
-    def to_lever(A, sg, where):
-        """Bring closed fingertips beside the open lever, on its outer side."""
+    def to_lever(A, sg, where, high: bool = False):
+        """Bring closed fingertips beside the open lever, on its outer side. ``high``: from in front of the door, back
+        off, rise straight up above the door and the shell, cross over, and come down only over the lever."""
         rot = lever_rot(sg, where)
         start = lever_tool(T, sg, where, 0.0) + 0.012 * sg * ey
         pre = start + 0.03 * sg * ey - 0.03 * ex + (0.02 if where == "t" else 0.0) * up
         rot = rot @ best_flip(A, [(pre, rot), (start, rot), (lever_tool(T, sg, where, LEVER_END), rot)])
-        yield from chain(A.move(pre, rot, 2.2, 0.0), A.move(start, rot, 0.8))
+        if high:
+            back = A.pos - DOOR_TO_LEVER_BACK * ex
+            over = np.array([pre[0], pre[1], T.TOP + DOOR_TO_LEVER_Z])
+            yield from chain(A.move(back, A.rot, 0.8, 0.0), A.move(np.array([back[0], back[1], over[2]]), A.rot, 1.2),
+                             A.move(over, rot, 1.6), A.move(pre, rot, 1.0))
+        else:
+            yield from A.move(pre, rot, 2.2, 0.0)
+        yield from A.move(start, rot, 0.8)
 
-    def sweep(A, sg, where, stay: bool = False):
-        yield from to_lever(A, sg, where)
+    def sweep(A, sg, where, stay: bool = False, high: bool = False):
+        yield from to_lever(A, sg, where, high)
         rot = A.rot
         yield from chain(A.limit(SWEEP_CORR_MAX),
                          A.follow(lambda s: (lever_tool(T, sg, where, s * LEVER_END), rot), 2.2, servo=XYZ), A.hold(0.2, servo=XYZ))
@@ -352,7 +369,7 @@ def script(task, ctx):
     if variant == "two_hinges":
         yield from chain(park(L, 1.0), wait(1.5))
         return
-    yield from chain(sweep(L, 1.0, "t"), sweep(L, 1.0, "b", stay=variant == "held"))
+    yield from chain(sweep(L, 1.0, "t", high=True), sweep(L, 1.0, "b", stay=variant == "held"))
     if variant == "held":
         yield from wait(3.0)
         return
@@ -377,6 +394,18 @@ class Ctx:
         ids = art.find_joints(ARM_JOINTS, preserve_order=True)[0]
         pos, rot = ik.tcp_pose(_np(art.data.joint_pos)[0][ids], station.BASES[name])
         return np.asarray(pos, float), np.asarray(rot, float)
+
+    def measured(self, name: str):
+        """Logging only: the arm's measured joints and finger opening (1 open .. 0 closed)."""
+        from partkit import _np
+        from yam_arena import station
+        from yam_arena.constants import ARM_JOINTS, FINGER_OPEN
+
+        art = self.emb._env.unwrapped.scene[f"{name}_robot"]
+        jp, jn = _np(art.data.joint_pos)[0], list(art.joint_names)
+        q = [float(jp[jn.index(j)]) for j in ARM_JOINTS]
+        grip = float(np.clip(jp[jn.index("joint7")] / FINGER_OPEN, 0.0, 1.0)) if "joint7" in jn else 1.0
+        return q, grip, station.BASES[name]
 
     def action(self):
         from inspect_robots.types import Action
@@ -412,6 +441,9 @@ def run(task_path: str, out_dir: str, max_steps: int = 2400, record: bool = True
     debug = os.environ.get("DEMO_DEBUG", "1") != "0"
     min_gap = float("inf")
     import clearance
+
+    clouds = clearance.PartClouds(task.OBJECTS)      # logging only: each hand's distance to each part (HANDS lines)
+    hand_min: dict = {}
 
     def snap(o):
         if record:
@@ -468,6 +500,20 @@ def run(task_path: str, out_dir: str, max_steps: int = 2400, record: bool = True
             except Exception as exc:  # noqa: BLE001 - logging only
                 if steps == 5:
                     print(f"clearance unavailable: {exc!r}", flush=True)
+        if steps % 5 == 0 or 230 <= steps <= 280 or 990 <= steps <= 1120:   # every step where the hands travel
+            try:                                     # logging only: measured joints against the parts' poses
+                from yam_arena.scene import object_states
+
+                gaps = clouds.hand_gaps(object_states(emb._env, emb.task.names),
+                                        {"L": ctx.measured("left"), "R": ctx.measured("right")})
+                print("HANDS " + json.dumps({"step": steps, **gaps}), flush=True)
+                for tag, v in gaps.items():
+                    for label, d in v.items():
+                        if d < hand_min.get(f"{tag}:{label}", (np.inf, 0))[0]:
+                            hand_min[f"{tag}:{label}"] = (d, steps)
+            except Exception as exc:  # noqa: BLE001 - logging only
+                if steps == 5:
+                    print(f"hand gaps unavailable: {exc!r}", flush=True)
         if debug and steps % 10 == 0:
             try:
                 print("TRACE " + json.dumps(row(steps, info), default=str), flush=True)
@@ -485,7 +531,8 @@ def run(task_path: str, out_dir: str, max_steps: int = 2400, record: bool = True
               "max_trim_mm": {"left": round(1000 * ctx.left.max_corr, 1), "right": round(1000 * ctx.right.max_corr, 1)},
               "min_arm_link_gap_mm": round(1000 * min_gap, 1) if min_gap < float("inf") else None,
               "levels": S["levels"], "base_moved": S["moved"], "part_dropped": S["dropped"],
-              "finger_check": S["finger_check"]}
+              "finger_check": S["finger_check"],
+              "hand_part_min_mm": {k: {"mm": v[0], "step": v[1]} for k, v in sorted(hand_min.items())}}
     if record:
         import imageio
 

@@ -105,3 +105,67 @@ def min_clearance(qa, ga, base_a, qb, gb, base_b, held_a=(), held_b=()):
                 if d < best[0]:
                     best = (d, (f"{tag}.{l}", "held part of the other hand"))
     return best
+
+
+# -- logging only: each hand's distance to each part of the task (the demo's TRACE prints it) -------------------------
+
+HAND_LINKS = ("gripper", "tip_left", "tip_right", "link5")
+
+
+def _rot_wxyz(q) -> np.ndarray:
+    w, x, y, z = q
+    return np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                     [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                     [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]])
+
+
+def _rot_axis(axis: str, a: float) -> np.ndarray:
+    import math
+
+    c, s = math.cos(a), math.sin(a)
+    return {"X": np.array([[1, 0, 0], [0, c, -s], [0, s, c]]), "Y": np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]]),
+            "Z": np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])}[axis]
+
+
+class PartClouds:
+    """Surface points (4 mm apart) of every box of each loose part's body and of each of its hinges, in the part frame
+    (hinges at angle 0), kept box by box so only boxes near a hand are measured."""
+
+    def __init__(self, specs, step: float = 0.004):
+        self.items = []                                     # (label, part name, hinge or None, [box points])
+        for spec in specs:
+            if getattr(spec, "fixed", False) or not getattr(spec, "boxes", ()):
+                continue
+            groups = [(spec.name, None, spec.boxes)] + [(f"{spec.name}.{h.name}", h, h.boxes)
+                                                        for h in getattr(spec, "hinges", ()) if h.boxes]
+            for label, h, boxes in groups:
+                clouds = []
+                for b in boxes:
+                    R = _rot_wxyz(b[3]) if len(b) > 3 else np.eye(3)
+                    clouds.append(box_points((0, 0, 0), b[1], step) @ R.T + np.asarray(b[0], float))
+                self.items.append((label, spec.name, h, clouds))
+
+    def hand_gaps(self, states, arms, near: float = 0.05) -> dict:
+        """``arms``: {"L": (q, grip, base), ...} at the measured joints. Per arm, the parts within ``near`` of its hand
+        links and their smallest distance in mm, nearest first."""
+        hands = {}
+        for tag, (q, grip, base) in arms.items():
+            pts = arm_points(q, grip, base)
+            hands[tag] = np.concatenate([p for link, p in pts.items() if link in HAND_LINKS])
+        out = {tag: {} for tag in hands}
+        for label, name, h, clouds in self.items:
+            st = states[name]
+            R, t = st.rotation(), np.asarray(st.pos, float)
+            if h is not None:
+                piv = np.asarray(h.pivot, float)
+                Rh = _rot_axis(h.axis, float(st.hinges.get(h.name, 0.0)))
+            for c in clouds:
+                local = c if h is None else (c - piv) @ Rh.T + piv
+                w = local @ R.T + t
+                for tag, hand in hands.items():
+                    if _gap(hand, w) > near:
+                        continue
+                    d = 1000 * _min_dist(hand, w)
+                    if d < out[tag].get(label, np.inf):
+                        out[tag][label] = round(d, 1)
+        return {tag: dict(sorted(v.items(), key=lambda kv: kv[1])) for tag, v in out.items()}

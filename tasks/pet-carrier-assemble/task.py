@@ -327,9 +327,11 @@ RIDGE_OUT = 0.6           # mm: a click ridge counts as sprung back when within 
 TURNED = 80.0             # degrees of a quarter turn that count as locked (knob) or closed (hinge)
 PIN_TOL = 4.5             # mm: a prong's axis from its hinge's axis
 DOOR_UP = 5.0             # mm: the door's height above (or below) its seat on the sill
-BASE_MOVE, BASE_TILT = 0.020, math.radians(5.0)
+TIP_OVER = math.radians(45.0)   # the bottom shell tipped onto a side or an end: 0 for good
+BASE_MOVE, BASE_TILT = 0.020, math.radians(5.0)    # logged only (revision 2): moving the carrier costs nothing
 RELEASE = 0.03
 MOVE_TOL = 0.001          # m: nothing moves more than this over the last 20 steps (1 s)
+REACH_MM = {"carrier": 240.0, "top": 240.0, "door": 100.0}   # mm from the origin to the far corner, for turns
 HINGES = (("hinge_bl", 1.0, "b"), ("hinge_br", -1.0, "b"), ("hinge_tl", 1.0, "t"), ("hinge_tr", -1.0, "t"))
 ENVELOPE = ((-LEDGE_D, L), (-FL_OUT, FL_OUT), (0.0, H))      # the carrier's outline, carrier frame (mm)
 _STATE: dict = {}
@@ -337,7 +339,7 @@ _STATE: dict = {}
 
 @on_reset
 def _reset_state(environment=None) -> None:
-    _STATE.update(step=0, scored=None, last=(0.0, False), base0=None, moved=False, dropped=False, released=False,
+    _STATE.update(step=0, scored=None, last=(0.0, False), base0=None, moved=False, tipped=False, dropped=False, released=False,
                   finger_check=None, recent=[], levels=(False, False, False), geom={})
 
 
@@ -421,20 +423,29 @@ def _update(objects) -> tuple[float, bool]:
     if _STATE["base0"] is None:
         _STATE["base0"] = carrier.pos.copy()
     tilt = math.acos(max(-1.0, min(1.0, float(carrier.rotation()[2, 2]))))
+    # Revision 2: moving or turning the empty carrier is not penalised (it does not stop an undamaged assembly);
+    # `moved` is kept for the log only. 0 for good only if the carrier tips over or a part leaves the table.
     _STATE["moved"] |= bool(float(np.linalg.norm((carrier.pos - _STATE["base0"])[:2])) > BASE_MOVE or tilt > BASE_TILT)
-    _STATE["dropped"] |= bool(min(float(top.pos[2]), float(door.pos[2])) < TOP - 0.05)        # off the table
+    _STATE["tipped"] |= bool(tilt > TIP_OVER)
+    _STATE["dropped"] |= bool(min(float(carrier.pos[2]), float(top.pos[2]), float(door.pos[2])) < TOP - 0.05)
     g = geometry(objects)
     _STATE["geom"] = g
     home, locked, shut = _levels(g)
     _STATE["levels"] = (home, locked, shut)
     recent = _STATE["recent"]
     turns = [math.radians(a) * KNOB_R / 1000 for a in g["knob_deg"]] + [math.radians(a) * LEVER_L / 1000 for a in g["hinge_deg"]]
-    recent.append(np.concatenate([carrier.pos, top.pos, door.pos, turns]))
+    # whole pose: each part's position and its turn, as the travel of its far corner (rotation matrix x reach)
+    turned_by = [objects[n].rotation().ravel() * REACH_MM[n] / 1000 for n in ("carrier", "top", "door")]
+    # the second is counted from the release: a step with a gripper within 3 cm starts the window again
+    recent.append((np.concatenate([carrier.pos, top.pos, door.pos, *turned_by, turns]), bool(_STATE["released"])))
     del recent[:-20]
-    still = len(recent) == 20 and all(float(np.abs(r - recent[-1]).max()) < MOVE_TOL for r in recent)
-    if _STATE["moved"] or _STATE["dropped"]:
+    still = (len(recent) == 20 and all(free for _, free in recent)
+             and all(float(np.abs(r - recent[-1][0]).max()) < MOVE_TOL for r, _ in recent))
+    if _STATE["tipped"] or _STATE["dropped"]:
         result = (0.0, False)
-    elif shut and _STATE["released"] and still:
+    elif not _STATE["released"]:
+        result = (0.0, False)          # revision 2: no level counts while a gripper is within 3 cm (review rule 6)
+    elif shut and still:
         result = (1.0, True)
     elif shut:
         result = (0.75, False)
@@ -461,9 +472,10 @@ def distance(objects) -> float:
 
 
 def score(objects) -> float:
-    """0.25 top slid home on the bottom; 0.5 both knobs locked; 0.75 door fitted (four prongs in their hinges) and
-    all four hinges closed; 1.0 with both grippers clear and everything still for 1 s. 0 for good if at any point the
-    bottom shell was moved more than 2 cm or tipped more than 5 degrees, or the top or the door left the table."""
+    """Every level only with both grippers 3 cm clear of the carrier and the door (else 0). 0.25 top slid home on the
+    bottom; 0.5 both knobs locked; 0.75 door fitted (four prongs in their hinges) and all four hinges closed; 1.0 with
+    everything still for 1 s. 0 for good if at any point the bottom shell tipped more than 45 degrees, or the bottom,
+    the top or the door left the table."""
     return _update(objects)[0]
 
 
