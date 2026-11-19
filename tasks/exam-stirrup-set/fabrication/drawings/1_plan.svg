@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="562" height="538" viewBox="0 0 562 538"><rect width="100%" height="100%" fill="white"/>
+<text x="10.0" y="18.0" font-family="Helvetica,Arial,sans-serif" font-size="13" text-anchor="start" font-weight="bold" fill="#111">Fixture plan view (scale 0.6 px/mm; front face at the top, robot side)</text>
+<rect x="60.0" y="95.0" width="402.0" height="348.0" fill="none" stroke="#222" stroke-width="1.5"/>
+<text x="261.0" y="90.2" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#111">front face (1/4 in plywood) with two windows</text>
+<rect x="87.0" y="92.0" width="54.0" height="6.0" fill="#ddd" stroke="#222" stroke-width="1.0"/>
+<circle cx="114.0" cy="125.0" r="4.0" fill="#333" stroke="#222"/>
+<rect x="76.8" y="158.0" width="74.4" height="264.0" fill="none" stroke="#222" stroke-width="1.0" stroke-dasharray="4 3"/>
+<rect x="106.8" y="185.0" width="14.4" height="234.0" fill="#eee" stroke="#222" stroke-width="1.0"/>
+<line x1="114.0" y1="77.0" x2="114.0" y2="416.0" stroke="#555" stroke-width="3"/>
+<rect x="76.8" y="158.0" width="7.2" height="7.2" fill="#999" stroke="#222" stroke-width="1.0"/>
+<rect x="144.0" y="158.0" width="7.2" height="7.2" fill="#999" stroke="#222" stroke-width="1.0"/>
+<rect x="76.8" y="414.8" width="7.2" height="7.2" fill="#999" stroke="#222" stroke-width="1.0"/>
+<rect x="144.0" y="414.8" width="7.2" height="7.2" fill="#999" stroke="#222" stroke-width="1.0"/>
+<rect x="381.0" y="92.0" width="54.0" height="6.0" fill="#ddd" stroke="#222" stroke-width="1.0"/>
+<circle cx="408.0" cy="125.0" r="4.0" fill="#333" stroke="#222"/>
+<rect x="370.8" y="158.0" width="74.4" height="264.0" fill="none" stroke="#222" stroke-width="1.0" stroke-dasharray="4 3"/>
+<rect x="400.8" y="185.0" width="14.4" height="234.0" fill="#eee" stroke="#222" stroke-width="1.0"/>
+<line x1="408.0" y1="77.0" x2="408.0" y2="416.0" stroke="#555" stroke-width="3"/>
+<rect x="370.8" y="158.0" width="7.2" height="7.2" fill="#999" stroke="#222" stroke-width="1.0"/>
+<rect x="438.0" y="158.0" width="7.2" height="7.2" fill="#999" stroke="#222" stroke-width="1.0"/>
+<rect x="370.8" y="414.8" width="7.2" height="7.2" fill="#999" stroke="#222" stroke-width="1.0"/>
+<rect x="438.0" y="414.8" width="7.2" height="7.2" fill="#999" stroke="#222" stroke-width="1.0"/>
+<line x1="114.0" y1="95.0" x2="114.0" y2="69.0" stroke="#666" stroke-width="0.5"/>
+<line x1="408.0" y1="95.0" x2="408.0" y2="69.0" stroke="#666" stroke-width="0.5"/>
+<line x1="114.0" y1="69.0" x2="408.0" y2="69.0" stroke="#a33" stroke-width="0.7"/>
+<polygon points="114.0,69.0 119.0,71.0 119.0,67.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="408.0,69.0 403.0,67.0 403.0,71.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="261.0" y="59.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">bars 490 apart</text>
+<line x1="60.0" y1="443.0" x2="60.0" y2="459.0" stroke="#666" stroke-width="0.5"/>
+<line x1="462.0" y1="443.0" x2="462.0" y2="459.0" stroke="#666" stroke-width="0.5"/>
+<line x1="60.0" y1="459.0" x2="462.0" y2="459.0" stroke="#a33" stroke-width="0.7"/>
+<polygon points="60.0,459.0 65.0,461.0 65.0,457.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="462.0,459.0 457.0,457.0 457.0,461.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="261.0" y="470.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">670</text>
+<line x1="462.0" y1="95.0" x2="476.0" y2="95.0" stroke="#666" stroke-width="0.5"/>
+<line x1="462.0" y1="443.0" x2="476.0" y2="443.0" stroke="#666" stroke-width="0.5"/>
+<line x1="476.0" y1="95.0" x2="476.0" y2="443.0" stroke="#a33" stroke-width="0.7"/>
+<polygon points="476.0,95.0 474.0,100.0 478.0,100.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="476.0,443.0 478.0,438.0 474.0,438.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="483.0" y="272.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">580</text>
+<line x1="72.0" y1="95.0" x2="72.0" y2="95.0" stroke="#666" stroke-width="0.5"/>
+<line x1="72.0" y1="125.0" x2="72.0" y2="125.0" stroke="#666" stroke-width="0.5"/>
+<line x1="72.0" y1="95.0" x2="72.0" y2="125.0" stroke="#a33" stroke-width="0.7"/>
+<polygon points="72.0,95.0 70.0,100.0 74.0,100.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="72.0,125.0 74.0,120.0 70.0,120.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="72.0" y="113.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">50</text>
+<text x="72.0" y="133.4" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">boss axis</text>
+<line x1="450.0" y1="158.0" x2="450.0" y2="158.0" stroke="#666" stroke-width="0.5"/>
+<line x1="450.0" y1="422.0" x2="450.0" y2="422.0" stroke="#666" stroke-width="0.5"/>
+<line x1="450.0" y1="158.0" x2="450.0" y2="422.0" stroke="#a33" stroke-width="0.7"/>
+<polygon points="450.0,158.0 448.0,163.0 452.0,163.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="450.0,422.0 452.0,417.0 448.0,417.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="450.0" y="293.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">ceiling strip 105-545</text>
+<line x1="168.0" y1="185.0" x2="168.0" y2="185.0" stroke="#666" stroke-width="0.5"/>
+<line x1="168.0" y1="419.0" x2="168.0" y2="419.0" stroke="#666" stroke-width="0.5"/>
+<line x1="168.0" y1="185.0" x2="168.0" y2="419.0" stroke="#a33" stroke-width="0.7"/>
+<polygon points="168.0,185.0 166.0,190.0 170.0,190.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="168.0,419.0 170.0,414.0 166.0,414.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="168.0" y="305.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">support rail 150-540</text>
+<text x="10.0" y="508.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">Grey squares: ceiling pillars (12 x 12, printed). Dashed: ceiling strip 124 wide (1/4 in plywood), notch plate and groove rails under it.</text>
+<text x="10.0" y="522.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">Windows 90 wide, 121.7 to 163.2 above the bench. Base board 3/4 in plywood, 670 x 580.</text>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="766" height="576" viewBox="0 0 766 576"><rect width="100%" height="100%" fill="white"/>
+<text x="10.0" y="18.0" font-family="Helvetica,Arial,sans-serif" font-size="13" text-anchor="start" font-weight="bold" fill="#111">Section along a bar at the boss (scale 2.2 px/mm), bar drawn fully out</text>
+<line x1="70.0" y1="458.0" x2="576.0" y2="458.0" stroke="#222" stroke-width="1.5"/>
+<rect x="70.0" y="418.4" width="506.0" height="39.6" fill="#f1e7d0" stroke="#222" stroke-width="1.0"/>
+<rect x="213.0" y="213.8" width="110.0" height="204.6" fill="#ccc" stroke="#222" stroke-width="1.0"/>
+<rect x="213.0" y="194.0" width="110.0" height="17.6" fill="#888" stroke="#222" stroke-width="1.0"/>
+<rect x="312.0" y="194.0" width="88.0" height="36.0" fill="#888" stroke="#222" stroke-width="1.0"/>
+<rect x="312.0" y="230.0" width="134.2" height="22.0" fill="#888" stroke="#222" stroke-width="1.0"/>
+<rect x="408.8" y="230.0" width="48.4" height="97.0" fill="#888" stroke="#222" stroke-width="1.0"/>
+<circle cx="433.0" cy="197.0" r="24.2" fill="#bbb" stroke="#222"/>
+<rect x="235.0" y="158.1" width="66.0" height="24.1" fill="#666" stroke="#222" stroke-width="1.0"/>
+<circle cx="268.0" cy="172.0" r="5.5" fill="white" stroke="#222"/>
+<rect x="70.0" y="143.0" width="506.0" height="14.0" fill="#9aa" stroke="#222" stroke-width="1.0"/>
+<rect x="92.0" y="165.8" width="484.0" height="7.0" fill="#cde" stroke="#222" stroke-width="1.0"/>
+<rect x="426.4" y="77.0" width="13.2" height="66.0" fill="#555" stroke="#222" stroke-width="1.0"/>
+<rect x="389.0" y="63.2" width="187.0" height="13.2" fill="#f1e7d0" stroke="#222" stroke-width="1.0"/>
+<rect x="415.4" y="76.4" width="35.2" height="11.0" fill="#e9a" stroke="#222" stroke-width="1.0"/>
+<rect x="154.7" y="40.0" width="6.6" height="59.0" fill="#f1e7d0" stroke="#222" stroke-width="1.0"/>
+<rect x="154.7" y="190.4" width="6.6" height="228.0" fill="#f1e7d0" stroke="#222" stroke-width="1.0"/>
+<line x1="576.0" y1="76.4" x2="590.0" y2="76.4" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="79.4" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">groove ceiling 173.47</text>
+<line x1="576.0" y1="99.0" x2="590.0" y2="99.0" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="102.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">window top 163.2</text>
+<line x1="576.0" y1="143.0" x2="590.0" y2="143.0" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="146.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">bar top 143.18</text>
+<line x1="576.0" y1="150.0" x2="590.0" y2="156.0" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="159.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">bar centre 140.0</text>
+<line x1="576.0" y1="157.0" x2="590.0" y2="169.0" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="172.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">bar underside 136.82</text>
+<line x1="576.0" y1="172.0" x2="590.0" y2="182.0" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="185.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">lift pin 130.0</text>
+<line x1="576.0" y1="172.8" x2="590.0" y2="195.0" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="198.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">T-rail underside 129.65</text>
+<line x1="576.0" y1="190.4" x2="590.0" y2="208.0" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="211.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">window bottom 121.65</text>
+<line x1="576.0" y1="211.6" x2="590.0" y2="221.0" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="224.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">yoke plate 112-120</text>
+<line x1="576.0" y1="418.4" x2="590.0" y2="418.4" stroke="#a33" stroke-width="0.5"/>
+<text x="593.0" y="421.4" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#a33">base top 18</text>
+<line x1="268.0" y1="493.2" x2="268.0" y2="493.2" stroke="#666" stroke-width="0.5"/>
+<line x1="433.0" y1="493.2" x2="433.0" y2="493.2" stroke="#666" stroke-width="0.5"/>
+<line x1="268.0" y1="493.2" x2="433.0" y2="493.2" stroke="#a33" stroke-width="0.7"/>
+<polygon points="268.0,493.2 273.0,495.2 273.0,491.2" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="433.0,493.2 428.0,491.2 428.0,495.2" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="350.5" y="496.2" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">post and roller 75 behind the axis</text>
+<line x1="158.0" y1="471.2" x2="158.0" y2="471.2" stroke="#666" stroke-width="0.5"/>
+<line x1="268.0" y1="471.2" x2="268.0" y2="471.2" stroke="#666" stroke-width="0.5"/>
+<line x1="158.0" y1="471.2" x2="268.0" y2="471.2" stroke="#a33" stroke-width="0.7"/>
+<polygon points="158.0,471.2 163.0,473.2 163.0,469.2" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="268.0,471.2 263.0,469.2 263.0,473.2" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="213.0" y="474.2" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">boss axis 50 behind the face</text>
+<text x="10.0" y="532.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">Roller: printed 22 x 7 mm on an M8 bolt in the plunger's fork; spring in the tower's bore on an M8 adjusting screw.</text>
+<text x="10.0" y="546.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">The trunnion (dark) turns on two 5 mm dowel pins in the yoke's cheeks; its lips run in the 4 mm gap between the bar and the T-rail (light blue).</text>
+<text x="10.0" y="560.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">Spring: 2.13 N/mm, preloaded to 11.2 N with the bar level (M8 adjusting screw under it). Notch plate (pink) under the ceiling strip.</text>
+</svg>

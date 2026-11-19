@@ -1,0 +1,407 @@
+{
+  "task": "exam-stirrup-set",
+  "revision": "r2 fixture",
+  "units": "mm",
+  "dimensions": {
+    "shelf_w": 670.0,
+    "shelf_d": 580.0,
+    "shelf_h": 220.0,
+    "bar_y": 245.0,
+    "bar_z": 140.0,
+    "bar_w": 19.0,
+    "bar_t": 6.35,
+    "bar_len": 565.0,
+    "draw": 400.0,
+    "stick": 30.0,
+    "boss_back": 50.0,
+    "pivot_back": 10.0,
+    "post_r": 75.0,
+    "post_d": 6.0,
+    "post_h": 30.0,
+    "notch_w": 8.0,
+    "notch_d": 5.0,
+    "ceil": 173.475,
+    "win_w": 90.0,
+    "win_top": 163.2,
+    "win_bot": 121.65,
+    "rail_gap": 4.0,
+    "rail_t": 3.175,
+    "rail_w": 12.7,
+    "rail_front": 65.0,
+    "z_rail": 129.65,
+    "pin_down": 10.0,
+    "swing_in": 14.999999999999998,
+    "swing_out": 27.0,
+    "lift_lo": -3.0000000000000004,
+    "lift_hi": 8.0,
+    "lift_k": 12.0,
+    "lift_pre": 4.0,
+    "unfold_stop": 100.0,
+    "bar_mass": 0.6,
+    "stirrup_mass": 0.3,
+    "arm_s0": 22.0,
+    "arm_s1": 150.0,
+    "arm_w": 25.0,
+    "arm_t": 6.0,
+    "loop_s0": 150.0,
+    "loop_l": 100.0,
+    "loop_w": 70.0,
+    "loop_r": 6.0,
+    "post_x_on_bar": 555.0,
+    "stop_x_on_bar": 496.0,
+    "support_x0": 150.0,
+    "support_x1": 540.0,
+    "ceil_x0": 105.0,
+    "ceil_x1": 545.0,
+    "groove_x0": 136.0,
+    "spring_rate": 2.1333333333333333,
+    "spring_pre": 11.17010721276371,
+    "z_pin": 130.0
+  },
+  "pieces": [
+    {
+      "name": "pedestal",
+      "qty": 2,
+      "how": "printed (PETG)",
+      "file": "stl/pedestal.stl"
+    },
+    {
+      "name": "yoke_left",
+      "qty": 1,
+      "how": "printed (PETG)",
+      "file": "stl/yoke_left.stl"
+    },
+    {
+      "name": "notch_plate_left",
+      "qty": 1,
+      "how": "printed (PETG)",
+      "file": "stl/notch_plate_left.stl"
+    },
+    {
+      "name": "yoke_right",
+      "qty": 1,
+      "how": "printed (PETG)",
+      "file": "stl/yoke_right.stl"
+    },
+    {
+      "name": "notch_plate_right",
+      "qty": 1,
+      "how": "printed (PETG)",
+      "file": "stl/notch_plate_right.stl"
+    },
+    {
+      "name": "trunnion",
+      "qty": 2,
+      "how": "printed (PETG)",
+      "file": "stl/trunnion.stl"
+    },
+    {
+      "name": "plunger",
+      "qty": 2,
+      "how": "printed (PETG)",
+      "file": "stl/plunger.stl"
+    },
+    {
+      "name": "roller",
+      "qty": 2,
+      "how": "printed (PETG)",
+      "file": "stl/roller.stl"
+    },
+    {
+      "name": "spacer_narrow",
+      "qty": 6,
+      "how": "printed (PETG)",
+      "file": "stl/spacer_narrow.stl"
+    },
+    {
+      "name": "spacer_wide_draw_stop",
+      "qty": 2,
+      "how": "printed (PETG)",
+      "file": "stl/spacer_wide_draw_stop.stl"
+    },
+    {
+      "name": "ceiling_pillar",
+      "qty": 8,
+      "how": "printed (PETG)",
+      "file": "stl/ceiling_pillar.stl"
+    },
+    {
+      "name": "support_riser",
+      "qty": 4,
+      "how": "printed (PETG)",
+      "file": "stl/support_riser.stl"
+    },
+    {
+      "name": "clevis",
+      "qty": 2,
+      "how": "printed (PETG)",
+      "file": "stl/clevis.stl"
+    },
+    {
+      "name": "loop_shell_top",
+      "qty": 2,
+      "how": "printed (PETG)",
+      "file": "stl/loop_shell_top.stl"
+    },
+    {
+      "name": "loop_shell_bottom",
+      "qty": 2,
+      "how": "printed (PETG)",
+      "file": "stl/loop_shell_bottom.stl"
+    },
+    {
+      "name": "loop_former",
+      "qty": 1,
+      "how": "printed (PETG)",
+      "file": "stl/loop_former.stl"
+    },
+    {
+      "name": "arm_edge_strip",
+      "qty": 4,
+      "how": "printed (PETG)",
+      "file": "stl/arm_edge_strip.stl"
+    },
+    {
+      "name": "base board",
+      "qty": 1,
+      "how": "cut from 3/4 in plywood",
+      "size": "670 x 580"
+    },
+    {
+      "name": "support rail strip",
+      "qty": 2,
+      "how": "cut from 3/4 in plywood",
+      "size": "24 x 390"
+    },
+    {
+      "name": "front face",
+      "qty": 1,
+      "how": "cut from 1/4 in plywood",
+      "size": "670 x 220, two windows 90 wide from 121.7 to 163.2 above the bench, centred 245 either side"
+    },
+    {
+      "name": "side panels",
+      "qty": 2,
+      "how": "cut from 1/4 in plywood",
+      "size": "580 x 202"
+    },
+    {
+      "name": "ceiling strips",
+      "qty": 2,
+      "how": "cut from 1/4 in plywood",
+      "size": "124 x 440"
+    },
+    {
+      "name": "top",
+      "qty": 1,
+      "how": "cut from 1/4 in plywood",
+      "size": "670 x 580, on the side panels"
+    },
+    {
+      "name": "stand legs",
+      "qty": 2,
+      "how": "cut from 2 x 4 in lumber",
+      "size": "the bench's height less 89 mm (the rail stands on edge on them)"
+    },
+    {
+      "name": "stand rail",
+      "qty": 1,
+      "how": "cut from 2 x 4 in lumber",
+      "size": "600 long, on edge under the base board's rear 320 mm, screwed to the legs"
+    },
+    {
+      "name": "groove rails",
+      "qty": 4,
+      "how": "cut from 3/16 x 3/8 in basswood",
+      "size": "409 long"
+    },
+    {
+      "name": "bars",
+      "qty": 2,
+      "how": "cut from 3/4 x 1/4 in steel flat",
+      "size": "565 long, drilled as drawing 4"
+    },
+    {
+      "name": "arms",
+      "qty": 2,
+      "how": "cut from 3/4 x 1/4 in steel flat (bar offcut)",
+      "size": "128 long, two 4.2 holes"
+    },
+    {
+      "name": "slugs",
+      "qty": 2,
+      "how": "cut from 3/4 x 1/4 in steel flat (bar offcut)",
+      "size": "60 long"
+    },
+    {
+      "name": "T-rails",
+      "qty": 2,
+      "how": "cut from 1/2 x 1/8 in aluminium flat",
+      "size": "500 long, holes matching the bar"
+    },
+    {
+      "name": "loop cores",
+      "qty": 2,
+      "how": "cut from 1/4 in steel rod",
+      "size": "252 long, bent on the printed former"
+    }
+  ],
+  "bom": [
+    {
+      "item": "Steel flat bar",
+      "spec": "3/4 x 1/4 in, 36 in, plain steel (the two bars; offcuts make the arms and slugs)",
+      "source": "Home Depot, Everbilt 3/4 in x 36 in x 1/4 in plain flat bar",
+      "price_usd": 15.27,
+      "qty": 2,
+      "price": "listed price, 2026-11-18"
+    },
+    {
+      "item": "Aluminium flat bar",
+      "spec": "1/2 x 1/8 in, 48 in (the two T-rails, 500 mm each)",
+      "source": "Home Depot or hardware store, plain aluminium flat bar",
+      "price_usd": 12.0,
+      "qty": 1,
+      "price": "estimate"
+    },
+    {
+      "item": "Steel round rod",
+      "spec": "1/4 in, 36 in (the two loop cores, 252 mm each)",
+      "source": "hardware store, plain steel rod",
+      "price_usd": 6.0,
+      "qty": 1,
+      "price": "estimate"
+    },
+    {
+      "item": "Plywood project panel",
+      "spec": "23/32 in sanded, 2 x 4 ft (base board 670 x 580, support rails)",
+      "source": "Home Depot, 23/32 in x 2 ft x 4 ft sanded plywood project panel",
+      "price_usd": 25.04,
+      "qty": 1,
+      "price": "listed price, 2026-11-18"
+    },
+    {
+      "item": "Plywood project panel",
+      "spec": "1/4 in x 2 x 4 ft (front face, two sides, two ceiling strips)",
+      "source": "Home Depot, PureBond birch 1/4 in x 2 ft x 4 ft project panel",
+      "price_usd": 20.89,
+      "qty": 1,
+      "price": "listed price, 2026-11-18"
+    },
+    {
+      "item": "Plywood project panel",
+      "spec": "1/4 in x 2 x 4 ft (the shelf's top, 670 x 580)",
+      "source": "Home Depot, PureBond birch 1/4 in x 2 ft x 4 ft project panel",
+      "price_usd": 20.89,
+      "qty": 1,
+      "price": "listed price, 2026-11-18"
+    },
+    {
+      "item": "Lumber",
+      "spec": "2 x 4 in, 8 ft (the support stand under the overhang: two legs and a cross rail)",
+      "source": "any lumber yard",
+      "price_usd": 5.0,
+      "qty": 1,
+      "price": "estimate"
+    },
+    {
+      "item": "Basswood strip",
+      "spec": "3/16 x 3/8 in, 24 in (four groove rails)",
+      "source": "craft or hobby store",
+      "price_usd": 1.5,
+      "qty": 4,
+      "price": "estimate"
+    },
+    {
+      "item": "PETG filament",
+      "spec": "1 kg spool (about 0.9 kg at 40 % infill; pedestals and risers can be 15 %)",
+      "source": "any",
+      "price_usd": 20.0,
+      "qty": 1,
+      "price": "estimate"
+    },
+    {
+      "item": "Compression spring",
+      "spec": "1/2 in OD, 1.5 in free length, 12 lbf/in (2.1 N/mm) +- 15 %",
+      "source": "McMaster-Carr or a spring assortment",
+      "price_usd": 4.0,
+      "qty": 2,
+      "price": "estimate"
+    },
+    {
+      "item": "Fasteners",
+      "spec": "2 M8 x 130 axle bolts with nuts and washers, 2 M8 x 20 roller bolts, 2 M8 x 25 preload screws, 2 M5 shoulder bolts (roll pins), 2 M3 x 35 (open stops), 8 M3 countersunk x 16, 2 M6 x 35 set screws (posts), 4 5 x 20 mm dowel pins, M4 screws, wood screws",
+      "source": "hardware store",
+      "price_usd": 15.0,
+      "qty": 1,
+      "price": "estimate"
+    },
+    {
+      "item": "Glue and threadlocker",
+      "spec": "wood glue, CA glue, medium threadlocker",
+      "source": "hardware store",
+      "price_usd": 6.0,
+      "qty": 1,
+      "price": "estimate"
+    }
+  ],
+  "bom_total_usd": 175.36,
+  "petg_grams": 868,
+  "forces": [
+    {
+      "name": "guide spring at the post",
+      "value": "11.2 N preload, 2.13 N/mm",
+      "model": "lift spring 12.0 N m/rad preloaded 4 deg (LIFT_K, LIFT_PRE)",
+      "set": "turn the M8 screw under the spring until the check below reads right",
+      "check": "bar drawn and straight, stirrup off: spring scale under the post, pulled straight down: the post starts to leave its notch at about 26 N (15 N of it the bar's front-heavy weight, 11 N the spring) and is clear (5 mm down) at about 37 N"
+    },
+    {
+      "name": "lift to unlock",
+      "value": "7 N to start, 9 N at release",
+      "model": "follows from the spring and the masses",
+      "set": "by the spring above",
+      "check": "stirrup unfolded, bar locked straight: spring scale on the arm 115 mm above the roll pin, pulled straight up"
+    },
+    {
+      "name": "draw",
+      "value": "about 5 to 8 N (estimate: the post pressed on the groove's ceiling, friction 0.3)",
+      "model": "contact friction 0.3",
+      "set": "PTFE tape on the groove's ceiling if it reads high",
+      "check": "spring scale on the clevis, pulled along the bar, steady"
+    },
+    {
+      "name": "stirrup mass",
+      "value": "0.30 kg +- 0.02",
+      "model": "STIRRUP_MASS",
+      "set": "washers in the junction block",
+      "check": "kitchen scale"
+    },
+    {
+      "name": "bar assembly mass",
+      "value": "0.60 kg (steel bar 0.54 kg, T-rail and spacers 0.06 kg)",
+      "model": "BAR_MASS",
+      "set": "-",
+      "check": "kitchen scale"
+    },
+    {
+      "name": "swing stops",
+      "value": "15 deg inward, 27 deg outward",
+      "model": "SWING_IN, SWING_OUT",
+      "set": "printed slot in the yoke",
+      "check": "protractor on the base board"
+    },
+    {
+      "name": "open stop",
+      "value": "100 deg",
+      "model": "UNFOLD_STOP",
+      "set": "M3 stop screw position",
+      "check": "protractor against the bar"
+    }
+  ],
+  "checks": [
+    "open stop screw at s 6.17 mm, h 8.05 mm from the roll pin: it first meets the bar's top face at 100.0 deg (stop angle 100 deg); folded it clears the bar by 3.38 mm",
+    "boss below the bar: cheek tops 135.50 mm, trunnion and lips up to 136.32 mm, bar underside 136.82 mm; the folded stirrup lies on the bar's top face at 143.17 mm",
+    "T-rail over the window's lower edge with the bar at -3 deg: 5.38 mm",
+    "spring: 2.13 N/mm, preload 11.2 N = 5.2 mm; at full lift 15.7 mm of 38.1 mm free length",
+    "spring tower reaches 86.7 mm from the axis; the support rail starts 100.0 mm behind it"
+  ]
+}

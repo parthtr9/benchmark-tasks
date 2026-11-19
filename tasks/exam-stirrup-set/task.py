@@ -18,12 +18,15 @@ Nothing is scripted; the order is held by contact:
   light damping; the leaf spring is a rotational spring of 12 N m/rad at the bar's lift (2,100 N/m at the post, about
   11 N on the post when locked).
 
-Sizes from the maker: the table's top width (27 in) and the parts' shapes and arrangement in the E-18 exploded view.
-Estimated (not published; measure the bought parts): bar 3/4 x 1/4 in steel flat, 565 mm long, 0.53 kg; stirrup
-250 mm from its roll pin to the tip of its loop, 70 mm across the loop, 0.30 kg (chrome-plated die-cast zinc); draw
-400 mm; pivot boss 50 mm behind the shelf's front face; post 75 mm behind the boss, 6 mm across, 30 mm tall; groove and
-notches 8 mm wide and 5 mm deep; lock positions 12 deg inward, straight, 12 deg and 24 deg outward; the bar 140 mm
-above the bench; shelf 670 mm wide, 580 mm deep, 220 mm tall.
+The hardware of record is the bench fixture in fabrication/ (printed parts, steel bar, plywood shell; drawings and
+bill of materials there), built to exactly these dimensions, so the model and the fixture are the same object. The
+same mechanism on a Midmark table is the optional real object; its sizes are not published, so a lab using one measures
+them (README). Dimensions: bar 3/4 x 1/4 in steel flat, 565 mm long, 0.60 kg with its T-rail; stirrup 250 mm from its roll pin to the
+tip of its loop, 70 mm across the loop, 0.30 kg; the roll pin starts 20 mm in front of the shelf's face and the bar
+draws 400 mm to its collar (the pin then 420 mm out); pivot boss 50 mm behind the face, holding the bar from below;
+post 75 mm behind the boss, 6 mm across, 30 mm tall; groove and notches 8 mm wide and 5 mm deep; lock positions 12 deg
+inward, straight, 12 deg and 24 deg outward; the bar 140 mm above the bench; shelf 670 mm wide, 580 mm deep, 220 mm
+tall.
 
 World frame: x forward, y left, heights above the bench top.
 
@@ -70,13 +73,22 @@ TAIL_R = 0.075              # the detent post's axis behind the boss axis, fully
 TAIL_END = 0.085            # the bar's tail end behind the boss axis, fully drawn
 POST_R, POST_H = 0.003, 0.030
 NOTCH_W, NOTCH_D = 0.008, 0.005
-BAR_MASS, STIRRUP_MASS = 0.53, 0.30
+BAR_MASS, STIRRUP_MASS = 0.60, 0.30   # the bar with its T-rail and spacers (0.54 + 0.06 kg), the stirrup
 X_FRONT0 = XF - STICK                       # the bar's front end, stowed
 X_TAIL0 = BX + TAIL_END + DRAW              # its tail end, stowed
 X_POST0 = BX + TAIL_R + DRAW
 PIVOT_BACK = 0.010                          # the roll pin 10 mm behind the bar's front end
 CEIL = ZB + BT / 2 + POST_H + 0.0003        # the bracket's underside: 0.3 mm over the post's top with the bar level
-WIN_W, WIN_TOP, WIN_BOT = 0.090, ZB + 0.0232, ZB - BT / 2 - 0.008   # the shelf's front window for each stirrup
+# The pivot boss holds the bar only from below, so a folded stirrup lying on the bar slides over it: a T-rail hangs
+# under the bar (a 1/2 x 1/8 in strip on 4 mm spacers; the wide spacer, the draw collar, meets the trunnion's lips fully
+# drawn); the trunnion's lips run in the gap; everything of the boss is below the bar's underside, and the lift pin is
+# 10 mm below the bar's centre line. (Revision 2: before, the boss was a cylinder round the bar that a stowed stirrup
+# passed through, which only links of one articulation, which do not collide, allow.)
+RAIL_GAP, RAIL_T, RAIL_W = 0.004, 0.003175, 0.0127
+RAIL_FRONT = 0.065                          # the rail starts 65 mm behind the bar's front end and runs to its tail
+Z_RAIL = ZB - BT / 2 - RAIL_GAP - RAIL_T    # the rail's underside
+PIN_DOWN = 0.010                            # the lift pin below the bar's centre line
+WIN_W, WIN_TOP, WIN_BOT = 0.090, ZB + 0.0232, Z_RAIL - 0.008   # the shelf's front window for each stirrup
 
 # the stirrup, in its own frame: s along the arm from the roll pin, w across, h up off the bar (folded = lying on the bar)
 ARM_S0, ARM_S1, ARM_W, ARM_T = 0.022, 0.150, 0.025, 0.006
@@ -194,8 +206,7 @@ def _bracket_boxes(s: Side):
             chord = 2 * TAIL_R * math.sin((tb - ta) / 2) + 0.0004
             out.append(wbox(cx - 0.008, cx + 0.008, cy - chord / 2, cy + chord / 2, c0, c1, STEEL, rot=m))
     # the support rail under the stowed bar's tail half: it holds the bar level while any of it is behind the boss
-    out.append(wbox(BX + 0.100, X_TAIL0 + 0.005, y - 0.012, y + 0.012, ZB - BT / 2 - 0.0103, ZB - BT / 2 - 0.0003,
-                    STEEL))
+    out.append(wbox(BX + 0.100, X_TAIL0 + 0.005, y - 0.012, y + 0.012, Z_RAIL - 0.0100, Z_RAIL - 0.0003, STEEL))
     return out
 
 
@@ -231,15 +242,29 @@ def _build_side(s: Side):
     yaw_lo, yaw_hi = s.limits()
     bar_boxes = [wbox(X_FRONT0, X_TAIL0, s.y - BW / 2, s.y + BW / 2, ZB - BT / 2, ZB + BT / 2, STEEL)]
     post = [((X_POST0, s.y, TOP + ZB + BT / 2 + POST_H / 2), POST_R, POST_H, STEEL, "Z")]
-    collar = [wbox(BX + 0.016 + DRAW, BX + 0.022 + DRAW, s.y - 0.012, s.y + 0.012, ZB + BT / 2, ZB + 0.012, DARK)]   # the draw collar: it meets the boss fully drawn
+    # the T-rail under the bar: narrow spacers, the strip, and the wide spacer, the draw collar (it meets the
+    # trunnion's lips fully drawn)
+    zg0, zg1 = ZB - BT / 2 - RAIL_GAP, ZB - BT / 2
+    collar = [wbox(X_FRONT0 + RAIL_FRONT, X_TAIL0, s.y - RAIL_W / 2, s.y + RAIL_W / 2, Z_RAIL, zg0, STEEL)]
+    collar += [wbox(x - 0.005, x + 0.005, s.y - 0.003, s.y + 0.003, zg0, zg1, DARK)
+               for x in (X_FRONT0 + RAIL_FRONT + 0.010, X_FRONT0 + 0.300, X_TAIL0 - 0.030)]
+    collar.append(wbox(BX + 0.016 + DRAW, BX + 0.022 + DRAW, s.y - BW / 2, s.y + BW / 2, zg0, zg1, DARK))
+    zp = ZB - PIN_DOWN
+    trunnion = [wbox(BX - 0.015, BX + 0.015, s.y - 0.0135, s.y + 0.0135, Z_RAIL - 0.0043, Z_RAIL - 0.0003, DARK)]
+    trunnion += [wbox(BX - 0.015, BX + 0.015, s.y + d * 0.0069, s.y + d * 0.0135, Z_RAIL - 0.0003, zg1 - 0.0005, DARK)
+                 for d in (-1, 1)]
+    yoke = [wbox(BX - 0.025, BX + 0.025, s.y - 0.020, s.y + 0.020, 0.112, 0.120, DARK)]
+    yoke += [wbox(BX - 0.006, BX + 0.006, s.y + d * 0.014, s.y + d * 0.020, 0.120, zp + 0.0055, DARK) for d in (-1, 1)]
+    yoke.append(wbox(BX + 0.025, BX + 0.090, s.y - 0.008, s.y + 0.008, 0.104, 0.112, DARK))      # the spring's arm
+    roller = [((BX + 0.075, s.y, TOP + Z_RAIL - 0.011), 0.011, 0.007, STEEL, "Y")]                 # under the rail
     st_boxes = []
     for (cs, cw, ch, ls, lw, lh) in _stirrup_local_boxes():
         c = s.pivot0 + np.array([cs, cw, ch])
         st_boxes.append((tuple(float(v) for v in c), (float(ls), float(lw), float(lh)), CHROME))
-    swing = Hinge(f"{s.name}_swing", pivot=(0.0, 0.0, 0.0),
-                  cylinders=(((0.0, 0.0, 0.0), 0.014, 0.034, DARK, "Z"),),
+    swing = Hinge(f"{s.name}_swing", pivot=(0.0, 0.0, 0.0), boxes=tuple(rel(yoke, org)),
+                  cylinders=tuple(rel(roller, org)),
                   lower=float(yaw_lo), upper=float(yaw_hi), damping=0.05, mass=0.08, axis="Z")
-    lift = Hinge(f"{s.name}_lift", pivot=(0.0, 0.0, 0.0), parent=swing.name, lower=float(LIFT_LO),
+    lift = Hinge(f"{s.name}_lift", pivot=(0.0, 0.0, -PIN_DOWN), parent=swing.name, boxes=tuple(rel(trunnion, org)), lower=float(LIFT_LO),
                  upper=float(LIFT_HI), stiffness=LIFT_K, target=float(-LIFT_PRE), damping=0.05, mass=0.02, axis="Y")
     bar = Slider(f"{s.name}_bar", rest=(0.0, 0.0, 0.0), boxes=tuple(rel(bar_boxes + collar, org)),
                  cylinders=tuple(rel(post, org)), travel=DRAW, rate=0.0, damping=1.0, mass=BAR_MASS, axis="X",
@@ -247,7 +272,7 @@ def _build_side(s: Side):
     fold = Hinge(f"{s.name}_stirrup", pivot=tuple(float(v) for v in s.pivot0 - B), parent=bar.name,
                  boxes=tuple(rel(st_boxes, org)), lower=float(-UNFOLD_STOP), upper=0.0, damping=0.02,
                  mass=STIRRUP_MASS, axis="Y")
-    housing = [wbox(BX - 0.020, BX + 0.020, s.y - 0.020, s.y + 0.020, ZB + 0.018, ZB + 0.024, DARK)]
+    housing = [wbox(BX - 0.020, BX + 0.020, s.y - 0.020, s.y + 0.020, 0.0, 0.111, DARK)]   # the boss's pedestal
     p = part(f"stirrup_{s.name}", pos=org, mass=0.2, boxes=rel(housing, org), hinges=(swing, lift, fold),
              sliders=(bar,), color=CHROME, friction=0.3, fixed=True, meta={"contact_offset": 0.0005})
     loop_shift = tuple(float(v) for v in s.pivot0 - B)

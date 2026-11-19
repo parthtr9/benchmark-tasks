@@ -1,0 +1,5 @@
+open stop screw at s 6.17 mm, h 8.05 mm from the roll pin: it first meets the bar's top face at 100.0 deg (stop angle 100 deg); folded it clears the bar by 3.38 mm
+boss below the bar: cheek tops 135.50 mm, trunnion and lips up to 136.32 mm, bar underside 136.82 mm; the folded stirrup lies on the bar's top face at 143.17 mm
+T-rail over the window's lower edge with the bar at -3 deg: 5.38 mm
+spring: 2.13 N/mm, preload 11.2 N = 5.2 mm; at full lift 15.7 mm of 38.1 mm free length
+spring tower reaches 86.7 mm from the axis; the support rail starts 100.0 mm behind it

@@ -1,0 +1,15 @@
+piece,stock,size mm,qty
+base board,3/4 in plywood,670 x 580,1
+support rail strip,3/4 in plywood,24 x 390,2
+front face,1/4 in plywood,"670 x 220, two windows 90 wide from 121.7 to 163.2 above the bench, centred 245 either side",1
+side panels,1/4 in plywood,580 x 202,2
+ceiling strips,1/4 in plywood,124 x 440,2
+top,1/4 in plywood,"670 x 580, on the side panels",1
+stand legs,2 x 4 in lumber,the bench's height less 89 mm (the rail stands on edge on them),2
+stand rail,2 x 4 in lumber,"600 long, on edge under the base board's rear 320 mm, screwed to the legs",1
+groove rails,3/16 x 3/8 in basswood,409 long,4
+bars,3/4 x 1/4 in steel flat,"565 long, drilled as drawing 4",2
+arms,3/4 x 1/4 in steel flat (bar offcut),"128 long, two 4.2 holes",2
+slugs,3/4 x 1/4 in steel flat (bar offcut),60 long,2
+T-rails,1/2 x 1/8 in aluminium flat,"500 long, holes matching the bar",2
+loop cores,1/4 in steel rod,"252 long, bent on the printed former",2

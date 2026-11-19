@@ -1,0 +1,14 @@
+item,specification,example source,unit price USD,qty,line USD,price
+Steel flat bar,"3/4 x 1/4 in, 36 in, plain steel (the two bars; offcuts make the arms and slugs)","Home Depot, Everbilt 3/4 in x 36 in x 1/4 in plain flat bar",15.27,2,30.54,"listed price, 2026-11-18"
+Aluminium flat bar,"1/2 x 1/8 in, 48 in (the two T-rails, 500 mm each)","Home Depot or hardware store, plain aluminium flat bar",12.00,1,12.00,estimate
+Steel round rod,"1/4 in, 36 in (the two loop cores, 252 mm each)","hardware store, plain steel rod",6.00,1,6.00,estimate
+Plywood project panel,"23/32 in sanded, 2 x 4 ft (base board 670 x 580, support rails)","Home Depot, 23/32 in x 2 ft x 4 ft sanded plywood project panel",25.04,1,25.04,"listed price, 2026-11-18"
+Plywood project panel,"1/4 in x 2 x 4 ft (front face, two sides, two ceiling strips)","Home Depot, PureBond birch 1/4 in x 2 ft x 4 ft project panel",20.89,1,20.89,"listed price, 2026-11-18"
+Plywood project panel,"1/4 in x 2 x 4 ft (the shelf's top, 670 x 580)","Home Depot, PureBond birch 1/4 in x 2 ft x 4 ft project panel",20.89,1,20.89,"listed price, 2026-11-18"
+Lumber,"2 x 4 in, 8 ft (the support stand under the overhang: two legs and a cross rail)",any lumber yard,5.00,1,5.00,estimate
+Basswood strip,"3/16 x 3/8 in, 24 in (four groove rails)",craft or hobby store,1.50,4,6.00,estimate
+PETG filament,1 kg spool (about 0.9 kg at 40 % infill; pedestals and risers can be 15 %),any,20.00,1,20.00,estimate
+Compression spring,"1/2 in OD, 1.5 in free length, 12 lbf/in (2.1 N/mm) +- 15 %",McMaster-Carr or a spring assortment,4.00,2,8.00,estimate
+Fasteners,"2 M8 x 130 axle bolts with nuts and washers, 2 M8 x 20 roller bolts, 2 M8 x 25 preload screws, 2 M5 shoulder bolts (roll pins), 2 M3 x 35 (open stops), 8 M3 countersunk x 16, 2 M6 x 35 set screws (posts), 4 5 x 20 mm dowel pins, M4 screws, wood screws",hardware store,15.00,1,15.00,estimate
+Glue and threadlocker,"wood glue, CA glue, medium threadlocker",hardware store,6.00,1,6.00,estimate
+TOTAL,,,,,175.36,"97.36 of it from listed prices, the rest estimates"

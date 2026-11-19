@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="320" viewBox="0 0 1000 320"><rect width="100%" height="100%" fill="white"/>
+<text x="10.0" y="18.0" font-family="Helvetica,Arial,sans-serif" font-size="13" text-anchor="start" font-weight="bold" fill="#111">Stirrup (two): steel arm, printed clevis and loop shell on a bent 1/4 in rod, scale 2 px/mm</text>
+<rect x="34.0" y="98.0" width="106.0" height="64.0" fill="#ccc" stroke="#222" stroke-width="1.0"/>
+<rect x="114.0" y="105.0" width="256.0" height="50.0" fill="#aab" stroke="#222" stroke-width="1.0"/>
+<polygon points="370.0,130.0 370.3,129.8 371.2,129.0 372.8,127.8 374.9,126.1 377.6,124.0 380.9,121.5 384.7,118.6 389.1,115.4 394.0,111.9 399.3,108.2 405.1,104.4 411.2,100.4 417.8,96.5 424.6,92.5 431.7,88.7 439.1,85.0 446.7,81.5 454.4,78.4 462.2,75.5 470.0,73.1 477.8,71.1 485.6,69.5 493.3,68.5 500.9,68.1 508.3,68.2 515.4,68.8 522.2,70.1 528.8,72.0 534.9,74.4 540.7,77.4 546.0,81.0 550.9,85.0 555.3,89.5 559.1,94.5 562.4,99.8 565.1,105.4 567.2,111.3 568.8,117.4 569.7,123.7 570.0,130.0 569.7,136.3 568.8,142.6 567.2,148.7 565.1,154.6 562.4,160.2 559.1,165.5 555.3,170.5 550.9,175.0 546.0,179.0 540.7,182.6 534.9,185.6 528.8,188.0 522.2,189.9 515.4,191.2 508.3,191.8 500.9,191.9 493.3,191.5 485.6,190.5 477.8,188.9 470.0,186.9 462.2,184.5 454.4,181.6 446.7,178.5 439.1,175.0 431.7,171.3 424.6,167.5 417.8,163.5 411.2,159.6 405.1,155.6 399.3,151.8 394.0,148.1 389.1,144.6 384.7,141.4 380.9,138.5 377.6,136.0 374.9,133.9 372.8,132.2 371.2,131.0 370.3,130.2" fill="none" stroke="#888" stroke-width="12.0"/>
+<circle cx="70.0" cy="130.0" r="5.2" fill="white" stroke="#222"/>
+<line x1="34.0" y1="170.0" x2="34.0" y2="170.0" stroke="#666" stroke-width="0.5"/>
+<line x1="570.0" y1="170.0" x2="570.0" y2="170.0" stroke="#666" stroke-width="0.5"/>
+<line x1="34.0" y1="170.0" x2="570.0" y2="170.0" stroke="#a33" stroke-width="0.7"/>
+<polygon points="34.0,170.0 39.0,172.0 39.0,168.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="570.0,170.0 565.0,168.0 565.0,172.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="302.0" y="173.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">268 overall</text>
+<line x1="70.0" y1="78.0" x2="70.0" y2="78.0" stroke="#666" stroke-width="0.5"/>
+<line x1="114.0" y1="78.0" x2="114.0" y2="78.0" stroke="#666" stroke-width="0.5"/>
+<line x1="70.0" y1="78.0" x2="114.0" y2="78.0" stroke="#a33" stroke-width="0.7"/>
+<polygon points="70.0,78.0 75.0,80.0 75.0,76.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<polygon points="114.0,78.0 109.0,76.0 109.0,80.0" fill="#a33" stroke="#a33" stroke-width="0.5"/>
+<text x="92.0" y="81.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="middle" fill="#a33">22</text>
+<text x="10.0" y="250.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">Roll pin: M5 shoulder bolt through the clevis cheeks and the bar, 10 mm behind the bar's front end.</text>
+<text x="10.0" y="236.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">Open stop: M3 x 35 screw across the cheeks at s 6.2, h 8.1 mm from the roll pin</text>
+<text x="10.0" y="264.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">(it meets the bar's top face at 100 deg). Arm: 128 mm offcut of the bar steel with printed 3 mm edge strips (25 wide). Loop: 70 x 100 mm teardrop, 12 mm shell.</text>
+<text x="10.0" y="278.0" font-family="Helvetica,Arial,sans-serif" font-size="9" text-anchor="start" fill="#111">Mass 0.30 kg: arm 122 g, rod 63 g, printed parts about 47 g, slug (60 mm of bar offcut) 57 g, screws; weigh and add washers in the junction block to reach it.</text>
+</svg>

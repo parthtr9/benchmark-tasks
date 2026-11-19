@@ -1,0 +1,18 @@
+part,qty,file,size mm (x y z),volume cm3,PETG g each (40 % infill est.)
+pedestal,2,stl/pedestal.stl,70.0 x 70.0 x 93.0,240.2,183.0
+yoke_left,1,stl/yoke_left.stl,111.0 x 40.0 x 75.9,46.7,36.0
+notch_plate_left,1,stl/notch_plate_left.stl,28.9 x 69.8 x 5.0,3.7,3.0
+yoke_right,1,stl/yoke_right.stl,111.0 x 40.0 x 75.9,46.7,36.0
+notch_plate_right,1,stl/notch_plate_right.stl,28.9 x 69.8 x 5.0,3.7,3.0
+trunnion,2,stl/trunnion.stl,30.0 x 27.0 x 11.0,6.4,5.0
+plunger,2,stl/plunger.stl,12.3 x 14.0 x 25.0,2.0,2.0
+roller,2,stl/roller.stl,22.0 x 7.0 x 22.0,2.3,2.0
+spacer_narrow,6,stl/spacer_narrow.stl,10.0 x 6.0 x 4.0,0.2,0.0
+spacer_wide_draw_stop,2,stl/spacer_wide_draw_stop.stl,6.0 x 19.0 x 4.0,0.4,0.0
+ceiling_pillar,8,stl/ceiling_pillar.stl,12.0 x 12.0 x 155.5,22.2,17.0
+support_riser,4,stl/support_riser.stl,24.0 x 24.0 x 93.3,52.6,40.0
+clevis,2,stl/clevis.stl,53.0 x 32.0 x 22.0,16.3,12.0
+loop_shell_top,2,stl/loop_shell_top.stl,128.0 x 73.9 x 6.0,12.6,10.0
+loop_shell_bottom,2,stl/loop_shell_bottom.stl,128.0 x 73.9 x 6.0,11.2,9.0
+loop_former,1,stl/loop_former.stl,91.7 x 55.6 x 15.0,52.9,40.0
+arm_edge_strip,4,stl/arm_edge_strip.stl,128.0 x 3.0 x 6.3,2.4,2.0
