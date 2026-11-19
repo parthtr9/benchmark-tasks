@@ -1,7 +1,7 @@
 """A standard folding manual wheelchair, a Drive Medical Silver Sport 2 (18 in seat, desk arms, swing-away footrests,
 item SSP218DDA-SF), stands open on the floor in front of the arms, facing them, parked for a transfer: both wheel
-locks are on at the start. The station's table is replaced by a mounting shelf on a back panel that carries the arm
-bases 0.65 m above the floor (see bay.py).
+locks are on at the start. The station's table is replaced by a mounting shelf on an anchored plywood stand that
+carries the arm bases 0.65 m above the floor (see bay.py).
 
 The chair is at its catalogue size: 24 x 1 in rear wheels with handrims, 8 in casters on swivel forks, steel tube
 frame, sling seat and back (rigid panels here), desk-length arm pads. Nothing is fixed to the world. The two rear
@@ -386,14 +386,13 @@ CHAIR = _chair()
 FOOTREST_L = _footrest("l", 1)      # the chair's left footrest (negative world y, in front of the right arm)
 FOOTREST_R = _footrest("r", -1)
 
-# -- the room: mounting shelf's back panel and the two floor mats ---------------------------------------------------------
+# -- the room: the mounting shelf's anchored stand and the two floor mats -----------------------------------------------
 MAT_X, MAT_Y, MAT_T = (0.05, 0.75), (0.34, 1.00), 0.002         # each mat: world x range, |y| range, thickness
-PANEL = Box("mount_panel", pos=(bay.PANEL_X, 0.0, bay.PANEL_Z), size=(bay.PANEL_THICK, bay.SHELF_WIDTH, bay.PANEL_HEIGHT),
-            color=WOOD)
+STAND = [Box(name, pos=c, size=sz, color=STEEL if "angle" in name else WOOD) for name, c, sz in bay.stand_boxes()]
 MATS = [Box(f"mat_{tag}", pos=((MAT_X[0] + MAT_X[1]) / 2, s * (MAT_Y[0] + MAT_Y[1]) / 2, FLOOR + MAT_T / 2),
             size=(MAT_X[1] - MAT_X[0], MAT_Y[1] - MAT_Y[0], MAT_T), color=BLUE) for tag, s in (("l", -1), ("r", 1))]
 
-OBJECTS = [CHAIR, FOOTREST_L, FOOTREST_R, PANEL, *MATS]
+OBJECTS = [CHAIR, FOOTREST_L, FOOTREST_R, *STAND, *MATS]
 FOOTRESTS = {"l": FOOTREST_L, "r": FOOTREST_R}
 SIDE = {"l": 1, "r": -1}
 
@@ -405,9 +404,17 @@ CHAIR_TILT = 10.0                 # ... or tipped more than 10 degrees: the run 
 SWUNG = math.radians(45.0)        # a footrest still on its pins, turned 45 degrees or more outward: released and swung
 OFF_PINS = 0.04                   # footrest's lower sleeve more than 4 cm from its pin axis (or above the pin tops)
 ON_FLOOR = 0.03                   # footrest's lowest point within 3 cm of the floor
-PINCH_TCP = 0.04                  # a gripper holds a footrest: its tool point within 4 cm of the hanger tube ...
-PINCH_GAP = 0.030                 # ... and its fingers closed to a half gap under 30 mm (open: 47 mm)
+PINCH_GAP = 0.030                 # a gripper holds a footrest: its fingers closed to a half gap under 30 mm (open: 47 mm)
+GRIP_NEAR = 0.030                 # ... and both pad points of one pair within 30 mm of any solid part of the footrest
+                                  # (the points are 6 mm behind the pad faces: the pads within about 25 mm of it; on
+                                  # the GPU a pad point's distance reached 23 mm while the hand carried a leg rest)
 UNSUPPORTED_STEPS = 2             # off its pins, not held, lowest point above 3 cm for 2 control steps: dropped
+SLIP = 0.045                      # ... and moving with that gripper: the footrest's point at the gripper's tool point
+SLIP_STEPS = 2                    # (in the footrest's own frame) moved no more than 45 mm over the last two control
+                                  # steps, at any speed. Measured on the GPU: in the demo's hands it moved at most
+                                  # 30 mm in 0.1 s (when the paddle springs back out of the grip the leg rest
+                                  # re-seats in the jaws), and 59-76 mm in the first 0.1 s of a release 25 cm up.
+                                  # The point at the hand, not the footplate: the leg rest pivots a little in the grip.
 CLEAR = 0.03                      # a set-down footrest has no gripper point within 3 cm of it
 STILL_CALLS = 20
 STILL_TOL = 0.001
@@ -418,7 +425,7 @@ _STATE: dict = {}
 @on_reset
 def _reset_state(environment=None) -> None:
     _STATE.update(chair0=None, moved=False, dropped={"l": False, "r": False}, air={"l": 0, "r": 0},
-                  points={"left": [], "right": []}, recent=[], steps=0)
+                  points={"left": [], "right": []}, recent=[], steps=0, in_hand={}, slip={}, with_hand={})
     if environment is not None:
         _set_springs(environment)
 
@@ -510,17 +517,73 @@ def swing_angle(chair: PartState, footrest: PartState, tag: str) -> float:
     return SIDE[tag] * math.atan2(r[1, 0], r[0, 0])
 
 
-def held(footrest: PartState, tag: str, points) -> bool:
-    """A gripper holds the footrest: its tool point is within 4 cm of the hanger tube and its fingers are closed to a
-    half gap under 30 mm (``points`` as from partkit.gripper_points: pads at the tool point first, tool point fifth)."""
-    pts = footrest_points(footrest, tag)
+def footrest_solids(tag: str) -> tuple:
+    """The footrest's solid parts in its own frame, as built by ``_footrest``: tubes as (end, end, radius), boxes as
+    (centre, size) (hanger tube, footplate stem, footplate, hinge plates, sleeves, lever bracket), and the release
+    lever's boxes (lever arm, tooth, paddle arm, paddle) with the lever's pivot, at lever angle 0."""
+    p = FOOTRESTS[tag]
+    sy = SIDE[tag]
+    rel = lambda x, y, z: np.array((x - PIN_X, sy * (y - RAIL_Y), z - LOWER_SEAT_Z))  # noqa: E731
+    t0, t1 = rel(HANGER_TOP[0], RAIL_Y, HANGER_TOP[1]), rel(HANGER_FOOT[0], RAIL_Y, HANGER_FOOT[1])
+    stem = rel(HANGER_FOOT[0], RAIL_Y, FOOTPLATE[0][2])
+    tubes = [(t0, t1, TUBE_R), (t1, stem, 0.009)]
+    boxes = [(np.asarray(b[0], float), np.asarray(b[1], float)) for b in p.boxes]
+    lever = next(h for h in p.hinges if h.name == "lever")
+    for h in p.hinges:
+        if h is not lever:
+            boxes += [(np.asarray(b[0], float), np.asarray(b[1], float)) for b in h.boxes]
+    lever_boxes = [(np.asarray(b[0], float), np.asarray(b[1], float)) for b in lever.boxes]
+    return tubes, boxes, (np.asarray(lever.pivot, float), lever_boxes)
+
+
+def _box_dist(q, c, size) -> float:
+    return float(np.linalg.norm(np.maximum(np.abs(q - c) - size / 2, 0.0)))
+
+
+def footrest_surface_dist(footrest: PartState, tag: str, point) -> float:
+    """Distance (m) from a world point to the nearest solid part of the footrest (0 inside one), with the release
+    lever at its current angle about its pivot."""
+    q = footrest.to_local(point)
+    tubes, boxes, (pivot, lever_boxes) = footrest_solids(tag)
+    best = min(max(0.0, _seg_dist(q, a, b) - r) for a, b, r in tubes)
+    for c, size in boxes:
+        best = min(best, _box_dist(q, c, size))
+    a = float(getattr(footrest, "hinges", {}).get("lever", 0.0))
+    ca, sa = math.cos(a), math.sin(a)
+    d = q - pivot                                   # the point in the lever's frame (turned back by its angle)
+    ql = pivot + np.array((ca * d[0] + sa * d[1], -sa * d[0] + ca * d[1], d[2]))
+    for c, size in lever_boxes:
+        best = min(best, _box_dist(ql, c, size))
+    return best
+
+
+def half_gap(g) -> float:
+    """A gripper's half gap (m) from its points (as from partkit.gripper_points)."""
+    return float(np.linalg.norm(np.asarray(g[0], float) - np.asarray(g[1], float))) / 2 - 0.006
+
+
+def grip_point(footrest: PartState, g) -> np.ndarray:
+    """Where a gripper's tool point is on the footrest: the tool point in the footrest's own frame (m)."""
+    return footrest.to_local(np.asarray(g[4], float))
+
+
+def held(footrest: PartState, tag: str, points, with_hand=None) -> bool:
+    """A gripper holds the footrest: its fingers are closed to a half gap under 30 mm, the two pads (at the tool
+    point, or at the pad tips) are both within 30 mm of the footrest's solid parts, on any part of it: hanger tube,
+    footplate, release lever and paddle, bracket, hinge plate or sleeve (``points`` as from partkit.gripper_points:
+    the pad points at the tool point first, then at the pad tips; each lies 6 mm behind its pad face), and the
+    footrest moves with that gripper (``with_hand[side]``, kept by ``_advance``: the tool point's place on the
+    footrest, in the footrest's own frame, moved no more than 45 mm over the last two control steps, i.e. the footrest
+    did not slide or fall out of the hand; not given: assumed)."""
     for side in ("left", "right"):
         g = points.get(side, [])
         if len(g) < 5:
             continue
-        half_gap = float(np.linalg.norm(np.asarray(g[0], float) - np.asarray(g[1], float))) / 2 - 0.006
-        if half_gap < PINCH_GAP and _seg_dist(g[4], pts["top"], pts["foot"]) - TUBE_R <= PINCH_TCP:
-            return True
+        if half_gap(g) >= PINCH_GAP or not (with_hand or {}).get(side, True):
+            continue
+        for pair in ((g[0], g[1]), (g[2], g[3])):
+            if all(footrest_surface_dist(footrest, tag, p) <= GRIP_NEAR for p in pair):
+                return True
     return False
 
 
@@ -544,10 +607,25 @@ def _advance(objects, points=None) -> None:
     s["steps"] += 1
     s["moved"] |= chair_displaced(chair, s["chair0"])
     for tag in ("l", "r"):
-        # dropped = lost its support: off its pins, no gripper holding it, and its lowest point more than 3 cm above
-        # the floor, for two control steps in a row (a footrest let go above the floor, or slipping out of a hand)
+        # dropped = lost its support: off its pins, its lowest point more than 3 cm above the floor, and no gripper
+        # holding it (closed on it and the footrest moving with it), for two control steps in a row (a footrest let go
+        # above the floor, or slipping or falling out of a hand, at any speed)
         fr = objects[f"footrest_{tag}"]
-        unsupported = (not on_pins(chair, fr, tag) and lowest(fr, tag) > ON_FLOOR and not held(fr, tag, s["points"]))
+        with_hand = {}
+        for side in ("left", "right"):
+            g = s["points"].get(side, [])
+            hist = s["in_hand"].setdefault((tag, side), [])
+            if len(g) < 5:
+                hist.clear()
+                continue
+            hist.append(grip_point(fr, g))
+            del hist[:-(SLIP_STEPS + 1)]
+            slip = float(np.linalg.norm(hist[-1] - hist[0]))
+            s["slip"][(tag, side)] = slip
+            with_hand[side] = slip <= SLIP
+        s["with_hand"][tag] = with_hand
+        unsupported = (not on_pins(chair, fr, tag) and lowest(fr, tag) > ON_FLOOR
+                       and not held(fr, tag, s["points"], with_hand))
         s["air"][tag] = s["air"][tag] + 1 if unsupported else 0
         s["dropped"][tag] |= s["air"][tag] >= UNSUPPORTED_STEPS
     sample = np.r_[np.asarray(chair.pos, float), objects["footrest_l"].pos, objects["footrest_r"].pos]
@@ -624,8 +702,9 @@ def score(objects) -> float:
     than 10 degrees, or tipped more than 10 degrees). Otherwise the sum over the two footrests of: 0.45 if it is set
     down (off its pins, lowest point within 3 cm of the floor, hanger tube ends and footplate centre over one mat, no
     gripper within 3 cm, and never dropped); 0.2 if it is off its pins but not set down; 0.1 if it is still on its pins
-    but swung 45 degrees or more outward; 0 if it is latched forward, or once it was dropped (off its pins, no gripper
-    closed on it and its lowest point more than 3 cm above the floor for two control steps). With both set down: 0.9
+    but swung 45 degrees or more outward; 0 if it is latched forward, or once it was dropped (off its pins, its lowest
+    point more than 3 cm above the floor, and no gripper closed on any part of it with the footrest moving with it,
+    for two control steps). With both set down: 0.9
     while anything has moved more than 1 mm in the last second, 1.0 once the chair and both footrests have been still
     for 1 s (20 control steps)."""
     return _grade(objects)[0]

@@ -16,7 +16,7 @@ Negative variants (DEMO_VARIANT=...):
   one_footrest  only the chair's right leg rest (in front of the left arm) is taken off and set down
   swing_only    each leg rest is released and swung out a quarter turn on its pins, then let go
   no_lever      each hand takes the hanger tube below the paddle (the latch stays in) and tries the same swing and lift
-  drop          as the demo, but each leg rest is let go 15 cm above the floor
+  drop          as the demo, but each leg rest is raised 10 cm over the mat and let go about 25 cm above the floor
   held          as the demo, but the hands keep hold of the leg rests on the floor and stay there
 Writes one MP4 per camera, setup.png (the first top-camera frame) and result.json (with a trace of the parts, read for
 logging only) to the output folder.
@@ -37,6 +37,7 @@ CONTROL_HZ = 20
 VARIANTS = ("", "one_footrest", "swing_only", "no_lever", "drop", "held")
 PAD_TIP = 0.013          # the pad tips are this far past the tool point
 LIFT = 0.15              # footrest lifted this far to clear the 28 mm pins (the hand sags under the load)
+DROP_RAISE = 0.10        # drop variant: raised this much over the mat before the hand opens
 OUT = 0.06               # after the lift the leg rest is carried this far straight out from the chair
 SET_DOWN = (0.57, 0.71)  # where the hand carries the grip to (chair x, |y|) before lowering (the leg rest tips over inward when let go)
 CARRY = math.radians(55.0)   # the footrest's turn outward (about the vertical) while it is carried and set down
@@ -162,6 +163,8 @@ def footrest(T, arm, sy: int, variant: str):
     if variant == "held":
         yield from wait(6.0)
         return
+    if variant == "drop":
+        yield from arm.move(over + DROP_RAISE * up, r1, 1.0)
     yield from arm.set_grip(1.0, 0.8)
     yield from wait(0.4)
     yield from arm.move(arm.pos + 0.12 * up, r1, 1.0)
@@ -263,10 +266,15 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
             if fr is None:
                 continue
             row[tag].update({"swing_deg": round(math.degrees(task.swing_angle(chair, fr, tag)), 1),
-                             "held": task.held(fr, tag, task._STATE["points"]),
+                             "held": task.held(fr, tag, task._STATE["points"], task._STATE["with_hand"].get(tag)),
+                             "slip_mm": {side: round(1000 * task._STATE["slip"].get((tag, side), 0.0), 1)
+                                         for side in ("left", "right")},
                              "fr_mm": [round(1000 * float(v), 1) for v in fr.pos],
                              "fr_yaw_deg": round(math.degrees(task._yaw(fr)), 1), "fr_tilt_deg": round(task._tilt(fr), 1),
                              "lever_deg": round(math.degrees(fr.hinges["lever"]), 1),
+                             "pads_mm": {side: [round(1000 * min(task.footrest_surface_dist(fr, tag, p), 9.999), 1)
+                                                for p in task._STATE["points"].get(side, [])[:4]]
+                                         for side in ("left", "right")},
                              "on_pins": task.on_pins(chair, fr, tag), "lowest_mm": round(1000 * task.lowest(fr, tag), 1),
                              "on_mat": task.on_mat(fr, tag), "set_down": task.footrest_set_down(st, tag),
                              "credit": task.footrest_credit(st, tag),
