@@ -3,8 +3,10 @@
     python demo.py task.py demo_out [--max-steps 1200] [--no-record]
     python demo.py task.py --ik          # no simulator: IK error of the whole plan, step by step
 
-Open loop: every target comes from the task file's fixed layout and the clock. No object pose, joint state of the
-coupling or task state steers it (the trace printed every 10 steps reads them for logging only).
+Every target comes from the task file's fixed layout and the clock, and one decision from the arms' own joints: the
+phase search stops turning when the right arm's measured tool point (forward kinematics of its own joint readings)
+jumps forward, which is the hub dropping into the gaps. No object pose, joint state of the coupling or task state
+steers it (the trace printed every 10 steps reads them for logging only).
 
 1. The right hand takes the spider out of its holder by the tips of its two level legs (from outside the coupling's
    diameter, the only place fingers fit once the spider is between jaws), lowers it into the space between the fixed
@@ -12,8 +14,10 @@ coupling or task state steers it (the trace printed every 10 steps reads them fo
    Meanwhile the left hand comes down on the driven shaft's free end and closes on it.
 2. The right hand puts its closed fingertips behind the loose hub and pushes it along the shaft until its jaw tips
    stand on the fixed hub's jaw tips, and keeps a light push on it.
-3. The left hand swings round the shaft's axis like a crank, turning the shaft (and the hub on its key) through
-   the phase: the jaws first drop onto the spider's legs, then into the free gaps between them.
+3. The left hand swings round the shaft's axis like a crank, turning the shaft (and the hub on its key): quickly to
+   15 degrees, where the jaws have dropped onto the spider's legs, then at 2.5 degrees per second until the right
+   arm's own joint readings show the hub jumping forward into the free gaps (searched to 60 degrees, which covers
+   any slip of the shaft in the grip); then the turn stops.
 4. The right hand pushes the hub home (it stops with its jaw tips on the fixed hub's face, at the scribed line) and
    both hands let go and back off.
 
@@ -53,10 +57,13 @@ GRIP_SHAFT = 0.05                # commanded on the 15.9 mm shaft: pads set to 5
 L_PITCH = math.radians(45.0)     # the left hand points 45 degrees below level onto the shaft's free end
 STUB_TCP = 0.2180                # the left hand's tool point on the shaft, back from the fixed hub's jaw tips
 STUB_OVER = 0.080                # it comes down onto the shaft from this far above
-SWEEP = math.radians(-40.0)      # the hand's swing about the shaft: 30 degrees to mesh, 10 more for slip in the grip
-SWEEP_FAST = math.radians(-25.0)  # the first part at 10 degrees per second; from the layout, the gaps are 30 degrees away
 FAST_RATE, SLOW_RATE = math.radians(10.0), math.radians(2.5)   # the rest slowly: at 10 degrees per second the jaws
 #                                  crossed the gaps (a window of about 2 degrees) before the pushing arm could follow
+SEARCH_FAST = math.radians(-15.0)  # r2: the quick part of the turn stops this far, well short of the gaps (30 degrees)
+SEARCH_END = math.radians(-60.0)   # r2: the slow search goes on to here if no drop is felt: covers 30 degrees of slip
+DROP_MM = 4.0                      # r2: the pushing hand's measured tool point this much further along the shafts
+#                                    (more than the 2.5 mm drop onto the spider's legs, which comes during the push)
+DROP_WINDOW = 10                   # within this many steps (0.5 s), once the push is stalled: the hub has dropped
 PUSH_UP = 0.026                  # the pushing hand's tool point above the axis: its closed fingertips, edge on to the
 #                                  hub, touch the rear face 19 mm above the axis and clear the shaft by 4 mm
 PUSH_TIP = 0.0095                # the fingertips' leading edge is this far ahead of the tool point along the shafts
@@ -247,12 +254,42 @@ def take_shaft(arm, p, flip):
                      arm.hold(0.3))
 
 
+def search_phase(ctx, L, R, p, fl, rr):
+    """r2: turn the shaft slowly from SEARCH_FAST toward SEARCH_END while the right hand keeps pushing the hub, and
+    stop turning as soon as the right arm's own joint readings show the hub has dropped into the spider's free gaps.
+    Steers only on the arms' own joints and the clock (forward kinematics of the right arm's measured joints)."""
+    push = R.move(p["push_in"], rr, 3.0, linear=True)
+    pushing, hist, a, step = True, [], SEARCH_FAST, 0
+    rate = SLOW_RATE / CONTROL_HZ
+    while a > SEARCH_END:
+        a = max(SEARCH_END, a - rate)
+        L._solve(L.pos, left_rot(fl, a))
+        if pushing:
+            pushing = next(push, StopIteration) is not StopIteration
+        yield
+        step += 1
+        try:
+            x = float(ctx.joint_tcp("right")[0][0])
+        except Exception:  # noqa: BLE001 - no simulator (the --ik plan check): search the whole range
+            continue
+        hist.append(x)
+        if not pushing and len(hist) > DROP_WINDOW and 1000 * (x - hist[-1 - DROP_WINDOW]) > DROP_MM:
+            print(f"phase found: shaft turned {math.degrees(a):.1f} deg, hand advanced"
+                  f" {1000 * (x - hist[-1 - DROP_WINDOW]):.1f} mm in {DROP_WINDOW} steps", flush=True)
+            break
+    else:
+        print(f"phase search reached {math.degrees(SEARCH_END):.0f} deg without a drop", flush=True)
+    for _ in push:                                         # finish the push if the drop came early
+        yield
+    yield from R.hold(0.5)
+
+
 def script(task, ctx):
     T = task
     variant = os.environ.get("DEMO_VARIANT", "")
     L, R = ctx.left, ctx.right
     p = plan(T)
-    sweep = math.radians(-18.0) if variant == "on_legs" else SWEEP
+    sweep = math.radians(-18.0) if variant == "on_legs" else SEARCH_END
     fr, fl = best_flip(R, right_poses(p)), best_flip(L, left_poses(p, sweep))
     rr = push_rot(best_flip(R, push_poses(p)))
     # 1. spider into the fixed hub's jaws; the left hand takes the driven shaft's free end
@@ -266,19 +303,23 @@ def script(task, ctx):
     # 3. turn the shaft through the phase while the push goes on: onto the legs, then into the gaps
     if variant == "no_turn":
         yield from R.move(p["push_legs"], rr, 2.0, linear=True)
-    else:
-        fast = max(sweep, SWEEP_FAST)                              # both negative: the smaller swing
-        t_fast = abs(fast) / FAST_RATE
-        yield from both(L.roll(lambda a: left_rot(fl, a), 0.0, fast, t_fast),
+    elif variant == "on_legs":
+        # turned only part of the way, open loop (the hub stops with its jaws on the spider's legs)
+        t_fast = abs(sweep) / FAST_RATE
+        yield from both(L.roll(lambda a: left_rot(fl, a), 0.0, sweep, t_fast),
                         R.move(p["push_legs"], rr, t_fast, linear=True))
-        if sweep < fast:
-            t_slow = abs(sweep - fast) / SLOW_RATE
-            yield from both(L.roll(lambda a: left_rot(fl, a), fast, sweep, t_slow),
-                            R.move(p["push_in"], rr, 3.0, linear=True))
+    else:
+        # r2: a quick turn to well short of the gaps, then a slow search that stops when the pushing arm's own joint
+        # readings show the hub has dropped forward into the gaps (its tool point jumps ahead along the shafts),
+        # searching on to SEARCH_END if it has not (any slip of the shaft in the grip is covered)
+        t_fast = abs(SEARCH_FAST) / FAST_RATE
+        yield from both(L.roll(lambda a: left_rot(fl, a), 0.0, SEARCH_FAST, t_fast),
+                        R.move(p["push_legs"], rr, t_fast, linear=True))
+        yield from search_phase(ctx, L, R, p, fl, rr)
     # 4. push the hub home, let go, back off
     if variant not in ("no_turn", "on_legs", "short"):
         yield from chain(R.move(p["push_home"], rr, 2.5, linear=True), R.hold(0.4))
-    yield from both(chain(L.hold(0.5, 0.45), L.move(p["stub_over"], left_rot(fl, sweep), 1.5)),
+    yield from both(chain(L.hold(0.5, 0.45), L.move(p["stub_over"], L.rot, 1.5)),
                     chain(wait(0.3), R.move(R.pos + [-0.012, 0.0, 0.0], rr, 0.5),
                           R.move(p["push_up"], rr, 1.5)))
     yield from wait(1.0)
@@ -329,6 +370,86 @@ def _write_mp4(frames, path: Path) -> None:
                     output_params=["-pix_fmt", "yuv420p", "-movflags", "+faststart"])
 
 
+# -- recording (video only: nothing here changes the physics, the scorer or what a policy sees) ------------------------
+VIDEO_W, VIDEO_H = 1280, 720     # recorded videos are rendered at 1280 x 720 (the policy's cameras stay as the run sets them)
+CLOSE_CAM_TARGET = (0.385, 0.0, 0.090)    # world x, y and height above the bench: the coupling, between both hubs' jaws
+CLOSE_CAM_FROM = (0.385, 0.225, 0.160)    # the close camera: on the left of the coupling (no arm passes there), a little
+#                                          above the shafts' axis, 0.23 m away, looking straight across the coupling
+
+
+def _close_camera(top: float):
+    """Pose (world position, xyzw quaternion, "world" convention: the camera looks along its +x) of the close camera."""
+    tx, ty, tz = CLOSE_CAM_TARGET
+    fx, fy, fz = CLOSE_CAM_FROM
+    d = np.array([tx - fx, ty - fy, tz - fz])
+    yaw = math.atan2(d[1], d[0])
+    pitch = math.atan2(-d[2], math.hypot(d[0], d[1]))          # positive: looking down
+    qz = (0.0, 0.0, math.sin(yaw / 2), math.cos(yaw / 2))
+    qy = (0.0, math.sin(pitch / 2), 0.0, math.cos(pitch / 2))
+    x1, y1, z1, w1 = qz
+    x2, y2, z2, w2 = qy
+    q = (w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2, w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
+         w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2, w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2)
+    return (fx, fy, top + fz), q
+
+
+def _record_in_detail(top: float) -> None:
+    """Render the recorded cameras at VIDEO_W x VIDEO_H and add yam_arena's spare camera ("overview_cam") as a close
+    view of the coupling, by subclassing the embodiment when yam_arena.embodiment is first imported (that import has
+    to wait until Isaac Sim's app is up, so it is hooked, not done here). The arms, the parts, the scorer and the
+    policy's observation are unchanged."""
+    import importlib.abc
+    import importlib.util
+
+    pos, rot = _close_camera(top)
+
+    def patch(E):
+        if getattr(E, "_close_cam_patched", False):
+            return
+        E.OVERVIEW_CAM_POS, E.OVERVIEW_CAM_ROT_XYZW = tuple(pos), tuple(rot)
+        base = E.BimanualYamEmbodiment
+
+        class _Detailed(base):
+            def __init__(self, *a, **k):
+                k["overview_cam"], k["cam_height"], k["cam_width"] = True, VIDEO_H, VIDEO_W
+                super().__init__(*a, **k)
+
+        E.BimanualYamEmbodiment = _Detailed
+        E._close_cam_patched = True
+
+    if "yam_arena.embodiment" in sys.modules:
+        patch(sys.modules["yam_arena.embodiment"])
+        return
+
+    class _Finder(importlib.abc.MetaPathFinder):
+        def find_spec(self, fullname, path, target=None):
+            if fullname != "yam_arena.embodiment":
+                return None
+            sys.meta_path.remove(self)
+            spec = importlib.util.find_spec(fullname)
+            if spec is None or spec.loader is None:
+                return None
+            orig_exec = spec.loader.exec_module
+
+            def exec_module(module):
+                orig_exec(module)
+                patch(module)
+
+            spec.loader.exec_module = exec_module
+            return spec
+
+    sys.meta_path.insert(0, _Finder())
+
+
+def _label(img, text):
+    import cv2
+
+    out = np.ascontiguousarray(img).copy()
+    cv2.putText(out, text, (14, 34), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 0), 4, cv2.LINE_AA)
+    cv2.putText(out, text, (14, 34), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2, cv2.LINE_AA)
+    return out
+
+
 def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True, cam_width: int = 320,
         cam_height: int = 176, hold_s: float = 3.0) -> dict:
     task_path = str(Path(task_path).resolve())
@@ -340,6 +461,12 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
 
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
+    close = record and os.environ.get("DEMO_CLOSE_CAM", "1") != "0"
+    if close:
+        from yam_arena.task_file import TABLE_TOP
+
+        _record_in_detail(TABLE_TOP["station"])
+        cam_width, cam_height = VIDEO_W, VIDEO_H
     emb = yam_arena_embodiment(task=task_path, object_jitter=0, control_hz=CONTROL_HZ, cam_width=cam_width,
                                cam_height=cam_height)
     obs = emb.reset(Scene(id="demo", instruction="demo"))
@@ -355,6 +482,15 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
         if record:
             for cam, img in o.images.items():
                 frames.setdefault(cam, []).append(np.asarray(img))
+            if close:
+                try:
+                    data = emb._base.scene["overview_cam"].data.output["rgb"]
+                    data = data.torch if hasattr(data, "torch") else data
+                    frames.setdefault("close_cam", []).append(np.ascontiguousarray(data[0, ..., :3].cpu().numpy()))
+                except Exception as exc:  # noqa: BLE001 - the close view is a recording aid only
+                    if "close_cam" not in frames:
+                        print(f"close camera unavailable: {exc!r}", flush=True)
+                        frames["close_cam"] = []
 
     last_gap = {"mm": None}
     origin = np.array(task.ORIGIN)
@@ -422,7 +558,19 @@ def run(task_path: str, out_dir: str, max_steps: int = 1200, record: bool = True
         import imageio
 
         for cam, fs in frames.items():
-            _write_mp4(fs, out / f"demo_{cam}.mp4")
+            if fs:
+                _write_mp4(fs, out / f"demo_{cam}.mp4")
+        if frames.get("close_cam") and frames.get("top_cam"):
+            # the reviewer's video: the whole bench (top camera) and the coupling close up, side by side, 1280 x 360
+            import cv2
+
+            n = min(len(frames["top_cam"]), len(frames["close_cam"]))
+            both = []
+            for k in range(n):
+                a = cv2.resize(frames["top_cam"][k], (640, 360))
+                b = cv2.resize(frames["close_cam"][k], (640, 360))
+                both.append(np.hstack([_label(a, "whole bench"), _label(b, f"coupling, close  step {k}")]))
+            _write_mp4(both, out / "demo_detail.mp4")
         top = next((c for c in frames if "top" in c), next(iter(frames), None))
         if top:
             imageio.imwrite(out / "setup.png", frames[top][0])

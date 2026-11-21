@@ -296,8 +296,8 @@ _STATE: dict = {}
 
 @on_reset
 def _reset_state(environment=None) -> None:
-    _STATE.update(step=0, scored=None, last=(0.0, False), spider_free=False, all_free=False, finger_check=None,
-                  recent=[], report={})
+    _STATE.update(step=0, scored=None, last=(0.0, False), spider_free=False, hub_free=False, all_free=False, finger_check=None,
+                  recent=[], let_go=[], report={})
 
 
 _reset_state()
@@ -367,13 +367,14 @@ def _step(environment) -> None:
             spider_free = all(_solid_distance((v[1], v[2], v[0]), -SPIDER_W * MM / 2, SPIDER_W * MM / 2, R_OD * MM)
                               >= RELEASE for v in local)
         _STATE["spider_free"] = bool(spider_free)
+        _STATE["hub_free"] = bool(free)
         _STATE["all_free"] = bool(free and spider_free)
         _STATE["finger_check"] = True
     except Exception as exc:  # noqa: BLE001 - an unknown grip never counts as released
         if _STATE["finger_check"] is None:
             print(f"jaw-coupling-mate: finger check unavailable: {exc!r}", flush=True)
         _STATE["finger_check"] = False
-        _STATE["spider_free"] = _STATE["all_free"] = False
+        _STATE["spider_free"] = _STATE["hub_free"] = _STATE["all_free"] = False
 
 
 def _update(objects) -> tuple[float, bool]:
@@ -383,7 +384,8 @@ def _update(objects) -> tuple[float, bool]:
     _STATE["scored"] = _STATE["step"]
     st = status(objects)
     seated = st["seated"] and _STATE["spider_free"]
-    engaged = seated and st["engaged_mm"] is not None and st["engaged_mm"] * MM >= ENGAGE
+    # the loose hub's levels count only once the grippers have let go of it and the shaft (review rule 6)
+    engaged = (seated and _STATE["hub_free"] and st["engaged_mm"] is not None and st["engaged_mm"] * MM >= ENGAGE)
     at_line = engaged and abs(st["to_line_mm"]) * MM <= LINE_TOL
     recent = _STATE["recent"]
     th = shaft_angle(objects)
@@ -393,7 +395,12 @@ def _update(objects) -> tuple[float, bool]:
     recent.append(np.concatenate(row))
     del recent[:-20]
     still = len(recent) == 20 and all(float(np.abs(r - recent[-1]).max()) < MOVE_TOL for r in recent)
-    if at_line and _STATE["all_free"] and still:
+    # the grippers must have been clear for the whole last second, not just now (release judged over the window)
+    let_go = _STATE["let_go"]
+    let_go.append(bool(_STATE["all_free"]))
+    del let_go[:-20]
+    released = len(let_go) == 20 and all(let_go)
+    if at_line and released and still:
         result = (1.0, True)
     elif at_line:
         result = (0.75, False)
@@ -403,7 +410,7 @@ def _update(objects) -> tuple[float, bool]:
         result = (0.25, False)
     else:
         result = (0.0, False)
-    _STATE["report"] = {**st, "spider_free": _STATE["spider_free"], "all_free": _STATE["all_free"], "still": still}
+    _STATE["report"] = {**st, "spider_free": _STATE["spider_free"], "all_free": _STATE["all_free"], "released_1s": released, "still": still}
     _STATE["last"] = result
     return result
 
