@@ -1,5 +1,5 @@
 #,item,part_number,spec,qty,unit_price_usd,line_usd,seller,url,use
-1,"Compression spring, stainless",Lee Spring LC 022D 03 S,"7.62 mm OD, 15.88 mm free, 0.736 N/mm, 12.8 mm to solid",2,8.04,16.08,Lee Spring,https://www.leespring.com/product/compression-spring-lc022d03s-stainless-steel,clamp lever spring (one spare)
+1,"Compression spring, stainless",Lee Spring LC 030D 12 S,"7.62 mm OD,6.10 mm ID,38.10 mm free,0.753 N/mm,10.52 mm solid height",2,8.31,16.62,Lee Spring,https://www.leespring.com/product/compression-spring-lc030d12s-stainless-steel,clamp lever spring (one spare)
 2,"Neoprene sealing washer for 5/8 in, pack of 25",BSC Preferred 90133A430 (Zoro G911467524),15.6 mm ID x 33.3 mm OD,1,19.49,19.49,Zoro,https://zoro.com/bsc-preferred-oil-resistant-neoprene-rubber-sealing-washer-for-58-615-id-1312-od-11-14-thick-25pk-90133a430/i/G911467524,handwheel friction
 3,"Disc spring DIN 2093, pack of 25",Zoro Select M363033310008 (Zoro G2646920),31.5 x 16.3 x 0.8 mm,1,11.15,11.15,Zoro,https://www.zoro.com/zoro-select-disc-sprngs-clght-315x163x08mm-pk25-m363033310008/i/G2646920/,handwheel friction
 4,"Clamp shaft collar, 5/8 in bore",Climax 1C-062-A (Zoro G2668675),"5/8 in bore, 1-5/16 in OD",1,5.45,5.45,Zoro,https://zoro.com/climax-metal-products-1c-062-a-one-piece-clamping-collar-1c-062-a/i/G2668675,handwheel friction
@@ -15,6 +15,7 @@
 14,Push-pull spring scale 0-10 N,"Eisco, Ward's 470344-688",20 g graduations,1,17.30,17.30,Ward's Science,https://www.wardsci.com/us/en/product/NA5209712/eisco-push-pull-spring-scales,force checks
 15,"Wood screws #8 x 1-1/4 in, 100",Everbilt 822802,flat head,1,8.98,8.98,Home Depot,https://homedepot.com/p/Everbilt-8-x-1-1-4-in-Phillips-Flat-Head-Zinc-Plated-Wood-Screw-100-Pack-822802/317479393,"housing, mounts, spring stop"
 16,Wood glue 8 oz,Titebond II 5003,,1,4.38,4.38,Home Depot,https://homedepot.com/p/Titebond-8-oz-Premium-Wood-Glue-5003/202180087,"housing, laminated base"
-17,"PLA filament, 1 kg spool",Bambu Lab PLA Basic 1.75 mm 1 kg,about 682 g for the printed parts (35% fill estimate),1,29.99,29.99,MatterHackers,https://www.matterhackers.com/store/l/bambu-lab-pla-filament-175mm-1kg,printed parts
-18,"12 mm (1/2 in) birch plywood, 2 x 4 ft project panel",FALKENDESIGN-PW-Birch-D4-1/2-2448,610 x 1220 mm sheet; panels need 1.29 sheets incl. thicknesses 12 mm,2,35.04,70.08,Home Depot,https://homedepot.com/p/Falken-Design-1-2-in-x-2-ft-x-4-ft-Birch-Plywood-Project-Panel-FALKENDESIGN-PW-Birch-D4-1-2-2448/319137344,sheet panels
-,TOTAL,,,,,313.65,,,
+17,Smooth steel guide rod,"5 mm diameter x80 mm, cut from smooth5 mm steel rod","5.00 mm diameter,80 mm length; polished; not threaded",1,5.00,5.00,"hardware supplier (budget allowance, not a vendor quote)",,clamp follower guide; budget allowance5 USD; retain same diameter and acceptance drag check
+18,"PLA filament, 1 kg spool",Bambu Lab PLA Basic 1.75 mm 1 kg,about 684 g for the printed parts (35% fill estimate),1,29.99,29.99,MatterHackers,https://www.matterhackers.com/store/l/bambu-lab-pla-filament-175mm-1kg,printed parts
+19,"12 mm (1/2 in) birch plywood, 2 x 4 ft project panel",FALKENDESIGN-PW-Birch-D4-1/2-2448,610 x 1220 mm sheet; panels need 1.29 sheets incl. thicknesses 12 mm,2,35.04,70.08,Home Depot,https://homedepot.com/p/Falken-Design-1-2-in-x-2-ft-x-4-ft-Birch-Plywood-Project-Panel-FALKENDESIGN-PW-Birch-D4-1-2-2448/319137344,sheet panels
+,TOTAL,,,,,319.19,,,

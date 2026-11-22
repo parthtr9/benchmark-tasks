@@ -33,7 +33,7 @@ Printer bed assumed: 220 x 220 x 250 mm; a piece larger than that is split into 
 | stl/handwheel__handle.stl | handwheel__handle | slider along X, travel 10.0 mm, on wheel | 44.0 x 24.0 x 24.0 | 9 |
 | stl/handwheel__wheel_part1.stl | handwheel__wheel | hinge about X through (386.0, -160.0, 140.0) mm, free to free deg | 12.0 x 200.0 x 200.0 | 162 |
 | stl/handwheel__wheel_part2.stl | handwheel__wheel | hinge about X through (386.0, -160.0, 140.0) mm, free to free deg | 10.0 x 80.0 x 80.0 | 21 |
-| stl/head__carriage_part1.stl | head__carriage | slider along Z, travel 59.0 mm | 124.0 x 173.0 x 94.8 | 137 |
+| stl/head__carriage_part1.stl | head__carriage | slider along Z, travel 59.0 mm | 124.0 x 173.0 x 122.9 | 138 |
 | stl/head__carriage_part2.stl | head__carriage | slider along Z, travel 59.0 mm | 23.0 x 90.0 x 23.0 | 11 |
 | stl/head__clamp.stl | head__clamp | hinge about X through (530.0, 10.0, 201.5) mm, -1 to 26 deg, on carriage | 99.0 x 50.0 x 103.5 | 16 |
 | stl/tray__body.stl | tray__body | fixed to its part | 148.0 x 108.0 x 22.0 | 40 |
@@ -43,6 +43,7 @@ Printer bed assumed: 220 x 220 x 250 mm; a piece larger than that is split into 
 | stl/extra__rod_feet_part2.stl | extra__rod_feet | screwed to the front wall's face | 18.0 x 11.0 x 13.0 | 1 |
 | stl/extra__guard_posts_part1.stl | extra__guard_posts | glued to the knife holder base | 10.0 x 10.0 x 86.0 | 4 |
 | stl/extra__guard_posts_part2.stl | extra__guard_posts | glued to the knife holder base | 10.0 x 10.0 x 86.0 | 4 |
+| stl/extra__clamp_spring_follower.stl | extra__clamp_spring_follower | slides vertically on a 5 mm steel rod through bridge; not glued to rocker | 10.0 x 10.0 x 4.0 | 0 |
 | stl/cassette_printed.stl | cassette__body | no-purchase route instead of BOM 12-13: the cassette with its block on its face, one piece; print within +-0.3 mm (the clamp takes 39.8-40.9 x 28-28.8 mm), 6.5 mm thick +-0.2, about 70 % infill for the modelled 10 g; paint the block face white if the camera should see wax | 40.4 x 12.5 x 28.4 | 10 |
 
 ## Modelled shapes replaced by bought parts
@@ -78,12 +79,13 @@ Printer bed assumed: 220 x 220 x 250 mm; a piece larger than that is split into 
 | Handle pin and travel | 8 mm pin on an 85 mm radius; slides 10 mm in its 8.4 mm bore; tip 4 mm off the wall when out, 2 mm into the hole when pushed 6 mm | +-0.5 mm | rule on the knob's travel; the wheel is locked once the knob is 6 mm in |
 | Crank | 10 mm pin at 29.5 mm radius (59 mm stroke); the yoke slot is 11 mm high (0.5 mm play a side) | +-0.3 mm | one turn of the wheel moves the head 59 mm (rule on the carriage) |
 | Specimen head guide | two 8 x 200 mm rods at x 489 and 571, y -34, from z 53 to 253, held by the rod feet (z 94.5-107.5) and the rod bridge (z 240-253); ear bores 8.3 mm | +-0.3 mm | the head slides its full stroke without binding when the yoke is lifted off the pin |
-| Head start position | the handle at 10 o'clock puts the head 14.75 mm below its top | +-1 mm | rule from the bench top to the cassette's centre: 160.3 mm at the start, 175 mm at the top |
+| Head start position | the handle at 10 o'clock puts the head 14.75 mm below its top | +-1 mm | rule from bench top to cassette centre: 175.25 mm at start, 190.00 mm at top; 190 - 29.5*(1-cos(60 degrees)) = 175.25. The prior 160.3/175 figures subtracted the 14.75 mm crank drop twice. |
 | Cassette clamp | standard cassette 40.4 x 28.4 x 6.5 mm (bought, or printed from stl/cassette_printed.stl within +-0.3 mm, 6.5 +-0.2 mm thick) against the clamp face; the rocker's lip holds its top edge. Cut a 31 x 36 x 8.5 mm slot (x 514.5-545.5, y 4-40, z 189.5-198) through the clamp block for the rocker, trim the rocker's side arm to 11 mm (x 504-515), and pivot it on an M4 shoulder screw (5 mm shoulder, 12 mm long) along x at y 10, z 201.5, threaded into the block | +-0.3 mm | with the lever released the cassette does not fall out as the wheel runs the head through its stroke |
-| Clamp lever | lever on the clamp's side nearer the robot: an arm 40 mm forward from the rocker and a 24 mm wide push bar (x 446-470, y 47-55) down to 100 mm above the bench, pushed +y; rocker turns -1 to 26 degrees |  | pushing the bar's foot 20 mm forward (about 12 degrees) lifts the lip about 8 mm off the cassette; 25 mm (15 degrees, the fixture's open stop) lifts it 10 mm |
+| Clamp lever | lever on the clamp's side nearer the robot: an arm 40 mm forward from the rocker and a 24 mm wide push bar (x 446-470, y 47-55) down to 100 mm above the bench, pushed +y; rocker turns -1 to 26 degrees |  | pushing the foot forward opens the lip about 10 mm at 15 degrees. Travel remains available through the model stop at 0.45 rad (25.78 degrees); the spring is not a travel stop. |
 | Knife edge | mock blade edge up at y 53.3, z 130, 80 mm long, 0.5 mm in front of the block face | +-0.5 mm | feeler gauge between block face and edge |
 | Knife guard | 46 mm guard whose knuckle turns on two M4 shoulder screws, one through each post (5.2 mm bores) into the knuckle's tapped ends, on the axis y 97, z 142; it rests forward at 0 degrees on a 3 mm ledge filed on each post and stops over the edge at 190 degrees against the posts' rear faces | +-3 degrees | protractor on the hinge line at each stop |
 | Tray | grey tray 148 x 108 x 22 mm outside, 0.15 kg, loose, centre at x 290, y 85 |  | taped outline on the bench |
+| Clamp spring mount | LC 030D 12 S: OD 7.62, ID 6.10, free 38.10, solid 10.52 mm. Spring axis x 466, y 49. Rocker pivot y 10, z 201.45 at start; rocker top at z 203.45. Follower seat z 207.45 at rest; bridge underside z 243.10. Installed spring length 35.65 mm, preload compression 2.45 mm. A separate 80 x 5 mm smooth guide rod passes through 5.2 mm bridge bore; spring around rod. Polish rod/bore, wax tip. | seat spacing +-0.2 mm after shimming; guide bore 5.2-5.3 mm | measure 35.65 mm seat spacing at rest. At 15 degrees spring length about25.1 mm; at25.78 degrees about16.6 mm, always over10.52 mm solid height. Pull follower without spring: guide drag below0.1 N. Force acceptance3.5-5.5 N at foot at15 degrees; shim upper spring seat only within documented preload range2.1-3.1 mm, then recheck travel. |
 
 ## Operating forces: how each is set and checked
 
@@ -91,7 +93,7 @@ Printer bed assumed: 220 x 220 x 250 mm; a piece larger than that is split into 
 |---|---|---|---|---|
 | Handwheel turning | 0.6 N m Coulomb friction on the wheel (7.1 N at the 85 mm knob) | 6 to 9 N at the knob | neoprene washer (BOM 2) between the inner bearing and the 5/8 in clamp collar (BOM 4), with a disc spring (BOM 3) behind the collar; slide the collar along to set the squeeze and tighten its screw | spring scale (BOM 14) hooked on the knob, pulled square to the arm: 6 to 9 N while it turns |
 | Handle push-in | 4 N Coulomb friction on the handle's 10 mm slide | 3 to 6 N | an 8 mm nitrile O-ring (BOM 10) on the pin, seated in a 10.5 mm, 2 mm deep counterbore on the wheel's inner face, so the pin drags through it | spring scale (BOM 14) on the knob end, pushed along the axle: 3 to 6 N while it slides; the lock pin drops in only with the wheel at 12 o'clock |
-| Clamp lever | rocker spring 1.2 N m/rad with 0.07 N m at rest; the lever's foot 101 mm below the pivot | 3.5 to 5.5 N at the lever's foot, held 15 degrees open (the lip 10 mm up; the fixture's spring is solid there, its open stop); the model gives 4.4 N | compression spring (BOM 1: Lee Spring LC 022D 03 S, 0.74 N/mm) in the bridge's 8 mm pocket, pressing down on the lever's forward arm 40 mm in front of the pivot; compressed 2.4 mm at rest it gives the model's 0.07 N m, and its rate at 40 mm is the model's 1.2 N m/rad; it reaches solid at about 15 degrees, which is the fixture's open stop. A washer under it raises the force | spring scale (BOM 14) on the lever's foot, pushed forward: 3.5 to 5.5 N with the lip 10 mm up |
+| Clamp lever | rocker spring 1.2 N m/rad with 0.07 N m at rest; the lever's foot 101 mm below the pivot | 3.5 to 5.5 N at lever foot, 15 degrees open; calculated nominal 4.35 N, lip about10 mm up. Spring remains clear of solid height through0.45 rad model stop. | Lee Spring LC 030D 12 S (0.753 N/mm;38.10 mm free;10.52 mm solid), vertical around5 mm guide rod, between bridge underside and printed follower. Rest length35.65 mm gives2.45 mm compression and0.072 N m at39 mm moment arm. Follower tip slides on rocker top at fixed y49,39 mm ahead of pivot; raised bridge underside z243.10. A separate guide rod keeps spring axial; no spring-end side bending. See spring-calculation.md for geometry/tolerances. | Before each session: measure rest seat spacing35.65 mm, verify follower slides with under0.1 N drag without spring, then spring scale on foot pushed +y:3.5-5.5 N at15 degrees. Set lever temporarily to0.45 rad with protractor and check at least3.48 mm spring clearance above solid (length>=14.0 mm). Do not use coil bind as stop. This is a build acceptance procedure, not a claim of physical measurements already made. |
 | Head held by the wheel | carriage driven only through the crank; the wheel's friction holds it | the head stays where the wheel leaves it | follows from the wheel's friction | with the handle out and let go at 3 o'clock, the head does not drift down |
 | Knife guard | free hinge (damping only) with stops at 0 and 190 degrees | rests on either stop by its own weight | free on its two shoulder screws | folded over, it stays over the edge; folded down, it stays forward |
 
@@ -101,7 +103,7 @@ Lines are numbered as `BOM n` in the notes above.
 
 | # | item | part number | spec | qty | unit (USD) | line (USD) | seller |
 |---|---|---|---|---|---|---|---|
-| 1 | Compression spring, stainless | Lee Spring LC 022D 03 S | 7.62 mm OD, 15.88 mm free, 0.736 N/mm, 12.8 mm to solid | 2 | 8.04 | 16.08 | Lee Spring |
+| 1 | Compression spring, stainless | Lee Spring LC 030D 12 S | 7.62 mm OD,6.10 mm ID,38.10 mm free,0.753 N/mm,10.52 mm solid height | 2 | 8.31 | 16.62 | Lee Spring |
 | 2 | Neoprene sealing washer for 5/8 in, pack of 25 | BSC Preferred 90133A430 (Zoro G911467524) | 15.6 mm ID x 33.3 mm OD | 1 | 19.49 | 19.49 | Zoro |
 | 3 | Disc spring DIN 2093, pack of 25 | Zoro Select M363033310008 (Zoro G2646920) | 31.5 x 16.3 x 0.8 mm | 1 | 11.15 | 11.15 | Zoro |
 | 4 | Clamp shaft collar, 5/8 in bore | Climax 1C-062-A (Zoro G2668675) | 5/8 in bore, 1-5/16 in OD | 1 | 5.45 | 5.45 | Zoro |
@@ -117,10 +119,11 @@ Lines are numbered as `BOM n` in the notes above.
 | 14 | Push-pull spring scale 0-10 N | Eisco, Ward's 470344-688 | 20 g graduations | 1 | 17.30 | 17.30 | Ward's Science |
 | 15 | Wood screws #8 x 1-1/4 in, 100 | Everbilt 822802 | flat head | 1 | 8.98 | 8.98 | Home Depot |
 | 16 | Wood glue 8 oz | Titebond II 5003 |  | 1 | 4.38 | 4.38 | Home Depot |
-| 17 | PLA filament, 1 kg spool | Bambu Lab PLA Basic 1.75 mm 1 kg | about 682 g for the printed parts (35% fill estimate) | 1 | 29.99 | 29.99 | MatterHackers |
-| 18 | 12 mm (1/2 in) birch plywood, 2 x 4 ft project panel | FALKENDESIGN-PW-Birch-D4-1/2-2448 | 610 x 1220 mm sheet; panels need 1.29 sheets incl. thicknesses 12 mm | 2 | 35.04 | 70.08 | Home Depot |
+| 17 | Smooth steel guide rod | 5 mm diameter x80 mm, cut from smooth5 mm steel rod | 5.00 mm diameter,80 mm length; polished; not threaded | 1 | 5.00 | 5.00 | hardware supplier (budget allowance, not a vendor quote) |
+| 18 | PLA filament, 1 kg spool | Bambu Lab PLA Basic 1.75 mm 1 kg | about 684 g for the printed parts (35% fill estimate) | 1 | 29.99 | 29.99 | MatterHackers |
+| 19 | 12 mm (1/2 in) birch plywood, 2 x 4 ft project panel | FALKENDESIGN-PW-Birch-D4-1/2-2448 | 610 x 1220 mm sheet; panels need 1.29 sheets incl. thicknesses 12 mm | 2 | 35.04 | 70.08 | Home Depot |
 
-**Total as listed: about 313.65 USD.**
+**Total as listed: about 319.19 USD.**
 
 ### Cheapest adequate sources
 
@@ -128,7 +131,7 @@ The list above names parts by their best specification. Every line marked here c
 
 | BOM # | instead of | cheapest adequate | part number | qty | unit (USD) | line (USD) | url | note |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Compression spring, stainless | one spring instead of two | Lee Spring LC 022D 03 S | 1 | 8.04 | 8.04 | https://www.leespring.com/product/compression-spring-lc022d03s-stainless-steel | no hardware-store spring states its rate |
+| 1 | Compression spring, stainless | one spring instead of two | Lee Spring LC 030D 12 S | 1 | 8.31 | 8.31 | https://www.leespring.com/product/compression-spring-lc030d12s-stainless-steel | no hardware-store spring states its rate |
 | 2 | Neoprene sealing washer for 5/8 in, pack of 25 | Everbilt neoprene washer 5/8 x 2 in, single (trim to 35 mm) | Everbilt 815888 | 1 | 2.75 | 2.75 | https://www.homedepot.com/p/Everbilt-5-8-in-x-2-in-Black-Neoprene-Washer-815888/204276369 |  |
 | 3 | Disc spring DIN 2093, pack of 25 | a second neoprene washer instead of the disc springs | Everbilt 815888 | 1 | 2.75 | 2.75 | https://www.homedepot.com/p/Everbilt-5-8-in-x-2-in-Black-Neoprene-Washer-815888/204276369 | rubber relaxes: re-check the wheel force before each session |
 | 6 | Stainless precision shaft 8 x 200 mm | plain steel rod 5/16 in (7.94 mm) x 3 ft, cut to 2 x 200 mm | Everbilt 0004 | 1 | 6.47 | 6.47 | https://homedepot.com/p/Everbilt-5-16-in-x-3-ft-Plain-Steel-Solid-Round-Rod-0004/332733889 | for this rod set the ear bores to 8.1 mm and the rod bridge and feet bores to 7.9 mm in fabrication.json and re-run the exporter |
@@ -137,12 +140,12 @@ The list above names parts by their best specification. Every line marked here c
 | 12 | Tissue cassettes, box of 500 | print the cassette with its block (stl/cassette_printed.stl) |  | 1 | 0.00 | 0.00 |  | the clamp holds only the cassette's outside edges: print within +-0.3 mm; the box of 500 stays the option for labs that want the real consumable |
 | 13 | Paraffin wax, 1 lb | no wax needed (the block is printed with the cassette) |  | 0 | 0.00 | 0.00 |  |  |
 | 14 | Push-pull spring scale 0-10 N | spring scale 0-10 N, pull only | Home Science Tools BS-SCALE3 | 1 | 5.95 | 5.95 | https://www.homesciencetools.com/product/spring-scale-1000-g-10-newton/ | push checks are made by pulling with a cord loop |
-| 17 | PLA filament, 1 kg spool | SUNLU PLA 1.75 mm, 1 kg | ASIN B07XG3RM58 | 1 | 13.99 | 13.99 | https://camelcamelcamel.com/product/B07XG3RM58 | price from a tracker listing |
-| 18 | 12 mm (1/2 in) birch plywood, 2 x 4 ft project panel | 1/2 in MDF, one 4 x 8 ft sheet (covers all panels) | Woodworker's Source 1010.SG.5010 | 1 | 39.00 | 39.00 | https://www.woodworkerssource.com/plywood-sheet-goods/mdf-12.html | pickup listing; any local 1/2 in MDF sheet does |
+| 18 | PLA filament, 1 kg spool | SUNLU PLA 1.75 mm, 1 kg | ASIN B07XG3RM58 | 1 | 13.99 | 13.99 | https://camelcamelcamel.com/product/B07XG3RM58 | price from a tracker listing |
+| 19 | 12 mm (1/2 in) birch plywood, 2 x 4 ft project panel | 1/2 in MDF, one 4 x 8 ft sheet (covers all panels) | Woodworker's Source 1010.SG.5010 | 1 | 39.00 | 39.00 | https://www.woodworkerssource.com/plywood-sheet-goods/mdf-12.html | pickup listing; any local 1/2 in MDF sheet does |
 
-**Total with the cheapest sources: about 123.96 USD.** For a lab that already owns a 3D printer, filament, wood screws, glue and a spring scale: **about 90.66 USD.**
+**Total with the cheapest sources: about 129.23 USD.** For a lab that already owns a 3D printer, filament, wood screws, glue and a spring scale: **about 95.93 USD.**
 
-With the printed cassette there is no consumable to buy: the floor is the hardware, about 124 USD, and about 91 USD for a lab that already owns a printer, filament, screws, glue and a spring scale. A lab that wants the real moulded cassettes adds BOM 12-13 (about 82 USD for a box of 500 and wax).
+With the printed cassette there is no consumable to buy: the floor is the hardware, about 129 USD, and about 96 USD for a lab that already owns a printer, filament, screws, glue and a spring scale. A lab that wants the real moulded cassettes adds BOM 12-13 (about 82 USD for a box of 500 and wax).
 
 Safety: the fixture has no cutting edge. The mock blade is dull shim stock, so a gripper that reaches between clamp and knife is still scored 0 for good, as in the simulation, but is not hurt.
 
@@ -153,3 +156,5 @@ Prices were read from the sellers' pages or search listings on 2026-11-18, befor
 Tools assumed: an FDM printer with a 220 x 220 mm bed (PLA, 3 perimeters, 15 to 20 % infill), a saw for the plywood, a drill with 4.2, 5.2, 8, 13 and 16 mm bits, an M4 tap and a file.
 
 Positions are the task's assembly coordinates: millimetres from the midpoint between the arm bases, x forward, y left, z up from the bench top; the instrument stands 80 mm further out than the instrument's own layout numbers in task.py (task.XS).
+
+Revision of spring/mount and cassette-height documentation: manufacturer data and complete travel/force calculations are in spring-calculation.md. Spring price checked2026-11-22; guide rod5 USD is an explicit budget allowance. No physical force measurement is claimed. Task simulation, instruction, scorer and demo are unchanged; existing evaluation media are retained.

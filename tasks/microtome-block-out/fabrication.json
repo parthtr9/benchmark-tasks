@@ -385,13 +385,13 @@
       "name": "clamp_spring_bridge",
       "joint": "on the carriage",
       "join": "head__carriage",
-      "note": "holds the clamp spring above the lever's forward arm, 40 mm in front of the pivot; glued to the carriage plate's top",
+      "note": "vertical spring and sliding follower mount; underside z 243.10, 35.65 mm above follower spring seat at rest; 5.2 mm guide bore at x 466, y 49 for an 80 x 5 mm smooth steel rod. Attached to carriage by a 10 x 10 mm upright, outboard of the rocker.",
       "boxes": [
         {
           "centre": [
             477.5,
             19,
-            220
+            248.1
           ],
           "size": [
             45,
@@ -403,10 +403,75 @@
               "axis": "z",
               "at": [
                 466,
-                50
+                49
               ],
-              "d": 8.0
+              "d": 5.2
             }
+          ]
+        },
+        {
+          "centre": [
+            493,
+            -14,
+            231.2
+          ],
+          "size": [
+            10,
+            10,
+            23.8
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clamp_spring_follower",
+      "joint": "slides vertically on a 5 mm steel rod through bridge; not glued to rocker",
+      "note": "spring rests on 10 x 10 x 2 mm seat, whose 2 x 2 mm central contact tip slides on the rocker; file tip corners to 0.5 mm radius, polish and wax contact. Glue 80 x 5 mm steel guide rod in seat bore, with rod lower end flush with seat underside. Rod slides in 5.2 mm bridge bore, not the spring.",
+      "boxes": [
+        {
+          "centre": [
+            466,
+            49,
+            206.45
+          ],
+          "size": [
+            10,
+            10,
+            2
+          ],
+          "bores": [
+            {
+              "axis": "z",
+              "at": [
+                466,
+                49
+              ],
+              "d": 5.0
+            }
+          ]
+        },
+        {
+          "centre": [
+            466,
+            49,
+            203.95
+          ],
+          "size": [
+            2,
+            2,
+            1
+          ]
+        },
+        {
+          "centre": [
+            466,
+            49,
+            204.95
+          ],
+          "size": [
+            8,
+            8,
+            1
           ]
         }
       ]
@@ -447,7 +512,7 @@
       "name": "Head start position",
       "value": "the handle at 10 o'clock puts the head 14.75 mm below its top",
       "tolerance": "+-1 mm",
-      "check": "rule from the bench top to the cassette's centre: 160.3 mm at the start, 175 mm at the top"
+      "check": "rule from bench top to cassette centre: 175.25 mm at start, 190.00 mm at top; 190 - 29.5*(1-cos(60 degrees)) = 175.25. The prior 160.3/175 figures subtracted the 14.75 mm crank drop twice."
     },
     {
       "name": "Cassette clamp",
@@ -459,7 +524,7 @@
       "name": "Clamp lever",
       "value": "lever on the clamp's side nearer the robot: an arm 40 mm forward from the rocker and a 24 mm wide push bar (x 446-470, y 47-55) down to 100 mm above the bench, pushed +y; rocker turns -1 to 26 degrees",
       "tolerance": "",
-      "check": "pushing the bar's foot 20 mm forward (about 12 degrees) lifts the lip about 8 mm off the cassette; 25 mm (15 degrees, the fixture's open stop) lifts it 10 mm"
+      "check": "pushing the foot forward opens the lip about 10 mm at 15 degrees. Travel remains available through the model stop at 0.45 rad (25.78 degrees); the spring is not a travel stop."
     },
     {
       "name": "Knife edge",
@@ -478,6 +543,12 @@
       "value": "grey tray 148 x 108 x 22 mm outside, 0.15 kg, loose, centre at x 290, y 85",
       "tolerance": "",
       "check": "taped outline on the bench"
+    },
+    {
+      "name": "Clamp spring mount",
+      "value": "LC 030D 12 S: OD 7.62, ID 6.10, free 38.10, solid 10.52 mm. Spring axis x 466, y 49. Rocker pivot y 10, z 201.45 at start; rocker top at z 203.45. Follower seat z 207.45 at rest; bridge underside z 243.10. Installed spring length 35.65 mm, preload compression 2.45 mm. A separate 80 x 5 mm smooth guide rod passes through 5.2 mm bridge bore; spring around rod. Polish rod/bore, wax tip.",
+      "tolerance": "seat spacing +-0.2 mm after shimming; guide bore 5.2-5.3 mm",
+      "check": "measure 35.65 mm seat spacing at rest. At 15 degrees spring length about25.1 mm; at25.78 degrees about16.6 mm, always over10.52 mm solid height. Pull follower without spring: guide drag below0.1 N. Force acceptance3.5-5.5 N at foot at15 degrees; shim upper spring seat only within documented preload range2.1-3.1 mm, then recheck travel."
     }
   ],
   "forces": [
@@ -498,9 +569,9 @@
     {
       "name": "Clamp lever",
       "model": "rocker spring 1.2 N m/rad with 0.07 N m at rest; the lever's foot 101 mm below the pivot",
-      "target": "3.5 to 5.5 N at the lever's foot, held 15 degrees open (the lip 10 mm up; the fixture's spring is solid there, its open stop); the model gives 4.4 N",
-      "set": "compression spring (BOM 1: Lee Spring LC 022D 03 S, 0.74 N/mm) in the bridge's 8 mm pocket, pressing down on the lever's forward arm 40 mm in front of the pivot; compressed 2.4 mm at rest it gives the model's 0.07 N m, and its rate at 40 mm is the model's 1.2 N m/rad; it reaches solid at about 15 degrees, which is the fixture's open stop. A washer under it raises the force",
-      "check": "spring scale (BOM 14) on the lever's foot, pushed forward: 3.5 to 5.5 N with the lip 10 mm up"
+      "target": "3.5 to 5.5 N at lever foot, 15 degrees open; calculated nominal 4.35 N, lip about10 mm up. Spring remains clear of solid height through0.45 rad model stop.",
+      "set": "Lee Spring LC 030D 12 S (0.753 N/mm;38.10 mm free;10.52 mm solid), vertical around5 mm guide rod, between bridge underside and printed follower. Rest length35.65 mm gives2.45 mm compression and0.072 N m at39 mm moment arm. Follower tip slides on rocker top at fixed y49,39 mm ahead of pivot; raised bridge underside z243.10. A separate guide rod keeps spring axial; no spring-end side bending. See spring-calculation.md for geometry/tolerances.",
+      "check": "Before each session: measure rest seat spacing35.65 mm, verify follower slides with under0.1 N drag without spring, then spring scale on foot pushed +y:3.5-5.5 N at15 degrees. Set lever temporarily to0.45 rad with protractor and check at least3.48 mm spring clearance above solid (length>=14.0 mm). Do not use coil bind as stop. This is a build acceptance procedure, not a claim of physical measurements already made."
     },
     {
       "name": "Head held by the wheel",
@@ -520,12 +591,12 @@
   "bom": [
     {
       "item": "Compression spring, stainless",
-      "part_number": "Lee Spring LC 022D 03 S",
-      "spec": "7.62 mm OD, 15.88 mm free, 0.736 N/mm, 12.8 mm to solid",
+      "part_number": "Lee Spring LC 030D 12 S",
+      "spec": "7.62 mm OD,6.10 mm ID,38.10 mm free,0.753 N/mm,10.52 mm solid height",
       "qty": 2,
-      "unit_price": 8.04,
+      "unit_price": 8.31,
       "seller": "Lee Spring",
-      "url": "https://www.leespring.com/product/compression-spring-lc022d03s-stainless-steel",
+      "url": "https://www.leespring.com/product/compression-spring-lc030d12s-stainless-steel",
       "use": "clamp lever spring (one spare)"
     },
     {
@@ -677,6 +748,16 @@
       "seller": "Home Depot",
       "url": "https://homedepot.com/p/Titebond-8-oz-Premium-Wood-Glue-5003/202180087",
       "use": "housing, laminated base"
+    },
+    {
+      "item": "Smooth steel guide rod",
+      "part_number": "5 mm diameter x80 mm, cut from smooth5 mm steel rod",
+      "spec": "5.00 mm diameter,80 mm length; polished; not threaded",
+      "qty": 1,
+      "unit_price": 5.0,
+      "seller": "hardware supplier (budget allowance, not a vendor quote)",
+      "url": "",
+      "use": "clamp follower guide; budget allowance5 USD; retain same diameter and acceptance drag check"
     }
   ],
   "notes": [
@@ -684,17 +765,18 @@
     "Housing outside: the plywood walls stand where the instrument's covers are, so the robot's clearances are the same; the robot never handles the housing.",
     "Prices were read from the sellers' pages or search listings on 2026-11-18, before shipping and tax; they move, so treat the total as an estimate. For comparison, a used Leica RM2125 lists at about 2,100 USD and a refurbished one at about 3,400 USD (search listings, 2026-11-18).",
     "Tools assumed: an FDM printer with a 220 x 220 mm bed (PLA, 3 perimeters, 15 to 20 % infill), a saw for the plywood, a drill with 4.2, 5.2, 8, 13 and 16 mm bits, an M4 tap and a file.",
-    "Positions are the task's assembly coordinates: millimetres from the midpoint between the arm bases, x forward, y left, z up from the bench top; the instrument stands 80 mm further out than the instrument's own layout numbers in task.py (task.XS)."
+    "Positions are the task's assembly coordinates: millimetres from the midpoint between the arm bases, x forward, y left, z up from the bench top; the instrument stands 80 mm further out than the instrument's own layout numbers in task.py (task.XS).",
+    "Revision of spring/mount and cassette-height documentation: manufacturer data and complete travel/force calculations are in spring-calculation.md. Spring price checked2026-11-22; guide rod5 USD is an explicit budget allowance. No physical force measurement is claimed. Task simulation, instruction, scorer and demo are unchanged; existing evaluation media are retained."
   ],
   "cheapest": {
     "intro": "The list above names parts by their best specification. Every line marked here can be bought cheaper with the same function; prices were read on 2026-11-18 (sellers' pages or search listings) and move.",
     "replace": {
       "1": {
         "item": "one spring instead of two",
-        "part_number": "Lee Spring LC 022D 03 S",
+        "part_number": "Lee Spring LC 030D 12 S",
         "qty": 1,
-        "unit_price": 8.04,
-        "url": "https://www.leespring.com/product/compression-spring-lc022d03s-stainless-steel",
+        "unit_price": 8.31,
+        "url": "https://www.leespring.com/product/compression-spring-lc030d12s-stainless-steel",
         "note": "no hardware-store spring states its rate"
       },
       "2": {
@@ -745,22 +827,6 @@
         "url": "https://www.homesciencetools.com/product/spring-scale-1000-g-10-newton/",
         "note": "push checks are made by pulling with a cord loop"
       },
-      "17": {
-        "item": "SUNLU PLA 1.75 mm, 1 kg",
-        "part_number": "ASIN B07XG3RM58",
-        "qty": 1,
-        "unit_price": 13.99,
-        "url": "https://camelcamelcamel.com/product/B07XG3RM58",
-        "note": "price from a tracker listing"
-      },
-      "18": {
-        "item": "1/2 in MDF, one 4 x 8 ft sheet (covers all panels)",
-        "part_number": "Woodworker's Source 1010.SG.5010",
-        "qty": 1,
-        "unit_price": 39.0,
-        "url": "https://www.woodworkerssource.com/plywood-sheet-goods/mdf-12.html",
-        "note": "pickup listing; any local 1/2 in MDF sheet does"
-      },
       "12": {
         "item": "print the cassette with its block (stl/cassette_printed.stl)",
         "part_number": "",
@@ -776,16 +842,32 @@
         "unit_price": 0.0,
         "url": "",
         "note": ""
+      },
+      "19": {
+        "item": "1/2 in MDF, one 4 x 8 ft sheet (covers all panels)",
+        "part_number": "Woodworker's Source 1010.SG.5010",
+        "qty": 1,
+        "unit_price": 39.0,
+        "url": "https://www.woodworkerssource.com/plywood-sheet-goods/mdf-12.html",
+        "note": "pickup listing; any local 1/2 in MDF sheet does"
+      },
+      "18": {
+        "item": "SUNLU PLA 1.75 mm, 1 kg",
+        "part_number": "ASIN B07XG3RM58",
+        "qty": 1,
+        "unit_price": 13.99,
+        "url": "https://camelcamelcamel.com/product/B07XG3RM58",
+        "note": "price from a tracker listing"
       }
     },
     "owned": [
       14,
       15,
       16,
-      17
+      18
     ],
     "owned_text": "a 3D printer, filament, wood screws, glue and a spring scale",
-    "outro": "With the printed cassette there is no consumable to buy: the floor is the hardware, about 124 USD, and about 91 USD for a lab that already owns a printer, filament, screws, glue and a spring scale. A lab that wants the real moulded cassettes adds BOM 12-13 (about 82 USD for a box of 500 and wax)."
+    "outro": "With the printed cassette there is no consumable to buy: the floor is the hardware, about 129 USD, and about 96 USD for a lab that already owns a printer, filament, screws, glue and a spring scale. A lab that wants the real moulded cassettes adds BOM 12-13 (about 82 USD for a box of 500 and wax)."
   },
   "also_print": {
     "cassette__body": {

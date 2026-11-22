@@ -5,7 +5,7 @@ stl/handwheel__body.stl,handwheel__body,fixed to its part,handwheel__body:0,25.0
 stl/handwheel__handle.stl,handwheel__handle,"slider along X, travel 10.0 mm, on wheel",handwheel__handle:0,44.0 x 24.0 x 24.0,19.8,9,192
 stl/handwheel__wheel_part1.stl,handwheel__wheel,"hinge about X through (386.0, -160.0, 140.0) mm, free to free deg",handwheel__wheel:0,12.0 x 200.0 x 200.0,372.9,162,580
 stl/handwheel__wheel_part2.stl,handwheel__wheel,"hinge about X through (386.0, -160.0, 140.0) mm, free to free deg",handwheel__wheel:2,10.0 x 80.0 x 80.0,47.4,21,580
-stl/head__carriage_part1.stl,head__carriage,"slider along Z, travel 59.0 mm",extra__clamp_spring_bridge:0 head__carriage:0 extra__rod_ears:0 head__carriage:6 head__carriage:1 head__carriage:2 extra__rod_ears:1 head__carriage:7,124.0 x 173.0 x 94.8,315.8,137,684
+stl/head__carriage_part1.stl,head__carriage,"slider along Z, travel 59.0 mm",extra__clamp_spring_bridge:0 extra__clamp_spring_bridge:1 head__carriage:0 extra__rod_ears:0 head__carriage:6 head__carriage:1 head__carriage:2 extra__rod_ears:1 head__carriage:7,124.0 x 173.0 x 122.9,318.5,138,696
 stl/head__carriage_part2.stl,head__carriage,"slider along Z, travel 59.0 mm",head__carriage:4 head__carriage:5 head__carriage:3,23.0 x 90.0 x 23.0,26.4,11,36
 stl/head__clamp.stl,head__clamp,"hinge about X through (530.0, 10.0, 201.5) mm, -1 to 26 deg, on carriage",head__clamp:5 head__clamp:4 head__clamp:3 head__clamp:2 head__clamp:0 head__clamp:1,99.0 x 50.0 x 103.5,36.0,16,72
 stl/tray__body.stl,tray__body,fixed to its part,tray__body:1 tray__body:3 tray__body:0 tray__body:4 tray__body:2,148.0 x 108.0 x 22.0,91.6,40,60
@@ -15,4 +15,5 @@ stl/extra__rod_feet_part1.stl,extra__rod_feet,screwed to the front wall's face,e
 stl/extra__rod_feet_part2.stl,extra__rod_feet,screwed to the front wall's face,extra__rod_feet:1,18.0 x 11.0 x 13.0,1.9,1,208
 stl/extra__guard_posts_part1.stl,extra__guard_posts,glued to the knife holder base,extra__guard_posts:0,10.0 x 10.0 x 86.0,8.4,4,208
 stl/extra__guard_posts_part2.stl,extra__guard_posts,glued to the knife holder base,extra__guard_posts:1,10.0 x 10.0 x 86.0,8.4,4,208
+stl/extra__clamp_spring_follower.stl,extra__clamp_spring_follower,slides vertically on a 5 mm steel rod through bridge; not glued to rocker,extra__clamp_spring_follower:1 extra__clamp_spring_follower:2 extra__clamp_spring_follower:0,10.0 x 10.0 x 4.0,0.2,0,232
 stl/cassette_printed.stl,cassette__body,"no-purchase route instead of BOM 12-13: the cassette with its block on its face, one piece; print within +-0.3 mm (the clamp takes 39.8-40.9 x 28-28.8 mm), 6.5 mm thick +-0.2, about 70 % infill for the modelled 10 g; paint the block face white if the camera should see wax",cassette__body:0 cassette__body:1,40.4 x 12.5 x 28.4,11.4,10,24
